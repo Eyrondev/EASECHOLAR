@@ -1,0 +1,142 @@
+<!-- Admin Top Navigation -->
+<style>
+    /* Mobile Navigation Styles - iPhone 12 Pro Optimized */
+    @media (max-width: 768px) {
+        #top-nav {
+            left: 0 !important;
+            padding-left: 3rem;
+            padding-right: 0.5rem;
+        }
+        
+        #top-nav .text-right {
+            display: none;
+        }
+        
+        /* Fix dropdown positioning for mobile */
+        #top-nav #profile-dropdown {
+            position: fixed !important;
+            right: 0.5rem !important;
+            left: auto !important;
+            top: 4rem !important;
+            width: 15rem;
+            max-width: calc(100vw - 1rem);
+            z-index: 9999 !important;
+        }
+        
+        /* Improve touch targets */
+        #top-nav button {
+            min-width: 44px;
+            min-height: 44px;
+            padding: 0.5rem;
+        }
+        
+        /* Dropdown links larger for touch */
+        #top-nav #profile-dropdown a,
+        #top-nav #profile-dropdown button {
+            padding: 0.875rem 1rem !important;
+            font-size: 0.9375rem !important;
+        }
+        
+        /* Compact profile button */
+        #top-nav #profile-btn .w-10 {
+            width: 2.25rem;
+            height: 2.25rem;
+        }
+    }
+    
+    @media (max-width: 390px) {
+        #top-nav {
+            padding-left: 2.75rem;
+            padding-right: 0.25rem;
+        }
+        
+        #top-nav #profile-dropdown {
+            right: 0.25rem !important;
+            width: calc(100vw - 0.5rem);
+            max-width: 20rem;
+        }
+    }
+</style>
+
+<nav id="top-nav" class="fixed top-0 left-64 right-0 h-16 bg-white border-b border-gray-200 shadow-sm z-20">
+    <div class="flex items-center justify-end h-full px-8">
+        <!-- Right Side Actions -->
+        <div class="flex items-center">
+            <!-- Admin Profile -->
+            <div class="relative">
+                <button id="profile-btn" class="flex items-center space-x-3 hover:bg-gray-100 rounded-lg p-2 transition-colors">
+                    <div class="text-right">
+                        <p id="admin-name" class="text-sm font-medium text-gray-900">Administrator</p>
+                        <p class="text-xs text-gray-500">Admin</p>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                </button>
+
+                <!-- Profile Dropdown -->
+                <div id="profile-dropdown" class="hidden absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-xl border border-gray-200 z-50">
+                    <div class="p-4 border-b border-gray-200">
+                        <p id="profile-name" class="font-medium text-gray-900">Administrator</p>
+                        <p id="profile-email" class="text-sm text-gray-500">admin@gmail.com</p>
+                    </div>
+                    <div class="py-2">
+                        <a href="/Admin/profile.html" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 transition-colors">
+                            <i class="fas fa-user w-5 mr-3"></i>
+                            My Profile
+                        </a>
+                        <a href="/Admin/settings.html" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 transition-colors">
+                            <i class="fas fa-cog w-5 mr-3"></i>
+                            Settings
+                        </a>
+                        <div class="border-t border-gray-200 my-2"></div>
+                        <button onclick="logout()" class="w-full flex items-center px-4 py-2 text-red-600 hover:bg-red-50 transition-colors">
+                            <i class="fas fa-sign-out-alt w-5 mr-3"></i>
+                            Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Load admin profile
+        loadAdminProfile();
+
+        // Toggle profile dropdown
+        const profileBtn = document.getElementById('profile-btn');
+        const profileDropdown = document.getElementById('profile-dropdown');
+        
+        profileBtn?.addEventListener('click', function(e) {
+            e.stopPropagation();
+            profileDropdown.classList.toggle('hidden');
+        });
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function() {
+            profileDropdown?.classList.add('hidden');
+        });
+    });
+
+    function loadAdminProfile() {
+        fetch('/api/admin/profile')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('admin-name').textContent = data.name;
+                    document.getElementById('profile-name').textContent = data.name;
+                    document.getElementById('profile-email').textContent = data.email;
+                }
+            })
+            .catch(error => console.error('Error loading admin profile:', error));
+    }
+
+    function logout() {
+        if (confirm('Are you sure you want to logout?')) {
+            window.location.href = '/logout';
+        }
+    }
+</script>

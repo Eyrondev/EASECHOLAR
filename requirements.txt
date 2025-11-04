@@ -1,0 +1,113 @@
+# EASECHOLAR - Scholarship Management Platform
+# Python Dependencies
+# Last Updated: November 3, 2025
+
+# ============================================================================
+# CORE FRAMEWORK
+# ============================================================================
+Flask==2.3.3                    # Web framework
+Werkzeug==2.3.7                 # WSGI utility library for Python
+
+# ============================================================================
+# DATABASE
+# ============================================================================
+mysql-connector-python==8.1.0   # MySQL database connector
+
+# ============================================================================
+# SECURITY & AUTHENTICATION
+# ============================================================================
+bcrypt==4.0.1                   # Password hashing
+
+# ============================================================================
+# EMAIL FUNCTIONALITY (Password Reset)
+# ============================================================================
+Flask-Mail==0.9.1               # Email sending support
+blinker==1.9.0                  # Signal support for Flask (required by Flask-Mail)
+
+# ============================================================================
+# ENVIRONMENT & CONFIGURATION
+# ============================================================================
+python-dotenv==1.0.0            # Environment variable management
+
+# ============================================================================
+# FILE HANDLING & PROCESSING
+# ============================================================================
+Pillow==10.4.0                  # Image processing for profile pictures
+
+# ============================================================================
+# HTTP & API SUPPORT
+# ============================================================================
+requests==2.32.5                # HTTP library for API calls
+urllib3==2.5.0                  # HTTP client
+certifi==2025.8.3               # SSL certificates
+charset-normalizer==3.4.3       # Character encoding detection
+idna==3.10                      # Internationalized Domain Names
+
+# ============================================================================
+# UTILITIES
+# ============================================================================
+click==8.3.0                    # Command-line interface creation
+colorama==0.4.6                 # Cross-platform colored terminal text
+itsdangerous==2.2.0             # Data integrity and signing
+MarkupSafe==3.0.2               # String escaping and markup safety
+Jinja2==3.1.6                   # Template engine
+
+# ============================================================================
+# PRODUCTION SERVERS (Optional - Choose One)
+# ============================================================================
+# gunicorn==21.2.0              # WSGI HTTP Server for UNIX
+waitress==2.1.2                 # Production WSGI server for Windows
+
+# ============================================================================
+# FORM VALIDATION (Optional)
+# ============================================================================
+# WTForms==3.0.1                # Form validation library
+
+# ============================================================================
+# CORS SUPPORT (Optional - If API needs cross-origin access)
+# ============================================================================
+# Flask-CORS==4.0.0             # Cross-Origin Resource Sharing
+
+# ============================================================================
+# TESTING (Development/Optional)
+# ============================================================================
+# pytest==7.4.0                 # Testing framework
+# pytest-flask==1.2.0           # Flask extensions for pytest
+
+# ============================================================================
+# DEVELOPMENT TOOLS (Development Only)
+# ============================================================================
+# flask-debugtoolbar==0.13.1    # Debug toolbar for Flask
+
+# ============================================================================
+# INSTALLATION INSTRUCTIONS
+# ============================================================================
+# 
+# To install all required packages:
+#   pip install -r requirements.txt
+#
+# To install only core dependencies (without optional packages):
+#   pip install Flask==2.3.3 Werkzeug==2.3.7 mysql-connector-python==8.1.0 
+#   bcrypt==4.0.1 Flask-Mail==0.9.1 blinker==1.9.0 python-dotenv==1.0.0 
+#   Pillow==10.0.0
+#
+# For production deployment on Windows:
+#   pip install -r requirements.txt
+#   (waitress is included for Windows production server)
+#
+# For production deployment on Linux:
+#   Uncomment gunicorn and install
+#
+# ============================================================================
+# CURRENT SYSTEM FEATURES SUPPORTED
+# ============================================================================
+# ✅ User Authentication & Authorization (Flask, bcrypt)
+# ✅ MySQL Database Integration (mysql-connector-python)
+# ✅ Email Password Reset (Flask-Mail, blinker)
+# ✅ File Uploads (Werkzeug, Pillow)
+# ✅ Environment Configuration (.env support via python-dotenv)
+# ✅ Template Rendering (Jinja2)
+# ✅ Session Management (Flask, itsdangerous)
+# ✅ Production Deployment (waitress for Windows)
+# ✅ Secure Password Storage (bcrypt with PBKDF2-HMAC-SHA512)
+# ============================================================================

@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scholarships Management - Admin - EASECHOLAR</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eef2ff', 100: '#e0e7ff', 200: '#c7d2fe', 300: '#a5b4fc', 400: '#818cf8',
+                            500: '#6366f1', 600: '#4f46e5', 700: '#4338ca', 800: '#3730a3', 900: '#312e81',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Mobile Responsive Styles -->
+    <link rel="stylesheet" href="/Assets/css/mobile-responsive.css">
+
+    <script src="components.js"></script>
+</head>
+<body class="bg-gray-50 font-sans">
+    <div id="sidebar-container"></div>
+    <div id="nav-container"></div>
+
+    <div class="ml-0 lg:ml-64 pt-20 sm:pt-16">
+        <div class="p-4 sm:p-6 lg:p-8">
+            <div id="header-container"></div>
+
+            <!-- Stats -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8">
+                <div class="bg-white p-3 sm:p-6 rounded-xl shadow-md border border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div class="flex-1 min-w-0">
+                            <p class="text-xs sm:text-sm font-medium text-gray-600 truncate">Total Scholarships</p>
+                            <p id="stat-total" class="text-xl sm:text-3xl font-bold text-gray-900 mt-1">0</p>
+                        </div>
+                        <div class="p-2 sm:p-3 bg-indigo-100 rounded-full flex-shrink-0 ml-2">
+                            <i class="fas fa-graduation-cap text-indigo-600 text-lg sm:text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white p-3 sm:p-6 rounded-xl shadow-md border border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div class="flex-1 min-w-0">
+                            <p class="text-xs sm:text-sm font-medium text-gray-600 truncate">Active</p>
+                            <p id="stat-active" class="text-xl sm:text-3xl font-bold text-green-600 mt-1">0</p>
+                        </div>
+                        <div class="p-2 sm:p-3 bg-green-100 rounded-full flex-shrink-0 ml-2">
+                            <i class="fas fa-check-circle text-green-600 text-lg sm:text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white p-3 sm:p-6 rounded-xl shadow-md border border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div class="flex-1 min-w-0">
+                            <p class="text-xs sm:text-sm font-medium text-gray-600 truncate">Inactive</p>
+                            <p id="stat-inactive" class="text-xl sm:text-3xl font-bold text-gray-600 mt-1">0</p>
+                        </div>
+                        <div class="p-2 sm:p-3 bg-gray-100 rounded-full flex-shrink-0 ml-2">
+                            <i class="fas fa-pause-circle text-gray-600 text-lg sm:text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white p-3 sm:p-6 rounded-xl shadow-md border border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div class="flex-1 min-w-0">
+                            <p class="text-xs sm:text-sm font-medium text-gray-600 truncate">Total Applications</p>
+                            <p id="stat-applications" class="text-xl sm:text-3xl font-bold text-blue-600 mt-1">0</p>
+                        </div>
+                        <div class="p-2 sm:p-3 bg-blue-100 rounded-full flex-shrink-0 ml-2">
+                            <i class="fas fa-file-alt text-blue-600 text-lg sm:text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="bg-white rounded-xl shadow-md border border-gray-200 p-4 sm:p-6 mb-4 sm:mb-6">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                    <div class="sm:col-span-2 lg:col-span-2">
+                        <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Search Scholarships</label>
+                        <div class="relative">
+                            <input type="text" id="search-input" placeholder="Search by title or provider..." 
+                                   class="w-full px-3 sm:px-4 py-2 pl-3 sm:pl-10 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500">
+                            <i class="fas fa-search absolute left-3 top-3 text-gray-400 hidden sm:block"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Status</label>
+                        <select id="status-filter" class="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500">
+                            <option value="">All Status</option>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Type</label>
+                        <select id="type-filter" class="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500">
+                            <option value="">All Types</option>
+                            <option value="FULL_SCHOLARSHIP">Full Scholarship</option>
+                            <option value="PARTIAL_SCHOLARSHIP">Partial Scholarship</option>
+                            <option value="MONTHLY_ALLOWANCE">Monthly Allowance</option>
+                            <option value="ONE_TIME_GRANT">One-Time Grant</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="flex flex-col sm:flex-row items-center justify-between mt-4 pt-4 border-t border-gray-200 gap-2">
+                    <button onclick="resetFilters()" class="w-full sm:w-auto text-gray-600 hover:text-gray-900 text-xs sm:text-sm font-medium px-4 py-2">
+                        <i class="fas fa-undo mr-2"></i>Reset Filters
+                    </button>
+                    <button onclick="exportScholarships()" class="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-xs sm:text-sm font-medium">
+                        <i class="fas fa-download mr-2"></i>Export to CSV
+                    </button>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
+                <div class="p-4 sm:p-6 border-b border-gray-200">
+                    <h2 class="text-lg sm:text-xl font-bold text-gray-900">Scholarships List</h2>
+                    <p class="text-xs sm:text-sm text-gray-600 mt-1">Monitor and manage all scholarship listings</p>
+                </div>
+                <!-- Desktop Table -->
+                <div class="overflow-x-auto hidden lg:block">
+                    <table class="w-full">
+                        <thead class="bg-gray-50 border-b border-gray-200">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Scholarship</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Provider</th>
+                                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Type</th>
+                                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Amount</th>
+                                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Applications</th>
+                                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Status</th>
+                                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="scholarships-table-body" class="bg-white divide-y divide-gray-200">
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Mobile Card View -->
+                <div id="scholarships-mobile-view" class="lg:hidden divide-y divide-gray-200">
+                    <!-- Mobile cards will be loaded here -->
+                </div>
+                <div id="pagination" class="px-4 sm:px-6 py-3 sm:py-4 bg-gray-50 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-2"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detail Modal -->
+    <div id="scholarshipModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="sticky top-0 bg-gradient-to-r from-indigo-600 to-indigo-700 text-white p-6 rounded-t-2xl">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-2xl font-bold">Scholarship Details</h3>
+                    <button onclick="closeModal()" class="text-white hover:text-gray-200">
+                        <i class="fas fa-times text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+            <div id="scholarship-detail-content" class="p-6"></div>
+        </div>
+    </div>
+
+    <script>
+        let scholarshipsData = [];
+        let filteredScholarships = [];
+        let currentPage = 1;
+        const itemsPerPage = 10;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Components are loaded automatically by components.js
+            loadScholarships();
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            document.getElementById('search-input').addEventListener('input', applyFilters);
+            document.getElementById('status-filter').addEventListener('change', applyFilters);
+            document.getElementById('type-filter').addEventListener('change', applyFilters);
+        }
+
+        function loadScholarships() {
+            showLoading();
+            fetch('/api/admin/scholarships')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        scholarshipsData = data.scholarships || [];
+                        filteredScholarships = [...scholarshipsData];
+                        updateStats();
+                        displayScholarships();
+                    } else {
+                        showError(data.message || 'Failed to load scholarships');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showError('Failed to load scholarships');
+                });
+        }
+
+        function updateStats() {
+            const total = scholarshipsData.length;
+            const active = scholarshipsData.filter(s => s.is_active).length;
+            const inactive = total - active;
+            const applications = scholarshipsData.reduce((sum, s) => sum + (s.application_count || 0), 0);
+
+            document.getElementById('stat-total').textContent = total;
+            document.getElementById('stat-active').textContent = active;
+            document.getElementById('stat-inactive').textContent = inactive;
+            document.getElementById('stat-applications').textContent = applications;
+        }
+
+        function applyFilters() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const statusFilter = document.getElementById('status-filter').value;
+            const typeFilter = document.getElementById('type-filter').value;
+
+            filteredScholarships = scholarshipsData.filter(scholarship => {
+                const matchesSearch = !searchTerm || 
+                    scholarship.title.toLowerCase().includes(searchTerm) ||
+                    (scholarship.provider_name && scholarship.provider_name.toLowerCase().includes(searchTerm));
+                const matchesStatus = !statusFilter || 
+                    (statusFilter === 'active' && scholarship.is_active) ||
+                    (statusFilter === 'inactive' && !scholarship.is_active);
+                const matchesType = !typeFilter || scholarship.scholarship_type === typeFilter;
+
+                return matchesSearch && matchesStatus && matchesType;
+            });
+
+            currentPage = 1;
+            displayScholarships();
+        }
+
+        function displayScholarships() {
+            const tbody = document.getElementById('scholarships-table-body');
+            const mobileView = document.getElementById('scholarships-mobile-view');
+            const start = (currentPage - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const pageScholarships = filteredScholarships.slice(start, end);
+
+            if (pageScholarships.length === 0) {
+                const emptyMessage = '<div class="px-6 py-12 text-center text-gray-500"><i class="fas fa-graduation-cap text-4xl mb-3 block"></i><p>No scholarships found</p></div>';
+                tbody.innerHTML = `<tr><td colspan="7">${emptyMessage}</td></tr>`;
+                mobileView.innerHTML = emptyMessage;
+                document.getElementById('pagination').innerHTML = '';
+                return;
+            }
+
+            tbody.innerHTML = pageScholarships.map(s => `
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4">
+                        <div class="text-sm font-medium text-gray-900">${s.title}</div>
+                        <div class="text-sm text-gray-500">${s.description ? s.description.substring(0, 50) + '...' : 'No description'}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-900">${s.provider_name || 'N/A'}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-center">
+                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getTypeColor(s.scholarship_type)}">
+                            ${formatType(s.scholarship_type)}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-center">
+                        <div class="text-sm font-medium text-gray-900">${s.currency || 'PHP'} ${parseFloat(s.amount).toLocaleString()}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-center">
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                            ${s.application_count || 0}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-center">
+                        <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium ${s.is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}">
+                            ${s.is_active ? 'Active' : 'Inactive'}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
+                        <button onclick="viewScholarship(${s.id})" class="text-indigo-600 hover:text-indigo-900 mr-3"><i class="fas fa-eye"></i></button>
+                        <button onclick="toggleActive(${s.id}, ${s.is_active})" class="text-${s.is_active ? 'red' : 'green'}-600 hover:text-${s.is_active ? 'red' : 'green'}-900">
+                            <i class="fas fa-${s.is_active ? 'ban' : 'check-circle'}"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+
+            // Mobile card view
+            mobileView.innerHTML = pageScholarships.map(s => `
+                <div class="p-4 hover:bg-gray-50 transition-colors">
+                    <div class="flex items-start space-x-3 mb-3">
+                        <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-indigo-500 to-indigo-600 flex items-center justify-center text-white font-bold flex-shrink-0">
+                            <i class="fas fa-graduation-cap text-xl"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h3 class="text-sm font-semibold text-gray-900 truncate">${s.title}</h3>
+                            <p class="text-xs text-gray-500 truncate">${s.provider_name || 'N/A'}</p>
+                            <div class="flex items-center space-x-2 mt-2 flex-wrap gap-1">
+                                <span class="inline-flex px-2 py-0.5 text-xs font-semibold rounded-full ${getTypeColor(s.scholarship_type)}">
+                                    ${formatType(s.scholarship_type)}
+                                </span>
+                                <span class="inline-flex px-2 py-0.5 rounded-full text-xs font-medium ${s.is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}">
+                                    ${s.is_active ? 'Active' : 'Inactive'}
+                                </span>
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                    <i class="fas fa-file-alt mr-1"></i>${s.application_count || 0}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 text-xs text-gray-600 mb-3">
+                        <div>
+                            <span class="font-medium">Amount:</span>
+                            <p class="truncate">${s.currency || 'PHP'} ${parseFloat(s.amount).toLocaleString()}</p>
+                        </div>
+                        <div>
+                            <span class="font-medium">Slots:</span>
+                            <p class="truncate">${s.available_slots || 'Unlimited'}</p>
+                        </div>
+                    </div>
+                    <div class="flex space-x-2">
+                        <button onclick="viewScholarship(${s.id})" class="flex-1 px-3 py-2 border border-indigo-600 text-indigo-600 rounded-lg hover:bg-indigo-50 transition-colors text-xs font-medium">
+                            <i class="fas fa-eye mr-1"></i> View Details
+                        </button>
+                        <button onclick="toggleActive(${s.id}, ${s.is_active})" class="flex-1 px-3 py-2 bg-${s.is_active ? 'red' : 'green'}-600 text-white rounded-lg hover:bg-${s.is_active ? 'red' : 'green'}-700 transition-colors text-xs font-medium">
+                            <i class="fas fa-${s.is_active ? 'ban' : 'check-circle'} mr-1"></i> ${s.is_active ? 'Deactivate' : 'Activate'}
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+
+            updatePagination();
+        }
+
+        function viewScholarship(id) {
+            const scholarship = scholarshipsData.find(s => s.id === id);
+            if (!scholarship) return;
+
+            document.getElementById('scholarship-detail-content').innerHTML = `
+                <div class="space-y-6">
+                    <div>
+                        <h4 class="text-base sm:text-lg font-semibold text-gray-900 mb-4"><i class="fas fa-info-circle text-indigo-600 mr-2"></i>Basic Information</h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 bg-gray-50 p-3 sm:p-4 rounded-lg text-sm">
+                            <div class="break-words"><span class="font-medium">Title:</span> ${scholarship.title}</div>
+                            <div class="break-words"><span class="font-medium">Provider:</span> ${scholarship.provider_name || 'N/A'}</div>
+                            <div><span class="font-medium">Type:</span> ${formatType(scholarship.scholarship_type)}</div>
+                            <div><span class="font-medium">Amount:</span> ${scholarship.currency || 'PHP'} ${parseFloat(scholarship.amount).toLocaleString()}</div>
+                            <div><span class="font-medium">Available Slots:</span> ${scholarship.available_slots || 'Unlimited'}</div>
+                            <div><span class="font-medium">Duration:</span> ${scholarship.scholarship_duration || 'N/A'}</div>
+                            <div class="col-span-1 sm:col-span-2 break-words"><span class="font-medium">Description:</span> ${scholarship.description || 'N/A'}</div>
+                            <div class="col-span-1 sm:col-span-2 break-words"><span class="font-medium">Eligibility:</span> ${scholarship.eligibility_criteria || 'N/A'}</div>
+                            <div class="col-span-1 sm:col-span-2 break-words"><span class="font-medium">Required Documents:</span> ${scholarship.required_documents || 'N/A'}</div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3 pt-4 border-t">
+                        <button onclick="toggleActive(${scholarship.id}, ${scholarship.is_active})" class="flex-1 bg-${scholarship.is_active ? 'red' : 'green'}-600 hover:bg-${scholarship.is_active ? 'red' : 'green'}-700 text-white px-4 py-2 rounded-lg font-medium">
+                            <i class="fas fa-${scholarship.is_active ? 'ban' : 'check-circle'} mr-2"></i>${scholarship.is_active ? 'Deactivate' : 'Activate'}
+                        </button>
+                        <button onclick="closeModal()" class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg font-medium">Close</button>
+                    </div>
+                </div>
+            `;
+            document.getElementById('scholarshipModal').classList.remove('hidden');
+        }
+
+        function toggleActive(id, currentStatus) {
+            if (!confirm(`Are you sure you want to ${currentStatus ? 'deactivate' : 'activate'} this scholarship?`)) return;
+            fetch('/api/admin/toggle-scholarship-status', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ scholarship_id: id, is_active: !currentStatus })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Status updated successfully');
+                    closeModal();
+                    loadScholarships();
+                } else {
+                    alert(data.message || 'Failed to update status');
+                }
+            });
+        }
+
+        function closeModal() {
+            document.getElementById('scholarshipModal').classList.add('hidden');
+        }
+
+        function updatePagination() {
+            const totalPages = Math.ceil(filteredScholarships.length / itemsPerPage);
+            if (totalPages <= 1) {
+                document.getElementById('pagination').innerHTML = `<div class="text-xs sm:text-sm text-gray-700">Showing ${filteredScholarships.length} scholarship(s)</div>`;
+                return;
+            }
+            document.getElementById('pagination').innerHTML = `
+                <div class="text-xs sm:text-sm text-gray-700">Showing ${(currentPage - 1) * itemsPerPage + 1} to ${Math.min(currentPage * itemsPerPage, filteredScholarships.length)} of ${filteredScholarships.length} scholarships</div>
+                <div class="flex space-x-2">
+                    <button onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''} class="px-3 py-1 rounded text-sm ${currentPage === 1 ? 'bg-gray-200 text-gray-400' : 'bg-indigo-600 text-white hover:bg-indigo-700'}">Previous</button>
+                    <span class="px-3 py-1 text-sm">Page ${currentPage} of ${totalPages}</span>
+                    <button onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''} class="px-3 py-1 rounded text-sm ${currentPage === totalPages ? 'bg-gray-200 text-gray-400' : 'bg-indigo-600 text-white hover:bg-indigo-700'}">Next</button>
+                </div>
+            `;
+        }
+
+        function changePage(page) {
+            const totalPages = Math.ceil(filteredScholarships.length / itemsPerPage);
+            if (page >= 1 && page <= totalPages) {
+                currentPage = page;
+                displayScholarships();
+            }
+        }
+
+        function resetFilters() {
+            document.getElementById('search-input').value = '';
+            document.getElementById('status-filter').value = '';
+            document.getElementById('type-filter').value = '';
+            applyFilters();
+        }
+
+        function exportScholarships() {
+            const csv = [['Title', 'Provider', 'Type', 'Amount', 'Applications', 'Status'], ...filteredScholarships.map(s => [s.title, s.provider_name || '', formatType(s.scholarship_type), s.amount, s.application_count || 0, s.is_active ? 'Active' : 'Inactive'])].map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'scholarships_export.csv';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function getTypeColor(type) {
+            const colors = {
+                'FULL_SCHOLARSHIP': 'bg-purple-100 text-purple-800',
+                'PARTIAL_SCHOLARSHIP': 'bg-blue-100 text-blue-800',
+                'MONTHLY_ALLOWANCE': 'bg-green-100 text-green-800',
+                'ONE_TIME_GRANT': 'bg-yellow-100 text-yellow-800'
+            };
+            return colors[type] || 'bg-gray-100 text-gray-800';
+        }
+
+        function formatType(type) {
+            return (type || '').replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        }
+
+        function showLoading() {
+            document.getElementById('scholarships-table-body').innerHTML = '<tr><td colspan="7" class="px-6 py-12 text-center"><i class="fas fa-spinner fa-spin text-4xl text-indigo-600 mb-3 block"></i><p class="text-gray-600">Loading...</p></td></tr>';
+        }
+
+        function showError(message) {
+            document.getElementById('scholarships-table-body').innerHTML = `<tr><td colspan="7" class="px-6 py-12 text-center"><i class="fas fa-exclamation-circle text-4xl text-red-600 mb-3 block"></i><p class="text-gray-600">${message}</p></td></tr>`;
+        }
+
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+    </script>
+
+    <!-- Mobile Menu Handler -->
+    <script src="/Assets/js/mobile-menu.js"></script>
+</body>
+</html>

@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scholarship Details - EASECHOLAR</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Custom Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Mobile Responsive Styles -->
+    <link rel="stylesheet" href="/Assets/css/mobile-responsive.css">
+
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Sidebar component (fixed) -->
+    <div id="sidebar-container"></div>
+    
+    <!-- Navigation component (fixed) -->
+    <div id="nav-container"></div>
+
+    <!-- Main content -->
+    <div class="ml-64 pt-16">
+        <div class="p-8">
+            <!-- Loading State -->
+            <div id="loading-state" class="text-center py-12">
+                <i class="fas fa-spinner fa-spin text-4xl text-gray-400 mb-4"></i>
+                <p class="text-gray-500">Loading scholarship details...</p>
+            </div>
+
+            <!-- Scholarship Details Content -->
+            <div id="scholarship-content" class="hidden">
+                <!-- Back Button -->
+                <div class="mb-6">
+                    <button onclick="history.back()" class="text-primary-600 hover:text-primary-700 font-medium">
+                        <i class="fas fa-arrow-left mr-2"></i>
+                        Back to Browse
+                    </button>
+                </div>
+
+                <!-- Scholarship Header -->
+                <div class="bg-white rounded-lg shadow-md border border-gray-200 p-8 mb-6">
+                    <div class="flex justify-between items-start">
+                        <div class="flex-1">
+                            <h1 id="scholarship-title" class="text-3xl font-bold text-gray-900 mb-3"></h1>
+                            <p id="provider-name" class="text-lg text-gray-600 mb-4"></p>
+                            <div class="flex flex-wrap gap-3 mb-4">
+                                <span id="scholarship-type-badge" class="px-3 py-1 rounded-full text-sm font-medium"></span>
+                                <span id="status-badge" class="px-3 py-1 rounded-full text-sm font-medium"></span>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div id="scholarship-amount" class="text-4xl font-bold text-primary-600 mb-2"></div>
+                            <p class="text-gray-500 text-sm">Scholarship Amount</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Main Content -->
+                    <div class="lg:col-span-2 space-y-6">
+                        <!-- Description -->
+                        <div class="bg-white rounded-lg shadow-md border border-gray-200 p-6">
+                            <h2 class="text-xl font-semibold text-gray-900 mb-4">
+                                <i class="fas fa-info-circle text-primary-600 mr-2"></i>
+                                Description
+                            </h2>
+                            <p id="scholarship-description" class="text-gray-700 leading-relaxed"></p>
+                        </div>
+
+                        <!-- Eligibility Criteria -->
+                        <div class="bg-white rounded-lg shadow-md border border-gray-200 p-6">
+                            <h2 class="text-xl font-semibold text-gray-900 mb-4">
+                                <i class="fas fa-check-circle text-primary-600 mr-2"></i>
+                                Eligibility Criteria
+                            </h2>
+                            <div id="eligibility-content" class="text-gray-700 leading-relaxed"></div>
+                        </div>
+
+                        <!-- Required Documents -->
+                        <div class="bg-white rounded-lg shadow-md border border-gray-200 p-6">
+                            <h2 class="text-xl font-semibold text-gray-900 mb-4">
+                                <i class="fas fa-file-alt text-primary-600 mr-2"></i>
+                                Required Documents
+                            </h2>
+                            <div id="documents-content" class="text-gray-700 leading-relaxed"></div>
+                        </div>
+                    </div>
+
+                    <!-- Sidebar -->
+                    <div class="space-y-6">
+                        <!-- Quick Info -->
+                        <div class="bg-white rounded-lg shadow-md border border-gray-200 p-6">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Quick Information</h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <p class="text-sm text-gray-500 mb-1">Application Deadline</p>
+                                    <p id="deadline-info" class="font-medium text-gray-900"></p>
+                                </div>
+                                <div id="slots-info-container" class="hidden">
+                                    <p class="text-sm text-gray-500 mb-1">Available Slots</p>
+                                    <p id="slots-info" class="font-medium text-gray-900"></p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-500 mb-1">Total Applications</p>
+                                    <p id="applications-count" class="font-medium text-gray-900"></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Provider Info -->
+                        <div class="bg-white rounded-lg shadow-md border border-gray-200 p-6">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Provider Information</h3>
+                            <div class="space-y-3">
+                                <div>
+                                    <p class="text-sm text-gray-500">Organization</p>
+                                    <p id="provider-org" class="font-medium text-gray-900"></p>
+                                </div>
+                                <div id="org-type-container">
+                                    <p class="text-sm text-gray-500">Type</p>
+                                    <p id="provider-type" class="font-medium text-gray-900"></p>
+                                </div>
+                                <div id="website-container" class="hidden">
+                                    <p class="text-sm text-gray-500">Website</p>
+                                    <a id="provider-website" href="#" target="_blank" class="text-primary-600 hover:text-primary-700"></a>
+                                </div>
+                                <div id="contact-container" class="hidden">
+                                    <p class="text-sm text-gray-500">Contact Person</p>
+                                    <p id="contact-person" class="font-medium text-gray-900"></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Apply Button -->
+                        <div id="apply-button-container" class="bg-gradient-to-r from-primary-600 to-primary-700 rounded-lg shadow-md p-6 text-white">
+                            <h3 class="text-lg font-semibold mb-3">Ready to Apply?</h3>
+                            <p class="text-sm mb-4 text-primary-50">Submit your application and take the first step towards your scholarship.</p>
+                            <button id="apply-button" onclick="showApplicationModal()" class="w-full bg-white text-primary-600 font-semibold py-3 px-4 rounded-lg hover:bg-gray-50 transition-colors">
+                                Apply Now
+                            </button>
+                        </div>
+
+                        <!-- Already Applied Message -->
+                        <div id="applied-message" class="hidden bg-green-50 border border-green-200 rounded-lg p-6">
+                            <div class="flex items-center mb-3">
+                                <i class="fas fa-check-circle text-green-600 text-2xl mr-3"></i>
+                                <h3 class="text-lg font-semibold text-green-900">Application Submitted</h3>
+                            </div>
+                            <p class="text-sm text-green-700 mb-2">You have already applied for this scholarship.</p>
+                            <p id="application-status-text" class="text-sm font-medium text-green-900"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Error State -->
+            <div id="error-state" class="hidden text-center py-12">
+                <i class="fas fa-exclamation-triangle text-6xl text-red-300 mb-4"></i>
+                <p class="text-gray-500 text-lg mb-4">Failed to load scholarship details</p>
+                <button onclick="loadScholarshipDetails()" class="bg-primary-600 text-white px-6 py-2 rounded-md hover:bg-primary-700">
+                    Try Again
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Modal -->
+    <div id="application-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-2xl font-bold text-gray-900">Submit Application</h2>
+                    <button onclick="closeApplicationModal()" class="text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="p-6">
+                <form id="application-form" onsubmit="submitApplication(event)">
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Personal Statement / Essay <span class="text-red-500">*</span>
+                        </label>
+                        <textarea id="essay" required rows="6" 
+                                  placeholder="Tell us why you're applying for this scholarship and how it will help you achieve your goals..."
+                                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"></textarea>
+                        <p class="text-xs text-gray-500 mt-1">Minimum 100 characters</p>
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Upload Documents <span class="text-red-500">*</span>
+                        </label>
+                        <p class="text-xs text-gray-500 mb-3">Upload required documents (PDF, DOC, DOCX, JPG, PNG). Max 5 files, 5MB each.</p>
+                        
+                        <!-- File Upload Area -->
+                        <div id="file-upload-area" 
+                             class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-primary-500 transition-colors cursor-pointer"
+                             onclick="document.getElementById('file-input').click()">
+                            <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-2"></i>
+                            <p class="text-sm text-gray-600 mb-1">Click to upload or drag and drop</p>
+                            <p class="text-xs text-gray-500">PDF, DOC, DOCX, JPG, PNG (max 5MB)</p>
+                        </div>
+                        
+                        <input type="file" 
+                               id="file-input" 
+                               multiple 
+                               accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                               class="hidden"
+                               onchange="handleFileSelect(event)">
+                        
+                        <!-- Selected Files Preview -->
+                        <div id="selected-files" class="mt-3 space-y-2"></div>
+                    </div>
+
+                    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+                        <div class="flex">
+                            <i class="fas fa-info-circle text-yellow-600 mt-0.5 mr-3"></i>
+                            <div class="text-sm text-yellow-800">
+                                <p class="font-medium mb-1">Before submitting:</p>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Review all eligibility criteria carefully</li>
+                                    <li>Upload all required documents</li>
+                                    <li>Double-check your essay for errors</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex space-x-3">
+                        <button type="button" onclick="closeApplicationModal()" 
+                                class="flex-1 border border-gray-300 text-gray-700 py-3 px-4 rounded-lg hover:bg-gray-50 transition-colors font-medium">
+                            Cancel
+                        </button>
+                        <button type="submit" id="submit-button"
+                                class="flex-1 bg-primary-600 text-white py-3 px-4 rounded-lg hover:bg-primary-700 transition-colors font-medium">
+                            Submit Application
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Component Loader Script -->
+    <script src="components.js"></script>
+
+    <!-- Page Scripts -->
+    <script>
+        let currentScholarship = null;
+
+        // Load scholarship details on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadScholarshipDetails();
+        });
+
+        // Get scholarship ID from URL
+        function getScholarshipId() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('id');
+        }
+
+        // Load scholarship details
+        async function loadScholarshipDetails() {
+            const scholarshipId = getScholarshipId();
+            
+            if (!scholarshipId) {
+                showError('No scholarship ID provided');
+                return;
+            }
+
+            console.log('Loading scholarship details for ID:', scholarshipId);
+
+            try {
+                const response = await fetch(`/api/student/scholarship/${scholarshipId}`);
+                
+                if (!response.ok) {
+                    console.error('API error:', response.status);
+                    showError('Failed to load scholarship');
+                    return;
+                }
+                
+                const result = await response.json();
+                
+                if (result.success && result.scholarship) {
+                    console.log('Scholarship loaded:', result.scholarship);
+                    currentScholarship = result.scholarship;
+                    displayScholarship(result.scholarship);
+                } else {
+                    console.error('Failed to load scholarship:', result.message);
+                    showError(result.message);
+                }
+            } catch (error) {
+                console.error('Error loading scholarship:', error);
+                showError('Failed to load scholarship');
+            }
+        }
+
+        // Display scholarship details
+        function displayScholarship(scholarship) {
+            // Hide loading and error states, show content
+            document.getElementById('loading-state').classList.add('hidden');
+            document.getElementById('error-state').classList.add('hidden');
+            document.getElementById('scholarship-content').classList.remove('hidden');
+
+            // Title and basic info
+            document.getElementById('scholarship-title').textContent = scholarship.title;
+            document.getElementById('provider-name').textContent = scholarship.organization_name;
+            
+            // Amount
+            const amount = new Intl.NumberFormat('en-PH', { 
+                style: 'currency', 
+                currency: 'PHP',
+                maximumFractionDigits: 0
+            }).format(scholarship.amount);
+            document.getElementById('scholarship-amount').textContent = amount;
+
+            // Type badge
+            const typeColors = {
+                'FULL_SCHOLARSHIP': { bg: 'bg-green-100', text: 'text-green-800' },
+                'PARTIAL_SCHOLARSHIP': { bg: 'bg-blue-100', text: 'text-blue-800' },
+                'MERIT_BASED': { bg: 'bg-purple-100', text: 'text-purple-800' },
+                'NEED_BASED': { bg: 'bg-yellow-100', text: 'text-yellow-800' }
+            };
+            const typeColor = typeColors[scholarship.scholarship_type] || typeColors['PARTIAL_SCHOLARSHIP'];
+            const typeBadge = document.getElementById('scholarship-type-badge');
+            typeBadge.className = `px-3 py-1 rounded-full text-sm font-medium ${typeColor.bg} ${typeColor.text}`;
+            typeBadge.textContent = (scholarship.scholarship_type || 'Scholarship').replace(/_/g, ' ');
+
+            // Status badge
+            const isOpen = scholarship.application_status === 'open';
+            const statusBadge = document.getElementById('status-badge');
+            if (isOpen) {
+                statusBadge.className = 'px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800';
+                statusBadge.textContent = 'Accepting Applications';
+            } else {
+                statusBadge.className = 'px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800';
+                statusBadge.textContent = 'Application Closed';
+            }
+
+            // Description
+            document.getElementById('scholarship-description').textContent = scholarship.description || 'No description available';
+
+            // Eligibility
+            const eligibilityContent = document.getElementById('eligibility-content');
+            if (scholarship.eligibility_criteria) {
+                eligibilityContent.innerHTML = formatTextToList(scholarship.eligibility_criteria);
+            } else {
+                eligibilityContent.textContent = 'No specific criteria listed';
+            }
+
+            // Documents
+            const documentsContent = document.getElementById('documents-content');
+            if (scholarship.required_documents) {
+                documentsContent.innerHTML = formatTextToList(scholarship.required_documents);
+            } else {
+                documentsContent.textContent = 'No specific documents listed';
+            }
+
+            // Deadline
+            const deadline = new Date(scholarship.application_deadline).toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+            document.getElementById('deadline-info').textContent = deadline;
+
+            // Slots
+            if (scholarship.available_slots) {
+                document.getElementById('slots-info-container').classList.remove('hidden');
+                document.getElementById('slots-info').textContent = scholarship.available_slots + ' slots';
+            }
+
+            // Applications count
+            document.getElementById('applications-count').textContent = scholarship.application_count || 0;
+
+            // Provider info
+            document.getElementById('provider-org').textContent = scholarship.organization_name;
+            document.getElementById('provider-type').textContent = scholarship.organization_type || 'N/A';
+            
+            if (scholarship.website) {
+                document.getElementById('website-container').classList.remove('hidden');
+                const websiteLink = document.getElementById('provider-website');
+                websiteLink.href = scholarship.website;
+                websiteLink.textContent = scholarship.website;
+            }
+
+            if (scholarship.contact_person) {
+                document.getElementById('contact-container').classList.remove('hidden');
+                document.getElementById('contact-person').textContent = scholarship.contact_person;
+            }
+
+            // Apply button or already applied message
+            if (scholarship.has_applied) {
+                document.getElementById('apply-button-container').classList.add('hidden');
+                document.getElementById('applied-message').classList.remove('hidden');
+                const statusText = document.getElementById('application-status-text');
+                statusText.textContent = `Status: ${scholarship.application_status_student}`;
+            } else if (!isOpen) {
+                const applyButton = document.getElementById('apply-button');
+                applyButton.disabled = true;
+                applyButton.textContent = 'Application Closed';
+                applyButton.className = 'w-full bg-gray-300 text-gray-600 font-semibold py-3 px-4 rounded-lg cursor-not-allowed';
+            }
+        }
+
+        // Format text to list
+        function formatTextToList(text) {
+            const lines = text.split('\n').filter(line => line.trim());
+            if (lines.length > 1) {
+                return '<ul class="list-disc list-inside space-y-2">' + 
+                       lines.map(line => `<li>${line.trim()}</li>`).join('') + 
+                       '</ul>';
+            }
+            return `<p>${text}</p>`;
+        }
+
+        // File handling
+        let selectedFiles = [];
+
+        // Handle file selection
+        function handleFileSelect(event) {
+            const files = Array.from(event.target.files);
+            
+            // Validate file count
+            if (selectedFiles.length + files.length > 5) {
+                showNotification('Maximum 5 files allowed', 'error');
+                return;
+            }
+            
+            // Validate each file
+            for (const file of files) {
+                // Check file size (5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    showNotification(`File ${file.name} is too large. Maximum 5MB per file`, 'error');
+                    continue;
+                }
+                
+                // Check file type
+                const allowedTypes = ['application/pdf', 'application/msword', 
+                                    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                                    'image/jpeg', 'image/jpg', 'image/png'];
+                if (!allowedTypes.includes(file.type)) {
+                    showNotification(`File ${file.name} has invalid type. Allowed: PDF, DOC, DOCX, JPG, PNG`, 'error');
+                    continue;
+                }
+                
+                selectedFiles.push(file);
+            }
+            
+            displaySelectedFiles();
+            event.target.value = ''; // Reset input
+        }
+
+        // Display selected files
+        function displaySelectedFiles() {
+            const container = document.getElementById('selected-files');
+            
+            if (selectedFiles.length === 0) {
+                container.innerHTML = '';
+                return;
+            }
+            
+            container.innerHTML = selectedFiles.map((file, index) => {
+                const sizeInMB = (file.size / (1024 * 1024)).toFixed(2);
+                const fileIcon = file.type.includes('pdf') ? 'fa-file-pdf' :
+                               file.type.includes('word') ? 'fa-file-word' :
+                               file.type.includes('image') ? 'fa-file-image' : 'fa-file';
+                
+                return `
+                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200">
+                        <div class="flex items-center space-x-3">
+                            <i class="fas ${fileIcon} text-2xl text-primary-600"></i>
+                            <div>
+                                <p class="text-sm font-medium text-gray-900">${file.name}</p>
+                                <p class="text-xs text-gray-500">${sizeInMB} MB</p>
+                            </div>
+                        </div>
+                        <button type="button" onclick="removeFile(${index})" 
+                                class="text-red-600 hover:text-red-800 transition-colors">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Remove file
+        function removeFile(index) {
+            selectedFiles.splice(index, 1);
+            displaySelectedFiles();
+        }
+
+        // Drag and drop handlers
+        const fileUploadArea = document.getElementById('file-upload-area');
+        
+        if (fileUploadArea) {
+            fileUploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                fileUploadArea.classList.add('border-primary-500', 'bg-primary-50');
+            });
+
+            fileUploadArea.addEventListener('dragleave', (e) => {
+                e.preventDefault();
+                fileUploadArea.classList.remove('border-primary-500', 'bg-primary-50');
+            });
+
+            fileUploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                fileUploadArea.classList.remove('border-primary-500', 'bg-primary-50');
+                
+                const files = Array.from(e.dataTransfer.files);
+                const fileInput = document.getElementById('file-input');
+                const dataTransfer = new DataTransfer();
+                
+                files.forEach(file => dataTransfer.items.add(file));
+                fileInput.files = dataTransfer.files;
+                
+                handleFileSelect({ target: fileInput });
+            });
+        }
+
+        // Show application modal
+        function showApplicationModal() {
+            selectedFiles = []; // Reset files
+            displaySelectedFiles();
+            document.getElementById('application-modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Close application modal
+        function closeApplicationModal() {
+            selectedFiles = []; // Reset files
+            document.getElementById('application-modal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+            document.getElementById('application-form').reset();
+        }
+
+        // Submit application
+        async function submitApplication(event) {
+            event.preventDefault();
+
+            const essay = document.getElementById('essay').value.trim();
+
+            // Validation
+            if (essay.length < 100) {
+                showNotification('Essay must be at least 100 characters', 'error');
+                return;
+            }
+
+            // Check if files are selected
+            if (selectedFiles.length === 0) {
+                showNotification('Please upload at least one document', 'error');
+                return;
+            }
+
+            const submitButton = document.getElementById('submit-button');
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Uploading documents...';
+
+            try {
+                // Step 1: Upload files
+                let uploadedFilesData = [];
+                
+                if (selectedFiles.length > 0) {
+                    const formData = new FormData();
+                    selectedFiles.forEach(file => {
+                        formData.append('files', file);
+                    });
+
+                    const uploadResponse = await fetch('/api/student/upload-documents', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const uploadResult = await uploadResponse.json();
+
+                    if (!uploadResult.success) {
+                        showNotification(uploadResult.message || 'Failed to upload documents', 'error');
+                        submitButton.disabled = false;
+                        submitButton.textContent = 'Submit Application';
+                        return;
+                    }
+
+                    uploadedFilesData = uploadResult.files;
+                    console.log('Files uploaded successfully:', uploadedFilesData);
+                }
+
+                // Step 2: Submit application with uploaded file data
+                submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Submitting application...';
+
+                const response = await fetch('/api/student/apply', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        scholarship_id: currentScholarship.id,
+                        essay: essay,
+                        uploaded_files: uploadedFilesData
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showNotification('Application submitted successfully!', 'success');
+                    closeApplicationModal();
+                    setTimeout(() => {
+                        window.location.href = 'my-applications.html';
+                    }, 2000);
+                } else {
+                    showNotification(result.message || 'Failed to submit application', 'error');
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Submit Application';
+                }
+            } catch (error) {
+                console.error('Error submitting application:', error);
+                showNotification('Failed to submit application', 'error');
+                submitButton.disabled = false;
+                submitButton.textContent = 'Submit Application';
+            }
+        }
+
+        // Show error state
+        function showError(message) {
+            document.getElementById('loading-state').classList.add('hidden');
+            document.getElementById('error-state').classList.remove('hidden');
+        }
+
+        // Show notification
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `fixed top-20 right-4 px-6 py-3 rounded-lg shadow-lg text-white z-50 ${
+                type === 'success' ? 'bg-green-600' : 
+                type === 'error' ? 'bg-red-600' : 
+                'bg-blue-600'
+            }`;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transition = 'opacity 0.5s';
+                setTimeout(() => notification.remove(), 500);
+            }, 3000);
+        }
+    </script>
+
+    <!-- Mobile Menu Handler -->
+    <script src="/Assets/js/mobile-menu.js"></script>
+</body>
+</html>

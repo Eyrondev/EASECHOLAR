@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management - EASECHOLAR Admin</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Mobile Responsive Styles -->
+    <link rel="stylesheet" href="/Assets/css/mobile-responsive.css">
+
+    
+    <!-- Component loader script -->
+    <script src="components.js"></script>
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Sidebar component -->
+    <div id="sidebar-container"></div>
+    
+    <!-- Navigation component -->
+    <div id="nav-container"></div>
+
+    <!-- Main content -->
+    <div class="ml-0 lg:ml-64 pt-20 sm:pt-16">
+        <div class="p-4 sm:p-6 lg:p-8">
+            <!-- Header -->
+            <div class="mb-6 sm:mb-8">
+                <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">User Management</h1>
+                <p class="text-sm sm:text-base text-gray-600">Manage all registered students and providers</p>
+            </div>
+
+            <!-- Filters and Search -->
+            <div class="bg-white rounded-lg shadow-md border border-gray-200 p-4 sm:p-6 mb-4 sm:mb-6">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
+                    <div>
+                        <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-2">User Type</label>
+                        <select id="filter-type" class="w-full border border-gray-300 rounded-lg px-3 sm:px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option value="ALL">All Users</option>
+                            <option value="STUDENT">Students</option>
+                            <option value="PROVIDER">Providers</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Status</label>
+                        <select id="filter-status" class="w-full border border-gray-300 rounded-lg px-3 sm:px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option value="ALL">All Status</option>
+                            <option value="VERIFIED">Verified</option>
+                            <option value="PENDING">Pending</option>
+                            <option value="INACTIVE">Inactive</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Sort By</label>
+                        <select id="sort-by" class="w-full border border-gray-300 rounded-lg px-3 sm:px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option value="created_desc">Newest First</option>
+                            <option value="created_asc">Oldest First</option>
+                            <option value="name_asc">Name A-Z</option>
+                            <option value="name_desc">Name Z-A</option>
+                            <option value="last_login_desc">Recently Active</option>
+                        </select>
+                    </div>
+                    <div class="sm:col-span-2 lg:col-span-2">
+                        <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Search</label>
+                        <div class="flex space-x-2">
+                            <input type="text" id="search-input" placeholder="Search by name, email..." class="flex-1 border border-gray-300 rounded-lg px-3 sm:px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <button onclick="loadUsers()" class="px-4 sm:px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm">
+                                <i class="fas fa-search mr-0 sm:mr-2"></i><span class="hidden sm:inline">Search</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Statistics -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8">
+                <div class="bg-white p-3 sm:p-6 rounded-lg shadow-md border border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div class="flex-1 min-w-0">
+                            <p class="text-xs sm:text-sm font-medium text-gray-600 truncate">Total Users</p>
+                            <p id="stat-total" class="text-xl sm:text-3xl font-bold text-gray-900 mt-1">0</p>
+                        </div>
+                        <div class="p-2 sm:p-4 bg-indigo-100 rounded-full flex-shrink-0 ml-2">
+                            <i class="fas fa-users text-indigo-600 text-lg sm:text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-3 sm:p-6 rounded-lg shadow-md border border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div class="flex-1 min-w-0">
+                            <p class="text-xs sm:text-sm font-medium text-gray-600 truncate">Verified Users</p>
+                            <p id="stat-verified" class="text-xl sm:text-3xl font-bold text-green-600 mt-1">0</p>
+                        </div>
+                        <div class="p-2 sm:p-4 bg-green-100 rounded-full flex-shrink-0 ml-2">
+                            <i class="fas fa-check-circle text-green-600 text-lg sm:text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-3 sm:p-6 rounded-lg shadow-md border border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div class="flex-1 min-w-0">
+                            <p class="text-xs sm:text-sm font-medium text-gray-600 truncate">Active Users</p>
+                            <p id="stat-active" class="text-xl sm:text-3xl font-bold text-blue-600 mt-1">0</p>
+                        </div>
+                        <div class="p-2 sm:p-4 bg-blue-100 rounded-full flex-shrink-0 ml-2">
+                            <i class="fas fa-user-check text-blue-600 text-lg sm:text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-3 sm:p-6 rounded-lg shadow-md border border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div class="flex-1 min-w-0">
+                            <p class="text-xs sm:text-sm font-medium text-gray-600 truncate">Pending</p>
+                            <p id="stat-pending" class="text-xl sm:text-3xl font-bold text-yellow-600 mt-1">0</p>
+                        </div>
+                        <div class="p-2 sm:p-4 bg-yellow-100 rounded-full flex-shrink-0 ml-2">
+                            <i class="fas fa-clock text-yellow-600 text-lg sm:text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Users Table -->
+            <div class="bg-white rounded-lg shadow-md border border-gray-200">
+                <div class="p-4 sm:p-6 border-b border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <h2 class="text-lg sm:text-xl font-semibold text-gray-900">Users List</h2>
+                        <div class="flex items-center space-x-2 sm:space-x-3">
+                            <button onclick="exportUsers()" class="px-3 sm:px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-xs sm:text-sm">
+                                <i class="fas fa-download mr-0 sm:mr-2"></i><span class="hidden sm:inline">Export</span>
+                            </button>
+                            <button onclick="loadUsers()" class="px-3 sm:px-4 py-2 text-indigo-600 hover:text-indigo-700 text-xs sm:text-sm">
+                                <i class="fas fa-sync-alt mr-0 sm:mr-2"></i><span class="hidden sm:inline">Refresh</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Table (hidden on mobile) -->
+                <div class="hidden lg:block overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-gray-50 border-b border-gray-200">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Institution</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Registered</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Login</th>
+                                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-table-body" class="divide-y divide-gray-200">
+                            <!-- Users will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Mobile Card View -->
+                <div id="users-mobile-view" class="lg:hidden divide-y divide-gray-200">
+                    <!-- Mobile cards will be loaded here -->
+                </div>
+
+                <!-- Pagination -->
+                <div class="px-4 sm:px-6 py-3 sm:py-4 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-2">
+                    <div class="text-xs sm:text-sm text-gray-700">
+                        Showing <span id="showing-from">0</span> to <span id="showing-to">0</span> of <span id="total-users">0</span> users
+                    </div>
+                    <div id="pagination-controls" class="flex space-x-2">
+                        <!-- Pagination buttons will be added here if needed -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Details Modal -->
+    <div id="user-details-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <!-- Modal Header -->
+            <div class="sticky top-0 bg-indigo-600 text-white p-4 sm:p-6 rounded-t-lg flex items-center justify-between">
+                <h2 class="text-xl sm:text-2xl font-bold">User Details</h2>
+                <button onclick="closeUserModal()" class="text-white hover:text-gray-200 transition-colors">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+            
+            <!-- Modal Content -->
+            <div id="user-details-content" class="p-4 sm:p-6">
+                <!-- Content will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allUsers = [];
+        let displayedUsers = [];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUsers();
+            
+            // Event listeners for filters
+            document.getElementById('filter-type').addEventListener('change', loadUsers);
+            document.getElementById('filter-status').addEventListener('change', loadUsers);
+            document.getElementById('sort-by').addEventListener('change', loadUsers);
+            document.getElementById('search-input').addEventListener('keyup', debounce(loadUsers, 300));
+        });
+
+        function loadUsers() {
+            const filterType = document.getElementById('filter-type').value;
+            const filterStatus = document.getElementById('filter-status').value;
+            const searchQuery = document.getElementById('search-input').value;
+            
+            const params = new URLSearchParams({
+                type: filterType,
+                status: filterStatus,
+                search: searchQuery
+            });
+
+            showLoading('users-table-body');
+
+            fetch(`/api/admin/users?${params}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        allUsers = data.users || [];
+                        sortUsers();
+                        displayUsers();
+                        updateStatistics();
+                    } else {
+                        showError('users-table-body', 'Failed to load users');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading users:', error);
+                    showError('users-table-body', 'Failed to load users');
+                });
+        }
+
+        function sortUsers() {
+            const sortBy = document.getElementById('sort-by').value;
+            
+            displayedUsers = [...allUsers].sort((a, b) => {
+                switch(sortBy) {
+                    case 'created_asc':
+                        return new Date(a.created_at) - new Date(b.created_at);
+                    case 'created_desc':
+                        return new Date(b.created_at) - new Date(a.created_at);
+                    case 'name_asc':
+                        return a.full_name.localeCompare(b.full_name);
+                    case 'name_desc':
+                        return b.full_name.localeCompare(a.full_name);
+                    case 'last_login_desc':
+                        return new Date(b.last_login || 0) - new Date(a.last_login || 0);
+                    default:
+                        return 0;
+                }
+            });
+        }
+
+        function updateStatistics() {
+            const total = allUsers.length;
+            const verified = allUsers.filter(u => u.is_verified).length;
+            const active = allUsers.filter(u => u.is_active).length;
+            const pending = allUsers.filter(u => !u.is_verified).length;
+            
+            document.getElementById('stat-total').textContent = total;
+            document.getElementById('stat-verified').textContent = verified;
+            document.getElementById('stat-active').textContent = active;
+            document.getElementById('stat-pending').textContent = pending;
+        }
+
+        function displayUsers() {
+            const tbody = document.getElementById('users-table-body');
+            const mobileView = document.getElementById('users-mobile-view');
+            
+            if (displayedUsers.length === 0) {
+                const emptyMessage = `
+                    <div class="px-6 py-12 text-center text-gray-500">
+                        <i class="fas fa-users text-4xl mb-3 text-gray-300"></i>
+                        <p class="text-lg font-medium">No users found</p>
+                        <p class="text-sm mt-1">Try adjusting your filters</p>
+                    </div>
+                `;
+                tbody.innerHTML = `<tr><td colspan="7">${emptyMessage}</td></tr>`;
+                mobileView.innerHTML = emptyMessage;
+                updatePaginationInfo(0, 0, 0);
+                return;
+            }
+
+            tbody.innerHTML = displayedUsers.map(user => `
+                <tr class="hover:bg-gray-50 transition-colors">
+                    <td class="px-6 py-4">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-br ${user.user_type === 'STUDENT' ? 'from-blue-400 to-blue-600' : 'from-green-400 to-green-600'} flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+                                ${user.first_name.charAt(0)}${user.last_name.charAt(0)}
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm font-medium text-gray-900">${user.full_name}</p>
+                                <p class="text-xs text-gray-500">${user.email}</p>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${user.user_type === 'STUDENT' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'}">
+                            <i class="fas fa-${user.user_type === 'STUDENT' ? 'user-graduate' : 'building'} mr-1"></i>
+                            ${user.user_type}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 text-sm text-gray-900">
+                        ${user.institution_name || 'N/A'}
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="flex items-center space-x-2">
+                            ${user.is_verified ? 
+                                '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800"><i class="fas fa-check-circle mr-1"></i>Verified</span>' : 
+                                '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800"><i class="fas fa-clock mr-1"></i>Pending</span>'
+                            }
+                            ${!user.is_active ? 
+                                '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800"><i class="fas fa-ban mr-1"></i>Inactive</span>' : 
+                                ''
+                            }
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 text-sm text-gray-500">
+                        ${formatDate(user.created_at)}
+                    </td>
+                    <td class="px-6 py-4 text-sm text-gray-500">
+                        ${user.last_login ? getRelativeTime(user.last_login) : 'Never'}
+                    </td>
+                    <td class="px-6 py-4 text-center">
+                        <div class="flex items-center justify-center space-x-2">
+                            <button onclick="viewUser(${user.id})" class="text-indigo-600 hover:text-indigo-900" title="View Details">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button onclick="toggleUserActive(${user.id}, ${user.is_active})" class="text-${user.is_active ? 'red' : 'green'}-600 hover:text-${user.is_active ? 'red' : 'green'}-900" title="${user.is_active ? 'Deactivate' : 'Activate'}">
+                                <i class="fas fa-${user.is_active ? 'ban' : 'check-circle'}"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+
+            // Mobile card view
+            mobileView.innerHTML = displayedUsers.map(user => `
+                <div class="p-4 hover:bg-gray-50 transition-colors">
+                    <div class="flex items-start space-x-3 mb-3">
+                        <div class="w-12 h-12 rounded-full bg-gradient-to-br ${user.user_type === 'STUDENT' ? 'from-blue-400 to-blue-600' : 'from-green-400 to-green-600'} flex items-center justify-center text-white font-bold text-base flex-shrink-0">
+                            ${user.first_name.charAt(0)}${user.last_name.charAt(0)}
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h3 class="text-sm font-semibold text-gray-900 truncate">${user.full_name}</h3>
+                            <p class="text-xs text-gray-500 truncate">${user.email}</p>
+                            <div class="flex items-center space-x-2 mt-2 flex-wrap gap-1">
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${user.user_type === 'STUDENT' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'}">
+                                    <i class="fas fa-${user.user_type === 'STUDENT' ? 'user-graduate' : 'building'} mr-1"></i>
+                                    ${user.user_type}
+                                </span>
+                                ${user.is_verified ? 
+                                    '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800"><i class="fas fa-check-circle mr-1"></i>Verified</span>' : 
+                                    '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800"><i class="fas fa-clock mr-1"></i>Pending</span>'
+                                }
+                                ${!user.is_active ? 
+                                    '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800"><i class="fas fa-ban mr-1"></i>Inactive</span>' : 
+                                    ''
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 text-xs text-gray-600 mb-3">
+                        <div>
+                            <span class="font-medium">Institution:</span>
+                            <p class="truncate">${user.institution_name || 'N/A'}</p>
+                        </div>
+                        <div>
+                            <span class="font-medium">Registered:</span>
+                            <p>${formatDate(user.created_at)}</p>
+                        </div>
+                        <div class="col-span-2">
+                            <span class="font-medium">Last Login:</span>
+                            <span class="ml-1">${user.last_login ? getRelativeTime(user.last_login) : 'Never'}</span>
+                        </div>
+                    </div>
+                    <div class="flex space-x-2">
+                        <button onclick="viewUser(${user.id})" class="flex-1 px-3 py-2 border border-indigo-600 text-indigo-600 rounded-lg hover:bg-indigo-50 transition-colors text-xs font-medium">
+                            <i class="fas fa-eye mr-1"></i> View Details
+                        </button>
+                        <button onclick="toggleUserActive(${user.id}, ${user.is_active})" class="flex-1 px-3 py-2 bg-${user.is_active ? 'red' : 'green'}-600 text-white rounded-lg hover:bg-${user.is_active ? 'red' : 'green'}-700 transition-colors text-xs font-medium">
+                            <i class="fas fa-${user.is_active ? 'ban' : 'check-circle'} mr-1"></i> ${user.is_active ? 'Deactivate' : 'Activate'}
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+
+            updatePaginationInfo(1, displayedUsers.length, displayedUsers.length);
+        }
+
+        function updatePaginationInfo(from, to, total) {
+            document.getElementById('showing-from').textContent = from;
+            document.getElementById('showing-to').textContent = to;
+            document.getElementById('total-users').textContent = total;
+        }
+
+        function viewUser(userId) {
+            const user = displayedUsers.find(u => u.id === userId);
+            if (!user) return;
+            
+            const modal = document.getElementById('user-details-modal');
+            const content = document.getElementById('user-details-content');
+            
+            // Show loading
+            content.innerHTML = '<div class="text-center py-8"><i class="fas fa-spinner fa-spin text-4xl text-indigo-600"></i><p class="mt-4 text-gray-600">Loading user details...</p></div>';
+            modal.classList.remove('hidden');
+            
+            // Display user details
+            content.innerHTML = `
+                <div class="space-y-6">
+                    <!-- User Header -->
+                    <div class="flex items-center space-x-4 pb-4 border-b">
+                        <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br ${user.user_type === 'STUDENT' ? 'from-blue-400 to-blue-600' : 'from-green-400 to-green-600'} flex items-center justify-center text-white font-bold text-2xl sm:text-3xl flex-shrink-0">
+                            ${user.first_name.charAt(0)}${user.last_name.charAt(0)}
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h3 class="text-xl sm:text-2xl font-bold text-gray-900 truncate">${user.full_name}</h3>
+                            <p class="text-sm sm:text-base text-gray-600 truncate">${user.email}</p>
+                            <div class="flex items-center space-x-2 mt-2 flex-wrap gap-1">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${user.user_type === 'STUDENT' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'}">
+                                    <i class="fas fa-${user.user_type === 'STUDENT' ? 'user-graduate' : 'building'} mr-1"></i>
+                                    ${user.user_type}
+                                </span>
+                                ${user.is_verified ? 
+                                    '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800"><i class="fas fa-check-circle mr-1"></i>Verified</span>' : 
+                                    '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800"><i class="fas fa-clock mr-1"></i>Pending</span>'
+                                }
+                                ${!user.is_active ? 
+                                    '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800"><i class="fas fa-ban mr-1"></i>Inactive</span>' : 
+                                    '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800"><i class="fas fa-check-circle mr-1"></i>Active</span>'
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Basic Information -->
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-900 mb-3">Basic Information</h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="text-sm font-medium text-gray-600">First Name</label>
+                                <p class="text-gray-900">${user.first_name}</p>
+                            </div>
+                            <div>
+                                <label class="text-sm font-medium text-gray-600">Last Name</label>
+                                <p class="text-gray-900">${user.last_name}</p>
+                            </div>
+                            <div>
+                                <label class="text-sm font-medium text-gray-600">Email Address</label>
+                                <p class="text-gray-900 break-all">${user.email}</p>
+                            </div>
+                            <div>
+                                <label class="text-sm font-medium text-gray-600">Phone Number</label>
+                                <p class="text-gray-900">${user.phone_number || 'Not provided'}</p>
+                            </div>
+                            <div>
+                                <label class="text-sm font-medium text-gray-600">User Type</label>
+                                <p class="text-gray-900">${user.user_type}</p>
+                            </div>
+                            <div>
+                                <label class="text-sm font-medium text-gray-600">Institution</label>
+                                <p class="text-gray-900">${user.institution_name || 'N/A'}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Account Status -->
+                    <div class="border-t pt-4">
+                        <h4 class="text-lg font-semibold text-gray-900 mb-3">Account Status</h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="text-sm font-medium text-gray-600">Verification Status</label>
+                                <p class="text-gray-900">${user.is_verified ? '✓ Verified' : '⏳ Pending Verification'}</p>
+                            </div>
+                            <div>
+                                <label class="text-sm font-medium text-gray-600">Account Status</label>
+                                <p class="text-gray-900">${user.is_active ? '✓ Active' : '✗ Inactive'}</p>
+                            </div>
+                            <div>
+                                <label class="text-sm font-medium text-gray-600">Registration Date</label>
+                                <p class="text-gray-900">${formatDate(user.created_at)}</p>
+                            </div>
+                            <div>
+                                <label class="text-sm font-medium text-gray-600">Last Login</label>
+                                <p class="text-gray-900">${user.last_login ? getRelativeTime(user.last_login) : 'Never logged in'}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Additional Information -->
+                    ${user.user_type === 'STUDENT' ? `
+                        <div class="border-t pt-4">
+                            <h4 class="text-lg font-semibold text-gray-900 mb-3">Student Information</h4>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="text-sm font-medium text-gray-600">Student Number</label>
+                                    <p class="text-gray-900">${user.student_number || 'Not provided'}</p>
+                                </div>
+                                <div>
+                                    <label class="text-sm font-medium text-gray-600">Course/Program</label>
+                                    <p class="text-gray-900">${user.course || 'Not provided'}</p>
+                                </div>
+                                <div>
+                                    <label class="text-sm font-medium text-gray-600">Year Level</label>
+                                    <p class="text-gray-900">${user.year_level || 'Not provided'}</p>
+                                </div>
+                                <div>
+                                    <label class="text-sm font-medium text-gray-600">GPA</label>
+                                    <p class="text-gray-900">${user.gpa ? user.gpa.toFixed(2) : 'Not provided'}</p>
+                                </div>
+                            </div>
+                        </div>
+                    ` : `
+                        <div class="border-t pt-4">
+                            <h4 class="text-lg font-semibold text-gray-900 mb-3">Provider Information</h4>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="text-sm font-medium text-gray-600">Organization Name</label>
+                                    <p class="text-gray-900">${user.organization_name || 'Not provided'}</p>
+                                </div>
+                                <div>
+                                    <label class="text-sm font-medium text-gray-600">Organization Type</label>
+                                    <p class="text-gray-900">${user.organization_type || 'Not provided'}</p>
+                                </div>
+                                <div class="col-span-1 sm:col-span-2">
+                                    <label class="text-sm font-medium text-gray-600">Website</label>
+                                    <p class="text-gray-900">${user.website ? `<a href="${user.website}" target="_blank" class="text-indigo-600 hover:underline">${user.website}</a>` : 'Not provided'}</p>
+                                </div>
+                            </div>
+                        </div>
+                    `}
+
+                    <!-- Actions -->
+                    <div class="border-t pt-4 flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-3">
+                        <button onclick="closeUserModal()" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                            Close
+                        </button>
+                        <button onclick="toggleUserActive(${user.id}, ${user.is_active}); closeUserModal();" class="px-4 py-2 bg-${user.is_active ? 'red' : 'green'}-600 text-white rounded-lg hover:bg-${user.is_active ? 'red' : 'green'}-700 transition-colors">
+                            <i class="fas fa-${user.is_active ? 'ban' : 'check-circle'} mr-1"></i> ${user.is_active ? 'Deactivate User' : 'Activate User'}
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function closeUserModal() {
+            document.getElementById('user-details-modal').classList.add('hidden');
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('user-details-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeUserModal();
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeUserModal();
+            }
+        });
+
+        function toggleUserActive(userId, currentStatus) {
+            const action = currentStatus ? 'deactivate' : 'activate';
+            if (!confirm(`Are you sure you want to ${action} this user?`)) return;
+
+            fetch(`/api/admin/user/${userId}/toggle-active`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'}
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showSuccess(`User ${action}d successfully!`);
+                    loadUsers();
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error toggling user status:', error);
+                alert('Failed to update user status');
+            });
+        }
+
+        function exportUsers() {
+            // Simple export functionality
+            const csv = [
+                ['Name', 'Email', 'Type', 'Institution', 'Status', 'Registered', 'Last Login'].join(','),
+                ...displayedUsers.map(user => [
+                    user.full_name,
+                    user.email,
+                    user.user_type,
+                    user.institution_name || 'N/A',
+                    user.is_verified ? 'Verified' : 'Pending',
+                    formatDate(user.created_at),
+                    user.last_login ? formatDate(user.last_login) : 'Never'
+                ].join(','))
+            ].join('\n');
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `easecholar-users-${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // Helper functions for formatting (if not defined in components.js)
+        function formatDate(dateString) {
+            if (!dateString) return 'N/A';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+        }
+
+        function getRelativeTime(dateString) {
+            if (!dateString) return 'Never';
+            const date = new Date(dateString);
+            const now = new Date();
+            const diffMs = now - date;
+            const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+            
+            if (diffDays === 0) return 'Today';
+            if (diffDays === 1) return 'Yesterday';
+            if (diffDays < 7) return `${diffDays} days ago`;
+            if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
+            if (diffDays < 365) return `${Math.floor(diffDays / 30)} months ago`;
+            return `${Math.floor(diffDays / 365)} years ago`;
+        }
+
+        function showLoading(elementId) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.innerHTML = '<tr><td colspan="7" class="px-6 py-12 text-center"><i class="fas fa-spinner fa-spin text-4xl text-indigo-600"></i><p class="mt-4 text-gray-600">Loading...</p></td></tr>';
+            }
+        }
+
+        function showError(elementId, message) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.innerHTML = `<tr><td colspan="7" class="px-6 py-12 text-center text-red-600"><i class="fas fa-exclamation-circle text-4xl mb-3"></i><p class="text-lg font-medium">${message}</p></td></tr>`;
+            }
+        }
+
+        function showSuccess(message) {
+            // Simple alert for now - can be replaced with toast notification
+            alert(message);
+        }
+    </script>
+
+    <!-- Mobile Menu Handler -->
+    <script src="/Assets/js/mobile-menu.js"></script>
+</body>
+</html>

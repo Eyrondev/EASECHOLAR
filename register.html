@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - EASECHOLAR</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Custom Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        secondary: {
+                            50: '#f8fafc',
+                            100: '#f1f5f9',
+                            200: '#e2e8f0',
+                            300: '#cbd5e1',
+                            400: '#94a3b8',
+                            500: '#64748b',
+                            600: '#475569',
+                            700: '#334155',
+                            800: '#1e293b',
+                            900: '#0f172a',
+                        }
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'ui-sans-serif', 'system-ui'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Mobile Responsive Styles -->
+    <link rel="stylesheet" href="/Assets/css/mobile-responsive.css">
+
+    
+    <!-- Animate.css for animations -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    
+    <!-- Enhanced API -->
+    <script src="Assets/js/api_enhanced.js"></script>
+    
+    <style>
+        .step {
+            display: none;
+        }
+        .step.active {
+            display: block;
+            animation: fadeInSlide 0.5s ease-in-out;
+        }
+        
+        @keyframes fadeInSlide {
+            from { 
+                opacity: 0; 
+                transform: translateX(20px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateX(0); 
+            }
+        }
+        
+        .step-indicator {
+            background-color: #e5e7eb;
+            color: #6b7280;
+        }
+        
+        .step-indicator.active {
+            background-color: #0284c7;
+            color: white;
+        }
+        
+        .step-indicator.completed {
+            background-color: #10b981;
+            color: white;
+        }
+        
+        .file-upload-area {
+            border: 2px dashed #d1d5db;
+            transition: all 0.3s ease;
+        }
+        
+        .file-upload-area.drag-over {
+            border-color: #0284c7;
+            background-color: #f0f9ff;
+        }
+        
+        .file-upload-area:hover {
+            border-color: #0284c7;
+        }
+        
+        /* Mobile responsive improvements */
+        @media (max-width: 640px) {
+            .step-indicator {
+                width: 32px;
+                height: 32px;
+                font-size: 0.75rem;
+            }
+            
+            .user-type-card {
+                padding: 1rem;
+            }
+        }
+        
+        /* Custom checkbox styling for show password */
+        .show-password-checkbox {
+            width: 14px !important;
+            height: 14px !important;
+            min-width: 14px;
+            min-height: 14px;
+            flex-shrink: 0;
+        }
+        
+        .show-password-checkbox:focus {
+            box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.5);
+            outline: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans min-h-screen" style="background-image: url('Assets/images/bg.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat; background-attachment: fixed;">
+
+    <section class="min-h-screen flex items-center justify-center py-6 sm:py-12 px-3 sm:px-4 md:px-6 lg:px-8 relative">
+        <div class="absolute inset-0 bg-black bg-opacity-40"></div>
+        
+        <div class="max-w-4xl w-full space-y-4 sm:space-y-8 relative z-10">
+            <div class="bg-white bg-opacity-95 backdrop-blur-sm rounded-lg sm:rounded-xl shadow-2xl p-4 sm:p-6 md:p-8">
+                
+                <!-- Header -->
+                <div class="text-center mb-4 sm:mb-8">
+                    <div class="mx-auto w-14 h-14 sm:w-16 sm:h-16 bg-primary-600 rounded-full flex items-center justify-center mb-3 sm:mb-4 shadow-lg">
+                        <i class="fas fa-user-plus text-white text-xl sm:text-2xl"></i>
+                    </div>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Join EASECHOLAR</h2>
+                    <p class="text-sm sm:text-base text-gray-600">Create your account in simple steps</p>
+                </div>
+
+                <!-- Step Indicator -->
+                <div class="mb-4 sm:mb-8">
+                    <div class="flex items-center justify-center space-x-2 sm:space-x-4">
+                        <div class="step-indicator active flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full text-xs sm:text-sm font-semibold">
+                            1
+                        </div>
+                        <div class="flex-1 h-1 bg-gray-200 rounded"></div>
+                        <div class="step-indicator flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full text-xs sm:text-sm font-semibold">
+                            2
+                        </div>
+                        <div class="flex-1 h-1 bg-gray-200 rounded"></div>
+                        <div class="step-indicator flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full text-xs sm:text-sm font-semibold">
+                            3
+                        </div>
+                        <div class="flex-1 h-1 bg-gray-200 rounded"></div>
+                        <div class="step-indicator flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full text-xs sm:text-sm font-semibold">
+                            4
+                        </div>
+                    </div>
+                    <div class="flex justify-between mt-2 text-[10px] sm:text-xs text-gray-500 px-1">
+                        <span class="text-center">User Type</span>
+                        <span class="text-center">Basic Info</span>
+                        <span class="text-center hidden sm:inline">Academic Details</span>
+                        <span class="text-center sm:hidden">Academic</span>
+                        <span class="text-center hidden sm:inline">Documents</span>
+                        <span class="text-center sm:hidden">Docs</span>
+                    </div>
+                </div>
+
+                <!-- Error Messages -->
+                <div id="error-container"></div>
+
+                <!-- Multi-step Form -->
+                <form id="registration-form" action="/register" method="POST" enctype="multipart/form-data">
+                    
+                    <!-- Step 1: User Type Selection -->
+                    <div class="step active" id="step-1">
+                        <div class="text-center mb-4 sm:mb-8">
+                            <h3 class="text-xl sm:text-2xl font-semibold text-gray-900 mb-2 sm:mb-4">Choose Your Account Type</h3>
+                            <p class="text-sm sm:text-base text-gray-600">Select how you want to join EASECHOLAR</p>
+                        </div>
+                        
+                        <div class="grid md:grid-cols-2 gap-4 sm:gap-6">
+                            <div class="user-type-card border-2 border-gray-200 rounded-lg sm:rounded-xl p-4 sm:p-6 cursor-pointer hover:border-primary-500 transition-colors active:scale-95 transform" onclick="selectUserType('STUDENT')">
+                                <input type="radio" name="user_type" value="STUDENT" id="student-type" class="hidden">
+                                <div class="text-center">
+                                    <div class="w-12 h-12 sm:w-16 sm:h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                                        <i class="fas fa-user-graduate text-primary-600 text-xl sm:text-2xl"></i>
+                                    </div>
+                                    <h4 class="text-lg sm:text-xl font-semibold text-gray-900 mb-1 sm:mb-2">Student</h4>
+                                    <p class="text-xs sm:text-sm text-gray-600">Apply for scholarships and financial aid to support your education</p>
+                                </div>
+                            </div>
+                            
+                            <div class="user-type-card border-2 border-gray-200 rounded-lg sm:rounded-xl p-4 sm:p-6 cursor-pointer hover:border-primary-500 transition-colors active:scale-95 transform" onclick="selectUserType('PROVIDER')">
+                                <input type="radio" name="user_type" value="PROVIDER" id="provider-type" class="hidden">
+                                <div class="text-center">
+                                    <div class="w-12 h-12 sm:w-16 sm:h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                                        <i class="fas fa-building text-green-600 text-xl sm:text-2xl"></i>
+                                    </div>
+                                    <h4 class="text-lg sm:text-xl font-semibold text-gray-900 mb-1 sm:mb-2">Scholarship Provider</h4>
+                                    <p class="text-xs sm:text-sm text-gray-600">Offer scholarships and support students in their educational journey</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Basic Information -->
+                    <div class="step" id="step-2">
+                        <div class="mb-4 sm:mb-6">
+                            <h3 class="text-xl sm:text-2xl font-semibold text-gray-900 mb-2">Basic Information</h3>
+                            <p class="text-sm sm:text-base text-gray-600">Tell us about yourself</p>
+                        </div>
+                        
+                        <div class="grid md:grid-cols-2 gap-4 sm:gap-6">
+                            <div>
+                                <label for="first_name" class="block text-xs sm:text-sm font-medium text-gray-700 mb-1">First Name *</label>
+                                <input type="text" name="first_name" id="first_name" required
+                                       class="w-full px-3 py-2.5 sm:py-2 text-sm sm:text-base border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                                       placeholder="Enter your first name">
+                            </div>
+                            
+                            <div>
+                                <label for="last_name" class="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Last Name *</label>
+                                <input type="text" name="last_name" id="last_name" required
+                                       class="w-full px-3 py-2.5 sm:py-2 text-sm sm:text-base border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                                       placeholder="Enter your last name">
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-4 sm:space-y-6 mt-4 sm:mt-6">
+                            <div>
+                                <label for="email" class="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Email Address *</label>
+                                <input type="email" name="email" id="email" required
+                                       class="w-full px-3 py-2.5 sm:py-2 text-sm sm:text-base border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                                       placeholder="Enter your email address">
+                            </div>
+                            
+                            <div>
+                                <label for="phone_number" class="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                                <input type="tel" name="phone_number" id="phone_number"
+                                       class="w-full px-3 py-2.5 sm:py-2 text-sm sm:text-base border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                                       placeholder="09XX-XXX-XXXX">
+                            </div>
+                            
+                            <div>
+                                <label for="password" class="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Password *</label>
+                                <input type="password" name="password" id="password" required
+                                       class="w-full px-3 py-2.5 sm:py-2 text-sm sm:text-base border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                                       placeholder="Create a password">
+                                <div class="flex items-center mt-2">
+                                    <input type="checkbox" id="show-password-checkbox" class="show-password-checkbox h-3 w-3 text-primary-600 focus:ring-primary-500 focus:ring-1 border-gray-300 rounded cursor-pointer touch-manipulation" onchange="togglePasswordCheckbox('password', 'show-password-checkbox')">
+                                    <label for="show-password-checkbox" class="ml-2 block text-xs text-gray-700 cursor-pointer select-none">Show password</label>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label for="confirm_password" class="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Confirm Password *</label>
+                                <input type="password" name="confirm_password" id="confirm_password" required
+                                       class="w-full px-3 py-2.5 sm:py-2 text-sm sm:text-base border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                                       placeholder="Confirm your password">
+                                <div class="flex items-center mt-2">
+                                    <input type="checkbox" id="show-confirm-password-checkbox" class="show-password-checkbox h-3 w-3 text-primary-600 focus:ring-primary-500 focus:ring-1 border-gray-300 rounded cursor-pointer touch-manipulation" onchange="togglePasswordCheckbox('confirm_password', 'show-confirm-password-checkbox')">
+                                    <label for="show-confirm-password-checkbox" class="ml-2 block text-xs text-gray-700 cursor-pointer select-none">Show password</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Academic Details (Student Only) -->
+                    <div class="step" id="step-3">
+                        <div class="mb-6">
+                            <h3 class="text-2xl font-semibold text-gray-900 mb-2">Academic Information</h3>
+                            <p class="text-gray-600" id="step3-description">Provide your academic details</p>
+                        </div>
+                        
+                        <!-- Student Academic Fields -->
+                        <div id="student-academic-fields" class="space-y-6">
+                            <div>
+                                <label for="student_number" class="block text-sm font-medium text-gray-700 mb-1">Student Number *</label>
+                                <input type="text" name="student_number" id="student_number"
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                                       placeholder="Enter your student number">
+                            </div>
+                            
+                            <div>
+                                <label for="school_name" class="block text-sm font-medium text-gray-700 mb-1">School/University *</label>
+                                <input type="text" name="school_name" id="school_name"
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                                       placeholder="Enter your school or university name">
+                            </div>
+                            
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div>
+                                    <label for="course" class="block text-sm font-medium text-gray-700 mb-1">Course/Program</label>
+                                    <input type="text" name="course" id="course"
+                                           class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                                           placeholder="e.g., Bachelor of Science in Computer Science">
+                                </div>
+                                
+                                <div>
+                                    <label for="year_level" class="block text-sm font-medium text-gray-700 mb-1">Year Level</label>
+                                    <select name="year_level" id="year_level"
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500">
+                                        <option value="">Select Year Level</option>
+                                        <option value="1">1st Year</option>
+                                        <option value="2">2nd Year</option>
+                                        <option value="3">3rd Year</option>
+                                        <option value="4">4th Year</option>
+                                        <option value="5">5th Year</option>
+                                        <option value="graduate">Graduate School</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div>
+                                    <label for="gpa" class="block text-sm font-medium text-gray-700 mb-1">GPA/Grade</label>
+                                    <input type="number" name="gpa" id="gpa" step="0.01" min="1" max="4"
+                                           class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                                           placeholder="e.g., 3.75">
+                                </div>
+                                
+                                <div>
+                                    <label for="expected_graduation" class="block text-sm font-medium text-gray-700 mb-1">Expected Graduation</label>
+                                    <input type="date" name="expected_graduation" id="expected_graduation"
+                                           class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Provider Organization Fields -->
+                        <div id="provider-academic-fields" class="space-y-6 hidden">
+                            <div>
+                                <label for="organization_name" class="block text-sm font-medium text-gray-700 mb-1">Organization Name *</label>
+                                <input type="text" name="organization_name" id="organization_name"
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                                       placeholder="Enter your organization name">
+                            </div>
+                            
+                            <div>
+                                <label for="organization_type" class="block text-sm font-medium text-gray-700 mb-1">Organization Type</label>
+                                <select name="organization_type" id="organization_type"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500">
+                                    <option value="">Select Organization Type</option>
+                                    <option value="educational_institution">Educational Institution</option>
+                                    <option value="government_agency">Government Agency</option>
+                                    <option value="private_company">Private Company</option>
+                                    <option value="non_profit">Non-Profit Organization</option>
+                                    <option value="foundation">Foundation</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label for="website" class="block text-sm font-medium text-gray-700 mb-1">Website</label>
+                                <input type="url" name="website" id="website"
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                                       placeholder="https://www.example.com">
+                            </div>
+                            
+                            <div>
+                                <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Organization Description</label>
+                                <textarea name="description" id="description" rows="4"
+                                          class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                                          placeholder="Describe your organization and scholarship goals..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Document Upload -->
+                    <div class="step" id="step-4">
+                        <div class="mb-6">
+                            <h3 class="text-2xl font-semibold text-gray-900 mb-2">Required Documents</h3>
+                            <p class="text-gray-600">Upload the necessary documents to verify your eligibility</p>
+                        </div>
+                        
+                        <!-- Student Documents -->
+                        <div id="student-documents" class="space-y-6">
+                            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                                <h4 class="font-semibold text-blue-900 mb-2">Required Documents for Students:</h4>
+                                <ul class="text-blue-800 text-sm space-y-1">
+                                    <li>• <strong>Certificate of Registration (COR)</strong> - Current semester enrollment</li>
+                                    <li>• <strong>Certificate of Enrollment (COE)</strong> - Official enrollment verification</li>
+                                    <li>• All documents must be in PDF format and clearly readable</li>
+                                </ul>
+                            </div>
+                            
+                            <!-- COR Upload -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Certificate of Registration (COR) *</label>
+                                <div class="file-upload-area border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer"
+                                     onclick="document.getElementById('cor-file').click()">
+                                    <input type="file" id="cor-file" name="cor_file" accept=".pdf" class="hidden" onchange="handleFileUpload(this, 'cor-preview')">
+                                    <div id="cor-preview">
+                                        <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
+                                        <p class="text-gray-600 mb-2">Click to upload COR document</p>
+                                        <p class="text-sm text-gray-500">PDF files only, max 5MB</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- COE Upload -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Certificate of Enrollment (COE) *</label>
+                                <div class="file-upload-area border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer"
+                                     onclick="document.getElementById('coe-file').click()">
+                                    <input type="file" id="coe-file" name="coe_file" accept=".pdf" class="hidden" onchange="handleFileUpload(this, 'coe-preview')">
+                                    <div id="coe-preview">
+                                        <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
+                                        <p class="text-gray-600 mb-2">Click to upload COE document</p>
+                                        <p class="text-sm text-gray-500">PDF files only, max 5MB</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Optional: Transcript -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Academic Transcript (Optional)</label>
+                                <div class="file-upload-area border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer"
+                                     onclick="document.getElementById('transcript-file').click()">
+                                    <input type="file" id="transcript-file" name="transcript_file" accept=".pdf" class="hidden" onchange="handleFileUpload(this, 'transcript-preview')">
+                                    <div id="transcript-preview">
+                                        <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
+                                        <p class="text-gray-600 mb-2">Click to upload transcript (optional)</p>
+                                        <p class="text-sm text-gray-500">PDF files only, max 5MB</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Provider Documents -->
+                        <div id="provider-documents" class="space-y-6 hidden">
+                            <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+                                <h4 class="font-semibold text-green-900 mb-2">Required Documents for Providers:</h4>
+                                <ul class="text-green-800 text-sm space-y-1">
+                                    <li>• <strong>Business Registration</strong> - DTI, SEC, or relevant registration</li>
+                                    <li>• <strong>Tax Identification</strong> - BIR certificate or TIN verification</li>
+                                    <li>• All documents must be in PDF format and clearly readable</li>
+                                </ul>
+                            </div>
+                            
+                            <!-- Business Registration -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Business Registration *</label>
+                                <div class="file-upload-area border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer"
+                                     onclick="document.getElementById('business-reg-file').click()">
+                                    <input type="file" id="business-reg-file" name="business_registration" accept=".pdf" class="hidden" onchange="handleFileUpload(this, 'business-preview')">
+                                    <div id="business-preview">
+                                        <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
+                                        <p class="text-gray-600 mb-2">Click to upload business registration</p>
+                                        <p class="text-sm text-gray-500">PDF files only, max 5MB</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Navigation Buttons -->
+                    <div class="flex flex-col sm:flex-row justify-between mt-6 sm:mt-8 gap-3">
+                        <button type="button" id="prev-btn" class="w-full sm:w-auto px-4 sm:px-6 py-2.5 sm:py-3 border border-gray-300 text-gray-700 text-sm sm:text-base rounded-lg hover:bg-gray-50 transition-colors hidden touch-manipulation">
+                            <i class="fas fa-arrow-left mr-2 text-xs sm:text-sm"></i>Previous
+                        </button>
+                        
+                        <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4 sm:ml-auto">
+                            <a href="/" class="w-full sm:w-auto px-4 sm:px-6 py-2.5 sm:py-3 border border-gray-300 text-gray-700 text-sm sm:text-base rounded-lg hover:bg-gray-50 transition-colors text-center touch-manipulation">
+                                <i class="fas fa-home mr-2 text-xs sm:text-sm"></i>Home
+                            </a>
+                            
+                            <button type="button" id="next-btn" class="w-full sm:w-auto px-4 sm:px-6 py-2.5 sm:py-3 bg-primary-600 text-white text-sm sm:text-base rounded-lg hover:bg-primary-700 transition-colors active:scale-95 transform touch-manipulation">
+                                Next <i class="fas fa-arrow-right ml-2 text-xs sm:text-sm"></i>
+                            </button>
+                            
+                            <button type="submit" id="submit-btn" class="w-full sm:w-auto px-4 sm:px-6 py-2.5 sm:py-3 bg-green-600 text-white text-sm sm:text-base rounded-lg hover:bg-green-700 transition-colors active:scale-95 transform touch-manipulation hidden">
+                                <i class="fas fa-check mr-2 text-xs sm:text-sm"></i>Complete Registration
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Login Link -->
+                <div class="text-center mt-4 sm:mt-6">
+                    <p class="text-xs sm:text-sm text-gray-600">
+                        Already have an account?
+                        <a href="/login" class="font-medium text-primary-600 hover:text-primary-500 ml-1 touch-manipulation">
+                            Sign in here
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        let currentStep = 1;
+        const totalSteps = 4;
+        let selectedUserType = '';
+        
+        // Initialize form
+        document.addEventListener('DOMContentLoaded', function() {
+            updateStepDisplay();
+        });
+        
+        // User type selection
+        function selectUserType(userType) {
+            selectedUserType = userType;
+            
+            // Remove previous selections
+            document.querySelectorAll('.user-type-card').forEach(card => {
+                card.classList.remove('border-primary-500', 'bg-primary-50');
+            });
+            
+            // Mark selected card
+            event.currentTarget.classList.add('border-primary-500', 'bg-primary-50');
+            
+            // Check the radio button
+            if (userType === 'STUDENT') {
+                document.getElementById('student-type').checked = true;
+            } else {
+                document.getElementById('provider-type').checked = true;
+            }
+        }
+        
+        // Step navigation
+        function nextStep() {
+            if (validateCurrentStep()) {
+                if (currentStep < totalSteps) {
+                    currentStep++;
+                    updateStepDisplay();
+                    updateFieldsForUserType();
+                }
+            }
+        }
+        
+        function prevStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                updateStepDisplay();
+            }
+        }
+        
+        function updateStepDisplay() {
+            // Hide all steps
+            document.querySelectorAll('.step').forEach(step => {
+                step.classList.remove('active');
+            });
+            
+            // Show current step
+            document.getElementById(`step-${currentStep}`).classList.add('active');
+            
+            // Update step indicators
+            document.querySelectorAll('.step-indicator').forEach((indicator, index) => {
+                indicator.classList.remove('active', 'completed');
+                if (index + 1 === currentStep) {
+                    indicator.classList.add('active');
+                } else if (index + 1 < currentStep) {
+                    indicator.classList.add('completed');
+                }
+            });
+            
+            // Update buttons
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const submitBtn = document.getElementById('submit-btn');
+            
+            if (currentStep === 1) {
+                prevBtn.classList.add('hidden');
+            } else {
+                prevBtn.classList.remove('hidden');
+            }
+            
+            if (currentStep === totalSteps) {
+                nextBtn.classList.add('hidden');
+                submitBtn.classList.remove('hidden');
+            } else {
+                nextBtn.classList.remove('hidden');
+                submitBtn.classList.add('hidden');
+            }
+        }
+        
+        function updateFieldsForUserType() {
+            if (currentStep === 3) {
+                const studentFields = document.getElementById('student-academic-fields');
+                const providerFields = document.getElementById('provider-academic-fields');
+                const step3Description = document.getElementById('step3-description');
+                
+                if (selectedUserType === 'STUDENT') {
+                    studentFields.classList.remove('hidden');
+                    providerFields.classList.add('hidden');
+                    step3Description.textContent = 'Provide your academic details';
+                    
+                    // Make student fields required
+                    document.getElementById('student_number').required = true;
+                    document.getElementById('school_name').required = true;
+                    document.getElementById('organization_name').required = false;
+                } else {
+                    studentFields.classList.add('hidden');
+                    providerFields.classList.remove('hidden');
+                    step3Description.textContent = 'Tell us about your organization';
+                    
+                    // Make provider fields required
+                    document.getElementById('student_number').required = false;
+                    document.getElementById('school_name').required = false;
+                    document.getElementById('organization_name').required = true;
+                }
+            }
+            
+            if (currentStep === 4) {
+                const studentDocs = document.getElementById('student-documents');
+                const providerDocs = document.getElementById('provider-documents');
+                
+                if (selectedUserType === 'STUDENT') {
+                    studentDocs.classList.remove('hidden');
+                    providerDocs.classList.add('hidden');
+                    
+                    // Make student documents required
+                    document.getElementById('cor-file').required = true;
+                    document.getElementById('coe-file').required = true;
+                } else {
+                    studentDocs.classList.add('hidden');
+                    providerDocs.classList.remove('hidden');
+                    
+                    // Make provider documents required
+                    document.getElementById('business-reg-file').required = true;
+                }
+            }
+        }
+        
+        function validateCurrentStep() {
+            const errorContainer = document.getElementById('error-container');
+            errorContainer.innerHTML = '';
+            
+            if (currentStep === 1) {
+                if (!selectedUserType) {
+                    showError('Please select an account type.');
+                    return false;
+                }
+            } else if (currentStep === 2) {
+                const requiredFields = ['first_name', 'last_name', 'email', 'password', 'confirm_password'];
+                for (const field of requiredFields) {
+                    const input = document.getElementById(field);
+                    if (!input.value.trim()) {
+                        showError(`Please fill in your ${field.replace('_', ' ')}.`);
+                        input.focus();
+                        return false;
+                    }
+                }
+                
+                // Validate email format
+                const email = document.getElementById('email').value;
+                if (!email.includes('@') || !email.includes('.')) {
+                    showError('Please enter a valid email address.');
+                    return false;
+                }
+                
+                // Validate password match
+                const password = document.getElementById('password').value;
+                const confirmPassword = document.getElementById('confirm_password').value;
+                if (password !== confirmPassword) {
+                    showError('Passwords do not match.');
+                    return false;
+                }
+                
+                if (password.length < 6) {
+                    showError('Password must be at least 6 characters long.');
+                    return false;
+                }
+            } else if (currentStep === 3) {
+                if (selectedUserType === 'STUDENT') {
+                    if (!document.getElementById('student_number').value.trim()) {
+                        showError('Please enter your student number.');
+                        return false;
+                    }
+                    if (!document.getElementById('school_name').value.trim()) {
+                        showError('Please enter your school name.');
+                        return false;
+                    }
+                } else {
+                    if (!document.getElementById('organization_name').value.trim()) {
+                        showError('Please enter your organization name.');
+                        return false;
+                    }
+                }
+            } else if (currentStep === 4) {
+                if (selectedUserType === 'STUDENT') {
+                    if (!document.getElementById('cor-file').files.length) {
+                        showError('Please upload your Certificate of Registration (COR).');
+                        return false;
+                    }
+                    if (!document.getElementById('coe-file').files.length) {
+                        showError('Please upload your Certificate of Enrollment (COE).');
+                        return false;
+                    }
+                } else {
+                    if (!document.getElementById('business-reg-file').files.length) {
+                        showError('Please upload your business registration.');
+                        return false;
+                    }
+                }
+            }
+            
+            return true;
+        }
+        
+        function showError(message) {
+            const errorContainer = document.getElementById('error-container');
+            errorContainer.innerHTML = `
+                <div class="bg-red-100 text-red-700 p-4 rounded-md mb-6">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-exclamation-circle mr-2"></i>
+                        </div>
+                        <div class="ml-2">
+                            <p class="text-sm font-medium">${message}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function showSuccess(message) {
+            const errorContainer = document.getElementById('error-container');
+            errorContainer.innerHTML = `
+                <div class="bg-green-100 text-green-700 p-4 rounded-md mb-6">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-check-circle mr-2"></i>
+                        </div>
+                        <div class="ml-2">
+                            <p class="text-sm font-medium">${message}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // File upload handling
+        function handleFileUpload(input, previewId) {
+            const file = input.files[0];
+            const preview = document.getElementById(previewId);
+            
+            if (file) {
+                if (file.type !== 'application/pdf') {
+                    showError('Please upload PDF files only.');
+                    input.value = '';
+                    return;
+                }
+                
+                if (file.size > 5 * 1024 * 1024) { // 5MB limit
+                    showError('File size must be less than 5MB.');
+                    input.value = '';
+                    return;
+                }
+                
+                preview.innerHTML = `
+                    <div class="flex items-center justify-center">
+                        <i class="fas fa-file-pdf text-red-500 text-3xl mr-3"></i>
+                        <div class="text-left">
+                            <p class="font-medium text-gray-900">${file.name}</p>
+                            <p class="text-sm text-gray-500">${(file.size / 1024 / 1024).toFixed(2)} MB</p>
+                        </div>
+                        <button type="button" class="ml-4 text-red-500 hover:text-red-700" onclick="removeFile('${input.id}', '${previewId}')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+            }
+        }
+        
+        function removeFile(inputId, previewId) {
+            document.getElementById(inputId).value = '';
+            const preview = document.getElementById(previewId);
+            const fileType = inputId.includes('cor') ? 'COR' : inputId.includes('coe') ? 'COE' : inputId.includes('transcript') ? 'transcript' : 'business registration';
+            preview.innerHTML = `
+                <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
+                <p class="text-gray-600 mb-2">Click to upload ${fileType}</p>
+                <p class="text-sm text-gray-500">PDF files only, max 5MB</p>
+            `;
+        }
+        
+        // Password toggle with checkbox
+        function togglePasswordCheckbox(inputId, checkboxId) {
+            const input = document.getElementById(inputId);
+            const checkbox = document.getElementById(checkboxId);
+            
+            if (!input || !checkbox) {
+                return;
+            }
+            
+            if (checkbox.checked) {
+                input.type = 'text';
+            } else {
+                input.type = 'password';
+            }
+        }
+        
+        // Event listeners
+        document.getElementById('next-btn').addEventListener('click', nextStep);
+        document.getElementById('prev-btn').addEventListener('click', prevStep);
+        
+        // Form submission
+        document.getElementById('registration-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            if (!validateCurrentStep()) {
+                return;
+            }
+            
+            const submitBtn = document.getElementById('submit-btn');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Creating Account...';
+            submitBtn.disabled = true;
+            
+            try {
+                const formData = new FormData(this);
+                
+                const response = await fetch('/register', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (response.ok) {
+                    showSuccess('Registration successful! Redirecting to login...');
+                    setTimeout(() => {
+                        window.location.href = '/login';
+                    }, 2000);
+                } else {
+                    const text = await response.text();
+                    if (text.includes('already exists')) {
+                        showError('An account with this email already exists.');
+                    } else {
+                        showError('Registration failed. Please try again.');
+                    }
+                }
+            } catch (error) {
+                console.error('Registration error:', error);
+                showError('Network error. Please check your connection.');
+            } finally {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+        
+        // Check if user is already logged in
+        document.addEventListener('DOMContentLoaded', async function() {
+            try {
+                const authStatus = await easecholarAPI.checkAuthStatus();
+                if (authStatus.authenticated) {
+                    const user = authStatus.user;
+                    const dashboardUrl = user.user_type === 'STUDENT' ? 'Students/dashboard.html' : 'Provider/dashboard.html';
+                    window.location.href = dashboardUrl;
+                }
+            } catch (error) {
+                console.log('No active session found');
+            }
+        });
+    </script>
+</body>
+</html>

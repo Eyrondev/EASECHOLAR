@@ -1,0 +1,946 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+        <title>EASECHOLAR</title>
+
+        <!-- Tailwind CSS CDN -->
+        <script src="https://cdn.tailwindcss.com"></script>
+        
+        <!-- Custom Tailwind Configuration -->
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            primary: {
+                                50: '#f0f9ff',
+                                100: '#e0f2fe',
+                                200: '#bae6fd',
+                                300: '#7dd3fc',
+                                400: '#38bdf8',
+                                500: '#0ea5e9',
+                                600: '#0284c7',
+                                700: '#0369a1',
+                                800: '#075985',
+                                900: '#0c4a6e',
+                            },
+                            secondary: {
+                                50: '#f8fafc',
+                                100: '#f1f5f9',
+                                200: '#e2e8f0',
+                                300: '#cbd5e1',
+                                400: '#94a3b8',
+                                500: '#64748b',
+                                600: '#475569',
+                                700: '#334155',
+                                800: '#1e293b',
+                                900: '#0f172a',
+                            }
+                        },
+                        fontFamily: {
+                            'sans': ['Inter', 'ui-sans-serif', 'system-ui'],
+                        },
+                        animation: {
+                            'fade-in': 'fadeIn 0.6s ease-in-out',
+                            'slide-up': 'slideUp 0.6s ease-out',
+                            'bounce-slow': 'bounce 2s infinite',
+                        },
+                        keyframes: {
+                            fadeIn: {
+                                '0%': { opacity: '0', transform: 'translateY(20px)' },
+                                '100%': { opacity: '1', transform: 'translateY(0)' },
+                            },
+                            slideUp: {
+                                '0%': { transform: 'translateY(30px)', opacity: '0' },
+                                '100%': { transform: 'translateY(0)', opacity: '1' },
+                            }
+                        }
+                    }
+                }
+            }
+        </script>
+        
+        <!-- Google Fonts -->
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+        
+        <!-- Font Awesome Icons -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Mobile Responsive Styles -->
+    <link rel="stylesheet" href="/Assets/css/mobile-responsive.css">
+
+        
+        <!-- API Integration -->
+        <script src="Assets/js/api_enhanced.js"></script>
+        
+        <!-- Custom CSS -->
+        <style>
+            .gradient-bg-home {
+                background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 25%, #2563eb 50%, #3b82f6 75%, #60a5fa 100%) !important;
+            }
+            
+            .hero-pattern {
+                background-image: 
+                    radial-gradient(circle at 25% 25%, rgba(255,255,255,0.15) 0%, transparent 50%),
+                    radial-gradient(circle at 75% 75%, rgba(255,255,255,0.15) 0%, transparent 50%);
+            }
+            
+            .card-hover {
+                transition: all 0.3s ease;
+            }
+            
+            .card-hover:hover {
+                transform: translateY(-8px);
+                box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            }
+            
+            html {
+                scroll-behavior: smooth;
+            }
+            
+            .tab-button.active {
+                background-color: white;
+                color: #0284c7;
+                box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            }
+            
+            .tab-button {
+                color: #6b7280;
+            }
+        </style>      
+
+    </head>
+    
+    <body class="bg-gray-50 font-sans">
+
+        <main>
+
+            <!-- Navigation -->
+            <nav class="bg-white/95 backdrop-blur-sm shadow-lg border-b border-gray-200 fixed top-0 w-full z-50">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="flex justify-between h-16">
+                        <!-- Logo and brand -->
+                        <div class="flex items-center">
+                            <a href="/" class="flex items-center space-x-3">
+                                <div class="w-10 h-10 bg-primary-600 rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-graduation-cap text-white text-lg"></i>
+                                </div>
+                                <span class="text-2xl font-bold text-gray-900">EASESCHOLAR</span>
+                            </a>
+                        </div>
+                        
+                        <!-- Desktop Navigation -->
+                        <div class="hidden md:flex items-center space-x-8">
+                            <a href="#section_1" class="text-gray-600 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">Home</a>
+                            <a href="#section_2" class="text-gray-600 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">Browse Programs</a>
+                            <a href="#section_3" class="text-gray-600 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">How it works</a>
+                            <a href="#section_4" class="text-gray-600 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">FAQs</a>
+                            <a href="#section_5" class="text-gray-600 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">Contact</a>
+                            
+                            <!-- Register Dropdown -->
+                            <div class="relative group">
+                                <button class="text-gray-600 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium transition-colors flex items-center">
+                                    Register <i class="fas fa-chevron-down ml-1 text-xs"></i>
+                                </button>
+                                <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                                    <div class="py-1">
+                                        <a href="/register" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">As Student</a>
+                                        <a href="/register" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">As Provider</a>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <a href="/login" class="bg-primary-600 text-white hover:bg-primary-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center">
+                                <i class="fas fa-sign-in-alt mr-2"></i>Sign In
+                            </a>
+                        </div>
+                        
+                        <!-- Mobile menu button -->
+                        <div class="md:hidden flex items-center">
+                            <button id="mobile-menu-button" class="text-gray-600 hover:text-gray-900 focus:outline-none focus:text-gray-900">
+                                <i class="fas fa-bars text-xl"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Mobile Navigation -->
+                <div id="mobile-menu" class="md:hidden hidden bg-white border-t border-gray-200">
+                    <div class="px-2 pt-2 pb-3 space-y-1">
+                        <a href="#section_1" class="block px-3 py-2 text-gray-600 hover:text-primary-600">Home</a>
+                        <a href="#section_2" class="block px-3 py-2 text-gray-600 hover:text-primary-600">Browse Programs</a>
+                        <a href="#section_3" class="block px-3 py-2 text-gray-600 hover:text-primary-600">How it works</a>
+                        <a href="#section_4" class="block px-3 py-2 text-gray-600 hover:text-primary-600">FAQs</a>
+                        <a href="#section_5" class="block px-3 py-2 text-gray-600 hover:text-primary-600">Contact</a>
+                        <div class="border-t border-gray-200 pt-3">
+                            <a href="/register" class="block px-3 py-2 text-gray-600 hover:text-primary-600">Register as Student</a>
+                            <a href="/register" class="block px-3 py-2 text-gray-600 hover:text-primary-600">Register as Provider</a>
+                            <a href="/login" class="block px-3 py-2 text-primary-600 font-medium">Sign In</a>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+            
+
+            <!-- Hero Section -->
+            <section id="section_1" class="hero-pattern gradient-bg-home min-h-screen flex items-center justify-center pt-16 relative">
+                <!-- Background overlay for better text contrast -->
+                <div class="absolute inset-0 bg-blue-900/10"></div>
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+                    <div class="animate-fade-in">
+                        <div class="mb-6">
+                            <span class="inline-block bg-white/20 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm font-medium mb-4">
+                                🎓 Empowering Education Since 2024
+                            </span>
+                        </div>
+                        <h1 class="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight drop-shadow-2xl">
+                            Learn and Earn
+                        </h1>
+                        <p class="text-xl md:text-2xl text-white mb-6 max-w-4xl mx-auto drop-shadow-lg font-medium">
+                            Connect with scholarship opportunities that transform lives. Whether you're a student seeking financial support or a provider wanting to make a difference, EASESCHOLAR is your trusted platform for educational empowerment.
+                        </p>
+                        
+                        <!-- Statistics -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 max-w-3xl mx-auto">
+                            <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4">
+                                <div class="text-3xl font-bold text-white">500+</div>
+                                <div class="text-white/90 text-sm">Active Scholarships</div>
+                            </div>
+                            <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4">
+                                <div class="text-3xl font-bold text-white">1,200+</div>
+                                <div class="text-white/90 text-sm">Students Helped</div>
+                            </div>
+                            <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4">
+                                <div class="text-3xl font-bold text-white">₱15M+</div>
+                                <div class="text-white/90 text-sm">Funds Distributed</div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+                            <a href="/register" class="bg-white text-primary-600 hover:bg-gray-100 px-8 py-4 rounded-xl font-semibold text-lg transition-colors inline-flex items-center justify-center shadow-lg hover:shadow-xl">
+                                <i class="fas fa-user-graduate mr-2"></i>Apply as Student
+                            </a>
+                            <a href="/register" class="bg-primary-800 text-white hover:bg-primary-900 px-8 py-4 rounded-xl font-semibold text-lg transition-colors inline-flex items-center justify-center shadow-lg hover:shadow-xl">
+                                <i class="fas fa-building mr-2"></i>Become Provider
+                            </a>
+                        </div>
+                        
+                        <!-- Scroll indicator -->
+                        <div class="animate-bounce-slow">
+                            <a href="#why-choose-us" class="text-white/80 hover:text-white transition-colors">
+                                <i class="fas fa-chevron-down text-2xl"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Why Choose Us Section -->
+            <section id="why-choose-us" class="py-20 bg-white">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="text-center mb-16">
+                        <h2 class="text-4xl font-bold text-gray-900 mb-4">Why Choose EASESCHOLAR?</h2>
+                        <p class="text-xl text-gray-600 max-w-3xl mx-auto">We're more than just a platform - we're your partner in educational success</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                        <!-- Feature 1 -->
+                        <div class="text-center group">
+                            <div class="w-20 h-20 bg-gradient-to-br from-primary-500 to-primary-700 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+                                <i class="fas fa-shield-alt text-white text-2xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-3">Secure & Trusted</h3>
+                            <p class="text-gray-600">Bank-level security ensures your personal information and applications are always protected.</p>
+                        </div>
+                        
+                        <!-- Feature 2 -->
+                        <div class="text-center group">
+                            <div class="w-20 h-20 bg-gradient-to-br from-green-500 to-green-700 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+                                <i class="fas fa-rocket text-white text-2xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-3">Fast Processing</h3>
+                            <p class="text-gray-600">Quick application reviews and instant notifications keep you updated on your scholarship status.</p>
+                        </div>
+                        
+                        <!-- Feature 3 -->
+                        <div class="text-center group">
+                            <div class="w-20 h-20 bg-gradient-to-br from-purple-500 to-purple-700 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+                                <i class="fas fa-users text-white text-2xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-3">Community Support</h3>
+                            <p class="text-gray-600">Join a community of scholars and mentors dedicated to your educational journey.</p>
+                        </div>
+                        
+                        <!-- Feature 4 -->
+                        <div class="text-center group">
+                            <div class="w-20 h-20 bg-gradient-to-br from-orange-500 to-orange-700 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+                                <i class="fas fa-chart-line text-white text-2xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-3">Track Progress</h3>
+                            <p class="text-gray-600">Monitor your academic progress and scholarship performance with detailed analytics.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Featured Section -->
+            <section class="py-20 bg-gray-50">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <!-- Student Card -->
+                        <div class="lg:col-span-1">
+                            <div class="bg-white rounded-2xl shadow-lg p-8 card-hover h-full">
+                                <div class="flex items-start justify-between mb-6">
+                                    <div>
+                                        <h3 class="text-2xl font-bold text-gray-900 mb-3">Apply as a Student</h3>
+                                        <p class="text-gray-600">Unlock opportunities—find the scholarship that fuels your future.</p>
+                                    </div>
+                                    <span class="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full">14</span>
+                                </div>
+                                <div class="mb-6">
+                                    <div class="w-24 h-24 bg-blue-100 rounded-2xl flex items-center justify-center mb-4">
+                                        <i class="fas fa-user-graduate text-blue-600 text-2xl"></i>
+                                    </div>
+                                </div>
+                                <a href="/login" class="inline-flex items-center text-primary-600 hover:text-primary-700 font-medium">
+                                    Get Started <i class="fas fa-arrow-right ml-2"></i>
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <!-- Provider Card -->
+                        <div class="lg:col-span-2">
+                            <div class="bg-gradient-to-r from-primary-600 to-primary-800 rounded-2xl shadow-lg p-8 card-hover h-full text-white relative overflow-hidden">
+                                <div class="relative z-10">
+                                    <div class="flex items-start justify-between mb-6">
+                                        <div>
+                                            <h3 class="text-3xl font-bold mb-3">Be a Scholarship Provider</h3>
+                                            <p class="text-blue-100 text-lg">Empower futures by becoming a scholarship provider, supporting students' dreams</p>
+                                        </div>
+                                        <span class="bg-white/20 text-white text-sm font-medium px-3 py-1 rounded-full">25</span>
+                                    </div>
+                                    
+                                    <div class="mb-8">
+                                        <div class="w-32 h-32 bg-white/10 rounded-2xl flex items-center justify-center mb-6">
+                                            <i class="fas fa-building text-white text-3xl"></i>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex flex-col sm:flex-row gap-4">
+                                        <a href="/login" class="bg-white text-primary-600 hover:bg-gray-100 px-6 py-3 rounded-lg font-semibold transition-colors inline-flex items-center justify-center">
+                                            Learn More <i class="fas fa-arrow-right ml-2"></i>
+                                        </a>
+                                        <div class="flex items-center space-x-4">
+                                            <span class="text-white/80">Share:</span>
+                                            <div class="flex space-x-3">
+                                                <a href="#" class="text-white/60 hover:text-white transition-colors">
+                                                    <i class="fab fa-twitter"></i>
+                                                </a>
+                                                <a href="#" class="text-white/60 hover:text-white transition-colors">
+                                                    <i class="fab fa-facebook"></i>
+                                                </a>
+                                                <a href="#" class="text-white/60 hover:text-white transition-colors">
+                                                    <i class="fab fa-pinterest"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-32 translate-x-32"></div>
+                                <div class="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full translate-y-24 -translate-x-24"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Success Stories section removed per request -->
+            <!-- The stories were static content; removed to simplify the landing page. -->
+
+            <!-- Impact Statistics Section -->
+            <section class="py-20 bg-gray-900 text-white">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="text-center mb-16">
+                        <h2 class="text-4xl font-bold mb-4">Our Impact in Numbers</h2>
+                        <p class="text-xl text-gray-300">Making a difference, one student at a time</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                        <!-- Stat 1 -->
+                        <div class="text-center group">
+                            <div class="w-20 h-20 bg-primary-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:bg-primary-500 transition-colors">
+                                <i class="fas fa-users text-white text-2xl"></i>
+                            </div>
+                            <div class="text-4xl font-bold text-white mb-2">1,200+</div>
+                            <div class="text-gray-300">Students Supported</div>
+                            <div class="text-sm text-gray-400 mt-1">Across all programs</div>
+                        </div>
+                        
+                        <!-- Stat 2 -->
+                        <div class="text-center group">
+                            <div class="w-20 h-20 bg-green-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:bg-green-500 transition-colors">
+                                <i class="fas fa-graduation-cap text-white text-2xl"></i>
+                            </div>
+                            <div class="text-4xl font-bold text-white mb-2">850+</div>
+                            <div class="text-gray-300">Graduates</div>
+                            <div class="text-sm text-gray-400 mt-1">Successfully completed degrees</div>
+                        </div>
+                        
+                        <!-- Stat 3 -->
+                        <div class="text-center group">
+                            <div class="w-20 h-20 bg-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:bg-purple-500 transition-colors">
+                                <i class="fas fa-building text-white text-2xl"></i>
+                            </div>
+                            <div class="text-4xl font-bold text-white mb-2">150+</div>
+                            <div class="text-gray-300">Partner Organizations</div>
+                            <div class="text-sm text-gray-400 mt-1">Trusted scholarship providers</div>
+                        </div>
+                        
+                        <!-- Stat 4 -->
+                        <div class="text-center group">
+                            <div class="w-20 h-20 bg-orange-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:bg-orange-500 transition-colors">
+                                <i class="fas fa-heart text-white text-2xl"></i>
+                            </div>
+                            <div class="text-4xl font-bold text-white mb-2">₱15M+</div>
+                            <div class="text-gray-300">Total Scholarships</div>
+                            <div class="text-sm text-gray-400 mt-1">Distributed to students</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Achievement highlights -->
+                    <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center">
+                            <i class="fas fa-trophy text-yellow-400 text-3xl mb-4"></i>
+                            <h4 class="font-bold text-white mb-2">Top Rated Platform</h4>
+                            <p class="text-gray-300 text-sm">Rated #1 scholarship platform in the Philippines</p>
+                        </div>
+                        
+                        <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center">
+                            <i class="fas fa-medal text-yellow-400 text-3xl mb-4"></i>
+                            <h4 class="font-bold text-white mb-2">95% Success Rate</h4>
+                            <p class="text-gray-300 text-sm">Students successfully matched with scholarships</p>
+                        </div>
+                        
+                        <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center">
+                            <i class="fas fa-star text-yellow-400 text-3xl mb-4"></i>
+                            <h4 class="font-bold text-white mb-2">4.9/5 Rating</h4>
+                            <p class="text-gray-300 text-sm">Average user satisfaction score</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- Opportunities Section -->
+            <section id="section_2" class="py-20 bg-white">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="text-center mb-16">
+                        <h2 class="text-4xl font-bold text-gray-900 mb-4">Opportunities</h2>
+                        <p class="text-xl text-gray-600">Discover various programs tailored for students and providers</p>
+                    </div>
+                    
+                    <!-- Tab Navigation -->
+                    <div class="flex justify-center mb-12">
+                        <div class="bg-gray-100 p-1 rounded-xl">
+                            <button id="applicant-tab" class="tab-button active px-8 py-3 rounded-lg font-medium transition-all">
+                                Applicant
+                            </button>
+                            <button id="provider-tab" class="tab-button px-8 py-3 rounded-lg font-medium transition-all">
+                                Provider
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Applicant Tab Content -->
+                    <div id="applicant-content" class="tab-content">
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            <!-- Free Education -->
+                            <div class="bg-white border border-gray-200 rounded-2xl shadow-lg p-6 card-hover">
+                                <div class="flex items-start justify-between mb-4">
+                                    <div>
+                                        <h4 class="text-xl font-bold text-gray-900 mb-2">Free Education</h4>
+                                        <p class="text-gray-600">Study and achieve that degree for free</p>
+                                    </div>
+                                    <span class="bg-green-100 text-green-800 text-sm font-medium px-3 py-1 rounded-full">14</span>
+                                </div>
+                                <div class="mb-4">
+                                    <div class="w-16 h-16 bg-green-100 rounded-xl flex items-center justify-center">
+                                        <i class="fas fa-graduation-cap text-green-600 text-xl"></i>
+                                    </div>
+                                </div>
+                                <a href="/login" class="inline-flex items-center text-primary-600 hover:text-primary-700 font-medium">
+                                    Apply Now <i class="fas fa-arrow-right ml-2"></i>
+                                </a>
+                            </div>
+                            
+                            <!-- Scholarship Grants -->
+                            <div class="bg-white border border-gray-200 rounded-2xl shadow-lg p-6 card-hover">
+                                <div class="flex items-start justify-between mb-4">
+                                    <div>
+                                        <h4 class="text-xl font-bold text-gray-900 mb-2">Scholarship Grants</h4>
+                                        <p class="text-gray-600">Need some financial boost? Find the right grant for you here!</p>
+                                    </div>
+                                    <span class="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full">75</span>
+                                </div>
+                                <div class="mb-4">
+                                    <div class="w-16 h-16 bg-blue-100 rounded-xl flex items-center justify-center">
+                                        <i class="fas fa-dollar-sign text-blue-600 text-xl"></i>
+                                    </div>
+                                </div>
+                                <a href="/login" class="inline-flex items-center text-primary-600 hover:text-primary-700 font-medium">
+                                    Explore Grants <i class="fas fa-arrow-right ml-2"></i>
+                                </a>
+                            </div>
+                            
+                            <!-- Regular Scholarship -->
+                            <div class="bg-white border border-gray-200 rounded-2xl shadow-lg p-6 card-hover">
+                                <div class="flex items-start justify-between mb-4">
+                                    <div>
+                                        <h4 class="text-xl font-bold text-gray-900 mb-2">Regular Scholarship Grants</h4>
+                                        <p class="text-gray-600">Find the right monthly support program for rising academic expenses.</p>
+                                    </div>
+                                    <span class="bg-purple-100 text-purple-800 text-sm font-medium px-3 py-1 rounded-full">100</span>
+                                </div>
+                                <div class="mb-4">
+                                    <div class="w-16 h-16 bg-purple-100 rounded-xl flex items-center justify-center">
+                                        <i class="fas fa-calendar-alt text-purple-600 text-xl"></i>
+                                    </div>
+                                </div>
+                                <a href="/login" class="inline-flex items-center text-primary-600 hover:text-primary-700 font-medium">
+                                    Learn More <i class="fas fa-arrow-right ml-2"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Provider Tab Content -->
+                    <div id="provider-content" class="tab-content hidden">
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            <!-- School Owner -->
+                            <div class="bg-white border border-gray-200 rounded-2xl shadow-lg p-6 card-hover">
+                                <div class="flex items-start justify-between mb-4">
+                                    <div>
+                                        <h4 class="text-xl font-bold text-gray-900 mb-2">Owns a school?</h4>
+                                        <p class="text-gray-600">Register your school to be open for Scholarship Programs</p>
+                                    </div>
+                                    <span class="bg-orange-100 text-orange-800 text-sm font-medium px-3 py-1 rounded-full">30</span>
+                                </div>
+                                <div class="mb-4">
+                                    <div class="w-16 h-16 bg-orange-100 rounded-xl flex items-center justify-center">
+                                        <i class="fas fa-school text-orange-600 text-xl"></i>
+                                    </div>
+                                </div>
+                                <a href="/login" class="inline-flex items-center text-primary-600 hover:text-primary-700 font-medium">
+                                    Register School <i class="fas fa-arrow-right ml-2"></i>
+                                </a>
+                            </div>
+                            
+                            <!-- One Time Program -->
+                            <div class="bg-white border border-gray-200 rounded-2xl shadow-lg p-6 card-hover">
+                                <div class="flex items-start justify-between mb-4">
+                                    <div>
+                                        <h4 class="text-xl font-bold text-gray-900 mb-2">Run a one time program</h4>
+                                        <p class="text-gray-600">Want to help out students pay their current financial problems? Run a onetime program now!</p>
+                                    </div>
+                                    <span class="bg-teal-100 text-teal-800 text-sm font-medium px-3 py-1 rounded-full">65</span>
+                                </div>
+                                <div class="mb-4">
+                                    <div class="w-16 h-16 bg-teal-100 rounded-xl flex items-center justify-center">
+                                        <i class="fas fa-hand-holding-usd text-teal-600 text-xl"></i>
+                                    </div>
+                                </div>
+                                <a href="/login" class="inline-flex items-center text-primary-600 hover:text-primary-700 font-medium">
+                                    Start Program <i class="fas fa-arrow-right ml-2"></i>
+                                </a>
+                            </div>
+                            
+                            <!-- Monthly Provider -->
+                            <div class="bg-white border border-gray-200 rounded-2xl shadow-lg p-6 card-hover">
+                                <div class="flex items-start justify-between mb-4">
+                                    <div>
+                                        <h4 class="text-xl font-bold text-gray-900 mb-2">Be a monthly Provider</h4>
+                                        <p class="text-gray-600">Want to help out students with their whole college financial struggles? You can support the right students here!</p>
+                                    </div>
+                                    <span class="bg-red-100 text-red-800 text-sm font-medium px-3 py-1 rounded-full">50</span>
+                                </div>
+                                <div class="mb-4">
+                                    <div class="w-16 h-16 bg-red-100 rounded-xl flex items-center justify-center">
+                                        <i class="fas fa-heart text-red-600 text-xl"></i>
+                                    </div>
+                                </div>
+                                <a href="/login" class="inline-flex items-center text-primary-600 hover:text-primary-700 font-medium">
+                                    Become Provider <i class="fas fa-arrow-right ml-2"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- How it Works Section -->
+            <section id="section_3" class="py-20 bg-gray-900 relative">
+                <!-- Background overlay for better text contrast -->
+                <div class="absolute inset-0 bg-gray-900/90"></div>
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                    <div class="text-center mb-16">
+                        <h2 class="text-4xl font-bold text-white mb-4 drop-shadow-lg">How does it work for the applicants?</h2>
+                        <p class="text-xl text-gray-200 drop-shadow-md">Simple steps to get your scholarship</p>
+                    </div>
+                    
+                    <div class="max-w-4xl mx-auto">
+                        <div class="space-y-12">
+                            <!-- Step 1 -->
+                            <div class="flex flex-col md:flex-row items-center gap-8 bg-white/10 backdrop-blur-sm rounded-2xl p-8">
+                                <div class="flex-shrink-0">
+                                    <div class="w-20 h-20 bg-primary-600 rounded-full flex items-center justify-center shadow-lg">
+                                        <i class="fas fa-search text-white text-2xl"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-1 text-center md:text-left">
+                                    <h4 class="text-2xl font-bold text-white mb-3 drop-shadow-md">Search the right program for you</h4>
+                                    <p class="text-gray-100 text-lg leading-relaxed">You can browse through many available scholarship programs that may suit your needs, whether it is being academic scholarship or financial aids.</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Step 2 -->
+                            <div class="flex flex-col md:flex-row-reverse items-center gap-8 bg-white/10 backdrop-blur-sm rounded-2xl p-8">
+                                <div class="flex-shrink-0">
+                                    <div class="w-20 h-20 bg-primary-600 rounded-full flex items-center justify-center shadow-lg">
+                                        <i class="fas fa-file-alt text-white text-2xl"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-1 text-center md:text-right">
+                                    <h4 class="text-2xl font-bold text-white mb-3 drop-shadow-md">Check for the program & Apply</h4>
+                                    <p class="text-gray-100 text-lg leading-relaxed">After looking for the right scholarship program you want to apply for, proceed with the documents necessary for application</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Step 3 -->
+                            <div class="flex flex-col md:flex-row items-center gap-8 bg-white/10 backdrop-blur-sm rounded-2xl p-8">
+                                <div class="flex-shrink-0">
+                                    <div class="w-20 h-20 bg-primary-600 rounded-full flex items-center justify-center shadow-lg">
+                                        <i class="fas fa-book text-white text-2xl"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-1 text-center md:text-left">
+                                    <h4 class="text-2xl font-bold text-white mb-3 drop-shadow-md">Study Well & Enjoy more opportunities to come</h4>
+                                    <p class="text-gray-100 text-lg leading-relaxed">You can apply with more than one scholarship program as long as the provider allows it, you can also study harder so more opportunities could open up for you!</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- FAQ Section -->
+            <section id="section_4" class="py-20 bg-gray-50">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                        <!-- FAQ Image -->
+                        <div class="order-2 lg:order-1">
+                            <div class="bg-primary-100 rounded-2xl p-8 text-center">
+                                <div class="w-32 h-32 bg-primary-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                                    <i class="fas fa-question text-white text-4xl"></i>
+                                </div>
+                                <h3 class="text-2xl font-bold text-primary-800 mb-4">Have Questions?</h3>
+                                <p class="text-primary-700">We're here to help you find the right scholarship program</p>
+                            </div>
+                        </div>
+                        
+                        <!-- FAQ Content -->
+                        <div class="order-1 lg:order-2">
+                            <h2 class="text-4xl font-bold text-gray-900 mb-8">Frequently Asked Questions</h2>
+                            
+                            <div class="space-y-6">
+                                <!-- FAQ 1 -->
+                                <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                                    <button class="faq-button w-full text-left p-6 focus:outline-none" data-target="faq1">
+                                        <div class="flex justify-between items-center">
+                                            <h4 class="text-lg font-semibold text-gray-900">What is EASESCHOLAR?</h4>
+                                            <i class="fas fa-chevron-down text-gray-400 transform transition-transform"></i>
+                                        </div>
+                                    </button>
+                                    <div id="faq1" class="faq-content hidden px-6 pb-6">
+                                        <p class="text-gray-600"><strong>EASESCHOLAR</strong> is a web based centralized scholarship platform for students who needs support with their academic struggles. This platform could also be utilized by scholarship providers locally or internationally</p>
+                                    </div>
+                                </div>
+                                
+                                <!-- FAQ 2 -->
+                                <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                                    <button class="faq-button w-full text-left p-6 focus:outline-none" data-target="faq2">
+                                        <div class="flex justify-between items-center">
+                                            <h4 class="text-lg font-semibold text-gray-900">How to find a Scholarship Program?</h4>
+                                            <i class="fas fa-chevron-down text-gray-400 transform transition-transform"></i>
+                                        </div>
+                                    </button>
+                                    <div id="faq2" class="faq-content hidden px-6 pb-6">
+                                        <p class="text-gray-600">If you don't have an account yet, you can start by creating one. After signing up you can then proceed to upload the necessary document to verify your eligibility for various scholarship programs!</p>
+                                    </div>
+                                </div>
+                                
+                                <!-- FAQ 3 -->
+                                <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                                    <button class="faq-button w-full text-left p-6 focus:outline-none" data-target="faq3">
+                                        <div class="flex justify-between items-center">
+                                            <h4 class="text-lg font-semibold text-gray-900">How to start my own scholarship program</h4>
+                                            <i class="fas fa-chevron-down text-gray-400 transform transition-transform"></i>
+                                        </div>
+                                    </button>
+                                    <div id="faq3" class="faq-content hidden px-6 pb-6">
+                                        <p class="text-gray-600">You can create your account "as a provider" in the account registration menu, after which you can select if you want to run a onetime program or be a monthly provider, or if you have a school you can open it in this platform as a free education school</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- Contact Section -->
+            <section id="section_5" class="py-20 bg-white">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="text-center mb-16">
+                        <h2 class="text-4xl font-bold text-gray-900 mb-4">Get in touch</h2>
+                        <p class="text-xl text-gray-600">We'd love to hear from you</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                        <!-- Map -->
+                        <div class="rounded-2xl overflow-hidden shadow-lg">
+                            <iframe 
+                                class="w-full h-96" 
+                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d782.6715705360275!2d121.04244057586989!3d14.904133167155772!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3397a84f0e1488c3%3A0x68627fa5c6cdcc71!2sNorzagaray%20College!5e1!3m2!1sen!2sph!4v1739184398435!5m2!1sen!2sph" 
+                                style="border:0;" 
+                                allowfullscreen="" 
+                                loading="lazy" 
+                                referrerpolicy="no-referrer-when-downgrade">
+                            </iframe>
+                        </div>
+                        
+                        <!-- Contact Info -->
+                        <div class="space-y-8">
+                            <div class="bg-gray-50 rounded-2xl p-8">
+                                <h4 class="text-2xl font-bold text-gray-900 mb-6">Head office</h4>
+                                
+                                <div class="space-y-6">
+                                    <div class="flex items-start space-x-4">
+                                        <div class="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                            <i class="fas fa-map-marker-alt text-primary-600"></i>
+                                        </div>
+                                        <div>
+                                            <h5 class="font-semibold text-gray-900 mb-1">Address</h5>
+                                            <p class="text-gray-600">Municipal Compound, Norzagaray, Bulacan, Philippines</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex items-start space-x-4">
+                                        <div class="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                            <i class="fas fa-phone text-primary-600"></i>
+                                        </div>
+                                        <div>
+                                            <h5 class="font-semibold text-gray-900 mb-1">Phone</h5>
+                                            <a href="tel:09057411137" class="text-primary-600 hover:text-primary-700">
+                                                0905-741-1137
+                                            </a>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex items-start space-x-4">
+                                        <div class="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                            <i class="fas fa-envelope text-primary-600"></i>
+                                        </div>
+                                        <div>
+                                            <h5 class="font-semibold text-gray-900 mb-1">Email</h5>
+                                            <a href="mailto:troyjanmarcial0@gmail.com" class="text-primary-600 hover:text-primary-700">
+                                                troyjanmarcial0@gmail.com
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Quick Actions -->
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <a href="/register" class="bg-primary-600 text-white hover:bg-primary-700 px-4 py-3 rounded-lg text-center transition-colors inline-flex items-center justify-center">
+                                    <i class="fas fa-user-plus mr-2"></i>
+                                    <span class="font-medium">Register Now</span>
+                                </a>
+                                <a href="/login" class="bg-gray-800 text-white hover:bg-gray-900 px-4 py-3 rounded-lg text-center transition-colors inline-flex items-center justify-center">
+                                    <i class="fas fa-sign-in-alt mr-2"></i>
+                                    <span class="font-medium">Sign In</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="bg-gray-900 text-white py-12">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                    <!-- Brand -->
+                    <div class="md:col-span-2">
+                        <div class="flex items-center space-x-3 mb-6">
+                            <div class="w-10 h-10 bg-primary-600 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-graduation-cap text-white text-lg"></i>
+                            </div>
+                            <span class="text-2xl font-bold">EASESCHOLAR</span>
+                        </div>
+                        <p class="text-gray-400 max-w-md">
+                            Connecting students with scholarship opportunities and empowering providers to make a difference in education.
+                        </p>
+                    </div>
+                    
+                    <!-- Quick Links -->
+                    <div>
+                        <h4 class="font-semibold text-lg mb-4">Quick Links</h4>
+                        <ul class="space-y-2">
+                            <li><a href="#section_1" class="text-gray-400 hover:text-white transition-colors">Home</a></li>
+                            <li><a href="#section_2" class="text-gray-400 hover:text-white transition-colors">Programs</a></li>
+                            <li><a href="#section_3" class="text-gray-400 hover:text-white transition-colors">How it Works</a></li>
+                            <li><a href="#section_4" class="text-gray-400 hover:text-white transition-colors">FAQs</a></li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Get Started -->
+                    <div>
+                        <h4 class="font-semibold text-lg mb-4">Get Started</h4>
+                        <ul class="space-y-2">
+                            <li><a href="/register" class="text-gray-400 hover:text-white transition-colors">Student Registration</a></li>
+                            <li><a href="/register" class="text-gray-400 hover:text-white transition-colors">Provider Registration</a></li>
+                            <li><a href="/login" class="text-gray-400 hover:text-white transition-colors">Sign In</a></li>
+                            <li><a href="#section_5" class="text-gray-400 hover:text-white transition-colors">Contact Us</a></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="border-t border-gray-800 mt-12 pt-8 text-center">
+                    <p class="text-gray-400">Copyright © 2024 EASESCHOLAR. All rights reserved.</p>
+                </div>
+            </div>
+        </footer>
+
+        <!-- Scripts -->
+        <script>
+            // Initialize API
+            const api = new EasecholarAPI();
+            
+            // Mobile menu toggle
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            if (mobileMenuButton && mobileMenu) {
+                mobileMenuButton.addEventListener('click', function() {
+                    mobileMenu.classList.toggle('hidden');
+                });
+            }
+
+            // Tab switching
+            const applicantTab = document.getElementById('applicant-tab');
+            const providerTab = document.getElementById('provider-tab');
+            const applicantContent = document.getElementById('applicant-content');
+            const providerContent = document.getElementById('provider-content');
+
+            function switchTab(activeTab, inactiveTab, activeContent, inactiveContent) {
+                if (!activeTab || !inactiveTab || !activeContent || !inactiveContent) return;
+                
+                activeTab.classList.add('active', 'bg-white', 'text-primary-600', 'shadow-sm');
+                activeTab.classList.remove('text-gray-600', 'hover:text-gray-800');
+                
+                inactiveTab.classList.remove('active', 'bg-white', 'text-primary-600', 'shadow-sm');
+                inactiveTab.classList.add('text-gray-600', 'hover:text-gray-800');
+                
+                activeContent.classList.remove('hidden');
+                inactiveContent.classList.add('hidden');
+            }
+
+            if (applicantTab && providerTab && applicantContent && providerContent) {
+                applicantTab.addEventListener('click', function() {
+                    switchTab(applicantTab, providerTab, applicantContent, providerContent);
+                });
+
+                providerTab.addEventListener('click', function() {
+                    switchTab(providerTab, applicantTab, providerContent, applicantContent);
+                });
+
+                // Initialize first tab as active
+                applicantTab.classList.add('active', 'bg-white', 'text-primary-600', 'shadow-sm');
+                providerTab.classList.add('text-gray-600', 'hover:text-gray-800');
+            }
+
+            // FAQ toggle
+            const faqButtons = document.querySelectorAll('.faq-button');
+            
+            faqButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const target = this.getAttribute('data-target');
+                    const content = document.getElementById(target);
+                    const icon = this.querySelector('i');
+                    
+                    if (!content || !icon) return;
+                    
+                    // Close all other FAQs
+                    faqButtons.forEach(otherButton => {
+                        if (otherButton !== this) {
+                            const otherTarget = otherButton.getAttribute('data-target');
+                            const otherContent = document.getElementById(otherTarget);
+                            const otherIcon = otherButton.querySelector('i');
+                            
+                            if (otherContent && otherIcon) {
+                                otherContent.classList.add('hidden');
+                                otherIcon.classList.remove('rotate-180');
+                            }
+                        }
+                    });
+                    
+                    // Toggle current FAQ
+                    content.classList.toggle('hidden');
+                    icon.classList.toggle('rotate-180');
+                });
+            });
+
+            // Smooth scrolling for navigation links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                        // Close mobile menu if open
+                        if (mobileMenu) {
+                            mobileMenu.classList.add('hidden');
+                        }
+                    }
+                });
+            });
+
+            // Add scroll effect to navbar
+            window.addEventListener('scroll', function() {
+                const navbar = document.querySelector('nav');
+                if (navbar) {
+                    if (window.scrollY > 50) {
+                        navbar.classList.add('shadow-xl');
+                        navbar.classList.remove('shadow-lg');
+                    } else {
+                        navbar.classList.add('shadow-lg');
+                        navbar.classList.remove('shadow-xl');
+                    }
+                }
+            });
+        </script>
+
+    </body>
+</html>

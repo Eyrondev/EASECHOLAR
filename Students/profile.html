@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - EASECHOLAR</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Custom Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        secondary: {
+                            50: '#f8fafc',
+                            100: '#f1f5f9',
+                            200: '#e2e8f0',
+                            300: '#cbd5e1',
+                            400: '#94a3b8',
+                            500: '#64748b',
+                            600: '#475569',
+                            700: '#334155',
+                            800: '#1e293b',
+                            900: '#0f172a',
+                        }
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'ui-sans-serif', 'system-ui'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Mobile Responsive Styles -->
+    <link rel="stylesheet" href="/Assets/css/mobile-responsive.css">
+
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Sidebar component (fixed) -->
+    <div id="sidebar-container"></div>
+    
+    <!-- Navigation component (fixed) -->
+    <div id="nav-container"></div>
+
+    <!-- Main content with proper spacing for fixed sidebar and nav -->
+    <div class="ml-0 lg:ml-64 pt-20 sm:pt-16">
+        <div class="p-4 sm:p-6 lg:p-8">
+            <!-- Page Header -->
+            <div class="mb-6 sm:mb-8">
+                <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Profile</h1>
+                <p class="text-sm sm:text-base text-gray-600">Manage your personal information and academic details.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+                <!-- Profile Card -->
+                <div class="lg:col-span-1">
+                    <div class="bg-white rounded-lg shadow-md border border-gray-200 p-4 sm:p-6">
+                        <div class="text-center mb-4 sm:mb-6">
+                            <div class="relative inline-block mb-3">
+                                <img id="profile-picture" src="https://ui-avatars.com/api/?name=User&size=120&background=0284c7&color=fff&bold=true" alt="Profile" 
+                                     class="w-24 h-24 sm:w-32 sm:h-32 rounded-full mx-auto border-4 border-white shadow-lg object-cover">
+                            </div>
+                            <input type="file" id="profile-picture-input" accept="image/*" class="hidden">
+                            <div class="flex flex-col sm:flex-row gap-2 justify-center mb-3">
+                                <button onclick="document.getElementById('profile-picture-input').click()" class="px-3 sm:px-4 py-2 text-xs sm:text-sm bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors shadow-sm">
+                                    <i class="fas fa-camera mr-1.5"></i>Upload Photo
+                                </button>
+                                <button id="remove-picture-btn" onclick="removeProfilePicture()" class="px-3 sm:px-4 py-2 text-xs sm:text-sm bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors shadow-sm hidden">
+                                    <i class="fas fa-trash mr-1.5"></i>Remove Photo
+                                </button>
+                            </div>
+                            <h2 id="profile-name" class="text-lg sm:text-xl font-semibold text-gray-900">Loading...</h2>
+                            <p id="profile-course" class="text-sm sm:text-base text-gray-600">-</p>
+                            <p id="profile-school" class="text-xs sm:text-sm text-gray-500">-</p>
+                        </div>
+
+                        <div class="space-y-3 sm:space-y-4">
+                            <div class="flex items-center text-xs sm:text-sm text-gray-600">
+                                <i class="fas fa-envelope w-4 sm:w-5 mr-2 sm:mr-3 flex-shrink-0"></i>
+                                <span id="profile-email" class="truncate">-</span>
+                            </div>
+                            <div class="flex items-center text-xs sm:text-sm text-gray-600">
+                                <i class="fas fa-phone w-4 sm:w-5 mr-2 sm:mr-3 flex-shrink-0"></i>
+                                <span id="profile-phone" class="truncate">-</span>
+                            </div>
+                            <div class="flex items-center text-xs sm:text-sm text-gray-600">
+                                <i class="fas fa-map-marker-alt w-4 sm:w-5 mr-2 sm:mr-3 flex-shrink-0"></i>
+                                <span id="profile-location" class="truncate">-</span>
+                            </div>
+                            <div class="flex items-center text-xs sm:text-sm text-gray-600">
+                                <i class="fas fa-calendar w-4 sm:w-5 mr-2 sm:mr-3 flex-shrink-0"></i>
+                                <span id="profile-joined" class="truncate">-</span>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-gray-200">
+                            <h3 class="text-xs sm:text-sm font-semibold text-gray-900 mb-2 sm:mb-3">Profile Completion</h3>
+                            <div class="flex justify-between text-xs sm:text-sm text-gray-600 mb-1">
+                                <span>Progress</span>
+                                <span id="profile-completion-percent" class="font-medium">0%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div id="profile-completion-bar" class="bg-primary-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-2">Complete your profile for better scholarship opportunities</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile Forms -->
+                <div class="lg:col-span-2 space-y-4 sm:space-y-6 lg:space-y-8">
+                    <!-- Personal Information -->
+                    <div class="bg-white rounded-lg shadow-md border border-gray-200">
+                        <div class="p-4 sm:p-6 border-b border-gray-200">
+                            <div class="flex justify-between items-center">
+                                <h3 class="text-base sm:text-lg font-semibold text-gray-900">Personal Information</h3>
+                                <button id="edit-personal-btn" onclick="editSection('personal')" class="text-primary-600 hover:text-primary-700 text-xs sm:text-sm font-medium">
+                                    <i class="fas fa-edit mr-1"></i><span class="hidden sm:inline">Edit</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="p-4 sm:p-6" data-section="personal">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-6">
+                                <div>
+                                    <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-0.5 sm:mb-1">First Name</label>
+                                    <input id="first_name" type="text" class="w-full px-2.5 sm:px-3 py-2 sm:py-2.5 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500" readonly>
+                                </div>
+                                <div>
+                                    <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-0.5 sm:mb-1">Last Name</label>
+                                    <input id="last_name" type="text" class="w-full px-2.5 sm:px-3 py-2 sm:py-2.5 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500" readonly>
+                                </div>
+                                <div>
+                                    <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-0.5 sm:mb-1">Date of Birth</label>
+                                    <input id="date_of_birth" type="date" class="w-full px-2.5 sm:px-3 py-2 sm:py-2.5 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500" readonly>
+                                </div>
+                                <div>
+                                    <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-0.5 sm:mb-1">Gender</label>
+                                    <select id="gender" class="w-full px-2.5 sm:px-3 py-2 sm:py-2.5 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500" disabled>
+                                        <option value="">Select Gender</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-0.5 sm:mb-1">Phone Number</label>
+                                    <input id="phone_number" type="tel" class="w-full px-2.5 sm:px-3 py-2 sm:py-2.5 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500" readonly>
+                                </div>
+                                <div>
+                                    <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-0.5 sm:mb-1">City</label>
+                                    <input id="city" type="text" class="w-full px-2.5 sm:px-3 py-2 sm:py-2.5 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500" readonly>
+                                </div>
+                                <div class="sm:col-span-2">
+                                    <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-0.5 sm:mb-1">Address</label>
+                                    <textarea id="address" rows="2" class="w-full px-2.5 sm:px-3 py-2 sm:py-2.5 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500" readonly></textarea>
+                                </div>
+                            </div>
+                            <div id="personal-actions" class="mt-3 sm:mt-6 flex flex-col sm:flex-row gap-2 sm:gap-3 hidden">
+                                <button onclick="saveSection('personal')" class="w-full sm:w-auto px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors">
+                                    <i class="fas fa-save mr-1 sm:mr-2"></i>Save Changes
+                                </button>
+                                <button onclick="cancelEdit('personal')" class="w-full sm:w-auto px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors">
+                                    <i class="fas fa-times mr-1 sm:mr-2"></i>Cancel
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Academic Information -->
+                    <div class="bg-white rounded-lg shadow-md border border-gray-200">
+                        <div class="p-4 sm:p-6 border-b border-gray-200">
+                            <div class="flex justify-between items-center">
+                                <h3 class="text-base sm:text-lg font-semibold text-gray-900">Academic Information</h3>
+                                <button id="edit-academic-btn" onclick="editSection('academic')" class="text-primary-600 hover:text-primary-700 text-xs sm:text-sm font-medium">
+                                    <i class="fas fa-edit mr-1"></i><span class="hidden sm:inline">Edit</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="p-4 sm:p-6" data-section="academic">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-6">
+                                <div>
+                                    <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-0.5 sm:mb-1">University/School</label>
+                                    <input id="school_name" type="text" class="w-full px-2.5 sm:px-3 py-2 sm:py-2.5 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500" readonly>
+                                </div>
+                                <div>
+                                    <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-0.5 sm:mb-1">Student Number</label>
+                                    <input id="student_number" type="text" class="w-full px-2.5 sm:px-3 py-2 sm:py-2.5 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500" readonly>
+                                </div>
+                                <div class="sm:col-span-2">
+                                    <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-0.5 sm:mb-1">Degree Program / Course</label>
+                                    <input id="course" type="text" class="w-full px-2.5 sm:px-3 py-2 sm:py-2.5 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500" readonly>
+                                </div>
+                                <div>
+                                    <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-0.5 sm:mb-1">Year Level</label>
+                                    <select id="year_level" class="w-full px-2.5 sm:px-3 py-2 sm:py-2.5 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500" disabled>
+                                        <option value="">Select Year</option>
+                                        <option value="1st Year">1st Year</option>
+                                        <option value="2nd Year">2nd Year</option>
+                                        <option value="3rd Year">3rd Year</option>
+                                        <option value="4th Year">4th Year</option>
+                                        <option value="5th Year">5th Year</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-0.5 sm:mb-1">GPA</label>
+                                    <input id="gpa" type="number" step="0.01" min="0" max="5" class="w-full px-2.5 sm:px-3 py-2 sm:py-2.5 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500" readonly>
+                                </div>
+                                <div>
+                                    <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-0.5 sm:mb-1">Expected Graduation</label>
+                                    <input id="expected_graduation_date" type="date" class="w-full px-2.5 sm:px-3 py-2 sm:py-2.5 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500" readonly>
+                                </div>
+                            </div>
+                            <div id="academic-actions" class="mt-3 sm:mt-6 flex flex-col sm:flex-row gap-2 sm:gap-3 hidden">
+                                <button onclick="saveSection('academic')" class="w-full sm:w-auto px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors">
+                                    <i class="fas fa-save mr-1 sm:mr-2"></i>Save Changes
+                                </button>
+                                <button onclick="cancelEdit('academic')" class="w-full sm:w-auto px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors">
+                                    <i class="fas fa-times mr-1 sm:mr-2"></i>Cancel
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Financial Information -->
+                    <div class="bg-white rounded-lg shadow-md border border-gray-200">
+                        <div class="p-4 sm:p-6 border-b border-gray-200">
+                            <div class="flex justify-between items-center">
+                                <h3 class="text-base sm:text-lg font-semibold text-gray-900">Financial Information</h3>
+                                <button id="edit-financial-btn" onclick="editSection('financial')" class="text-primary-600 hover:text-primary-700 text-xs sm:text-sm font-medium">
+                                    <i class="fas fa-edit mr-1"></i><span class="hidden sm:inline">Edit</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="p-4 sm:p-6" data-section="financial">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-6">
+                                <div>
+                                    <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-0.5 sm:mb-1">Family Income (Annual)</label>
+                                    <input id="family_income" type="number" step="1000" class="w-full px-2.5 sm:px-3 py-2 sm:py-2.5 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500" readonly>
+                                </div>
+                                <div>
+                                    <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-0.5 sm:mb-1">Guardian Name</label>
+                                    <input id="guardian_name" type="text" class="w-full px-2.5 sm:px-3 py-2 sm:py-2.5 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500" readonly>
+                                </div>
+                            </div>
+                            <div id="financial-actions" class="mt-3 sm:mt-6 flex flex-col sm:flex-row gap-2 sm:gap-3 hidden">
+                                <button onclick="saveSection('financial')" class="w-full sm:w-auto px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors">
+                                    <i class="fas fa-save mr-1 sm:mr-2"></i>Save Changes
+                                </button>
+                                <button onclick="cancelEdit('financial')" class="w-full sm:w-auto px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors">
+                                    <i class="fas fa-times mr-1 sm:mr-2"></i>Cancel
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Documents -->
+                    <div class="bg-white rounded-lg shadow-md border border-gray-200">
+                        <div class="p-4 sm:p-6 border-b border-gray-200">
+                            <div class="flex justify-between items-center">
+                                <h3 class="text-base sm:text-lg font-semibold text-gray-900">Documents</h3>
+                                <button onclick="uploadDocument()" class="text-primary-600 hover:text-primary-700 text-xs sm:text-sm font-medium">
+                                    <i class="fas fa-upload mr-1"></i>Upload
+                                </button>
+                            </div>
+                        </div>
+                        <div class="p-4 sm:p-6">
+                            <div id="documents-list" class="space-y-4">
+                                <!-- Loading state -->
+                                <div id="documents-loading" class="text-center py-8">
+                                    <i class="fas fa-spinner fa-spin text-2xl text-gray-400 mb-2"></i>
+                                    <p class="text-sm text-gray-500">Loading documents...</p>
+                                </div>
+                                <!-- Empty state -->
+                                <div id="documents-empty" class="text-center py-8 hidden">
+                                    <i class="fas fa-folder-open text-4xl text-gray-300 mb-2"></i>
+                                    <p class="text-sm text-gray-500">No documents uploaded yet</p>
+                                    <button onclick="uploadDocument()" class="mt-3 text-primary-600 hover:text-primary-700 text-sm font-medium">
+                                        <i class="fas fa-upload mr-1"></i>Upload your first document
+                                    </button>
+                                </div>
+                                <!-- Documents will be loaded dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Component Loader Script -->
+    <script src="components.js"></script>
+
+    <!-- Page Scripts -->
+    <script>
+        let profileData = {};
+        let originalData = {};
+        
+        // Load profile data on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadProfile();
+            loadDocuments();
+            
+            // Handle profile picture upload
+            document.getElementById('profile-picture-input').addEventListener('change', handleProfilePictureUpload);
+        });
+        
+        // Load student profile from database
+        async function loadProfile() {
+            try {
+                const response = await fetch('/api/student/profile');
+                const result = await response.json();
+                
+                if (result.success && result.profile) {
+                    profileData = result.profile;
+                    originalData = JSON.parse(JSON.stringify(profileData)); // Deep copy
+                    displayProfile(profileData);
+                    calculateCompletion(profileData);
+                } else {
+                    showNotification('Failed to load profile', 'error');
+                }
+            } catch (error) {
+                console.error('Error loading profile:', error);
+                showNotification('Failed to load profile', 'error');
+            }
+        }
+        
+        // Display profile data in UI
+        function displayProfile(profile) {
+            // Profile Picture
+            const profilePicture = document.getElementById('profile-picture');
+            const removePictureBtn = document.getElementById('remove-picture-btn');
+            
+            if (profile.profile_picture) {
+                profilePicture.src = '/' + profile.profile_picture;
+                // Show remove button only if user has uploaded a picture
+                removePictureBtn.classList.remove('hidden');
+            } else {
+                // Default avatar with user's initials
+                const name = `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || 'User';
+                profilePicture.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&size=120&background=0284c7&color=fff&bold=true`;
+                // Hide remove button when using default avatar
+                removePictureBtn.classList.add('hidden');
+            }
+            
+            // Sidebar
+            document.getElementById('profile-name').textContent = `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || 'No Name';
+            document.getElementById('profile-course').textContent = profile.course || 'No Course';
+            document.getElementById('profile-school').textContent = profile.school_name || 'No School';
+            document.getElementById('profile-email').textContent = profile.email || '-';
+            document.getElementById('profile-phone').textContent = profile.phone_number || '-';
+            document.getElementById('profile-location').textContent = profile.city || '-';
+            
+            if (profile.created_at) {
+                const joinedDate = new Date(profile.created_at).toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'long' 
+                });
+                document.getElementById('profile-joined').textContent = `Joined ${joinedDate}`;
+            }
+            
+            // Personal Information
+            document.getElementById('first_name').value = profile.first_name || '';
+            document.getElementById('last_name').value = profile.last_name || '';
+            document.getElementById('date_of_birth').value = profile.date_of_birth || '';
+            document.getElementById('gender').value = profile.gender || '';
+            document.getElementById('phone_number').value = profile.phone_number || '';
+            document.getElementById('city').value = profile.city || '';
+            document.getElementById('address').value = profile.address || '';
+            
+            // Academic Information
+            document.getElementById('school_name').value = profile.school_name || '';
+            document.getElementById('student_number').value = profile.student_number || '';
+            document.getElementById('course').value = profile.course || '';
+            document.getElementById('year_level').value = profile.year_level || '';
+            document.getElementById('gpa').value = profile.gpa || '';
+            document.getElementById('expected_graduation_date').value = profile.expected_graduation_date || '';
+            
+            // Financial Information
+            document.getElementById('family_income').value = profile.family_income || '';
+            document.getElementById('guardian_name').value = profile.guardian_name || '';
+        }
+        
+        // Calculate profile completion percentage
+        function calculateCompletion(profile) {
+            const fields = [
+                'first_name', 'last_name', 'date_of_birth', 'gender', 'phone_number',
+                'address', 'city', 'school_name', 'student_number', 'course',
+                'year_level', 'gpa', 'expected_graduation_date', 'family_income', 'guardian_name'
+            ];
+            
+            let completed = 0;
+            fields.forEach(field => {
+                if (profile[field] && profile[field] !== '') {
+                    completed++;
+                }
+            });
+            
+            const percentage = Math.round((completed / fields.length) * 100);
+            document.getElementById('profile-completion-percent').textContent = `${percentage}%`;
+            document.getElementById('profile-completion-bar').style.width = `${percentage}%`;
+        }
+        
+        // Enable editing for a section
+        function editSection(section) {
+            const sectionEl = document.querySelector(`[data-section="${section}"]`);
+            if (!sectionEl) return;
+            
+            // Enable inputs
+            const inputs = sectionEl.querySelectorAll('input, select, textarea');
+            inputs.forEach(input => {
+                input.removeAttribute('readonly');
+                input.removeAttribute('disabled');
+                input.classList.add('bg-white');
+            });
+            
+            // Show action buttons
+            document.getElementById(`${section}-actions`).classList.remove('hidden');
+            
+            // Hide edit button
+            document.getElementById(`edit-${section}-btn`).classList.add('hidden');
+        }
+        
+        // Cancel editing
+        function cancelEdit(section) {
+            const sectionEl = document.querySelector(`[data-section="${section}"]`);
+            if (!sectionEl) return;
+            
+            // Restore original values
+            displayProfile(originalData);
+            
+            // Disable inputs
+            const inputs = sectionEl.querySelectorAll('input, select, textarea');
+            inputs.forEach(input => {
+                input.setAttribute('readonly', 'readonly');
+                if (input.tagName === 'SELECT') {
+                    input.setAttribute('disabled', 'disabled');
+                }
+                input.classList.remove('bg-white');
+            });
+            
+            // Hide action buttons
+            document.getElementById(`${section}-actions`).classList.add('hidden');
+            
+            // Show edit button
+            document.getElementById(`edit-${section}-btn`).classList.remove('hidden');
+        }
+        
+        // Save section changes
+        async function saveSection(section) {
+            const sectionEl = document.querySelector(`[data-section="${section}"]`);
+            if (!sectionEl) return;
+            
+            // Collect data from form
+            const updateData = {};
+            
+            if (section === 'personal') {
+                updateData.first_name = document.getElementById('first_name').value;
+                updateData.last_name = document.getElementById('last_name').value;
+                updateData.date_of_birth = document.getElementById('date_of_birth').value;
+                updateData.gender = document.getElementById('gender').value;
+                updateData.phone_number = document.getElementById('phone_number').value;
+                updateData.city = document.getElementById('city').value;
+                updateData.address = document.getElementById('address').value;
+            } else if (section === 'academic') {
+                updateData.school_name = document.getElementById('school_name').value;
+                updateData.student_number = document.getElementById('student_number').value;
+                updateData.course = document.getElementById('course').value;
+                updateData.year_level = document.getElementById('year_level').value;
+                updateData.gpa = document.getElementById('gpa').value;
+                updateData.expected_graduation_date = document.getElementById('expected_graduation_date').value;
+            } else if (section === 'financial') {
+                updateData.family_income = document.getElementById('family_income').value;
+                updateData.guardian_name = document.getElementById('guardian_name').value;
+            }
+            
+            try {
+                const response = await fetch('/api/student/profile/update', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(updateData)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showNotification('Profile updated successfully!', 'success');
+                    
+                    // Reload profile to get updated data
+                    await loadProfile();
+                    
+                    // Disable inputs
+                    const inputs = sectionEl.querySelectorAll('input, select, textarea');
+                    inputs.forEach(input => {
+                        input.setAttribute('readonly', 'readonly');
+                        if (input.tagName === 'SELECT') {
+                            input.setAttribute('disabled', 'disabled');
+                        }
+                    });
+                    
+                    // Hide action buttons
+                    document.getElementById(`${section}-actions`).classList.add('hidden');
+                    
+                    // Show edit button
+                    document.getElementById(`edit-${section}-btn`).classList.remove('hidden');
+                } else {
+                    showNotification(result.message || 'Failed to update profile', 'error');
+                }
+            } catch (error) {
+                console.error('Error updating profile:', error);
+                showNotification('Failed to update profile', 'error');
+            }
+        }
+        
+        // Load documents from database
+        async function loadDocuments() {
+            const loadingEl = document.getElementById('documents-loading');
+            const emptyEl = document.getElementById('documents-empty');
+            const listEl = document.getElementById('documents-list');
+            
+            try {
+                const response = await fetch('/api/student/profile/documents');
+                const result = await response.json();
+                
+                if (loadingEl) loadingEl.remove();
+                
+                if (result.success && result.documents) {
+                    if (result.documents.length === 0) {
+                        emptyEl.classList.remove('hidden');
+                    } else {
+                        emptyEl.classList.add('hidden');
+                        displayDocuments(result.documents);
+                    }
+                } else {
+                    showNotification('Failed to load documents', 'error');
+                }
+            } catch (error) {
+                console.error('Error loading documents:', error);
+                if (loadingEl) loadingEl.remove();
+                showNotification('Failed to load documents', 'error');
+            }
+        }
+        
+        // Display documents in UI
+        function displayDocuments(documents) {
+            const listEl = document.getElementById('documents-list');
+            const emptyEl = document.getElementById('documents-empty');
+            
+            if (documents.length === 0) {
+                emptyEl.classList.remove('hidden');
+                return;
+            }
+            
+            emptyEl.classList.add('hidden');
+            
+            const documentsHTML = documents.map(doc => {
+                const fileIcon = getFileIcon(doc.mime_type);
+                const fileSize = formatFileSize(doc.file_size);
+                const uploadDate = new Date(doc.uploaded_at).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+                
+                // Escape special characters for onclick attribute
+                const escapedPath = doc.file_path.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+                const escapedName = doc.document_name.replace(/'/g, "\\'");
+                
+                console.log('Document path:', doc.file_path);
+                
+                return `
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 border border-gray-200 rounded-lg" data-document-id="${doc.id}">
+                        <div class="flex items-center flex-1 mb-3 sm:mb-0">
+                            <i class="fas ${fileIcon.icon} ${fileIcon.color} text-xl sm:text-2xl mr-3 sm:mr-4 flex-shrink-0"></i>
+                            <div class="flex-1 min-w-0">
+                                <p class="font-medium text-sm sm:text-base text-gray-900 truncate">${doc.document_name}</p>
+                                <p class="text-xs sm:text-sm text-gray-500">
+                                    ${doc.document_type} • ${fileSize}<br class="sm:hidden"><span class="hidden sm:inline"> • </span>Uploaded ${uploadDate}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="flex gap-2 justify-end">
+                            <button onclick="viewDocument('${escapedPath}')" class="px-3 py-2 text-xs sm:text-sm text-primary-600 hover:text-primary-700 border border-primary-600 rounded-md" title="View">
+                                <i class="fas fa-eye mr-1"></i><span class="hidden sm:inline">View</span>
+                            </button>
+                            <button onclick="downloadDocument('${escapedPath}', '${escapedName}')" class="px-3 py-2 text-xs sm:text-sm text-primary-600 hover:text-primary-700 border border-primary-600 rounded-md" title="Download">
+                                <i class="fas fa-download sm:mr-1"></i><span class="hidden sm:inline">Download</span>
+                            </button>
+                            <button onclick="deleteDocument(${doc.id})" class="px-3 py-2 text-xs sm:text-sm text-red-600 hover:text-red-700 border border-red-600 rounded-md" title="Delete">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            // Append to list (keep empty state)
+            const existingDocs = listEl.querySelectorAll('[data-document-id]');
+            existingDocs.forEach(el => el.remove());
+            listEl.insertAdjacentHTML('beforeend', documentsHTML);
+        }
+        
+        // Get file icon based on MIME type
+        function getFileIcon(mimeType) {
+            if (!mimeType) return { icon: 'fa-file', color: 'text-gray-500' };
+            
+            if (mimeType.includes('pdf')) return { icon: 'fa-file-pdf', color: 'text-red-500' };
+            if (mimeType.includes('image')) return { icon: 'fa-file-image', color: 'text-blue-500' };
+            if (mimeType.includes('word') || mimeType.includes('document')) return { icon: 'fa-file-word', color: 'text-blue-600' };
+            
+            return { icon: 'fa-file-alt', color: 'text-green-500' };
+        }
+        
+        // Format file size
+        function formatFileSize(bytes) {
+            if (!bytes) return '0 B';
+            const k = 1024;
+            const sizes = ['B', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+        }
+        
+        // Handle profile picture upload
+        async function handleProfilePictureUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            // Validate file type
+            if (!file.type.startsWith('image/')) {
+                showNotification('Please select an image file', 'error');
+                return;
+            }
+            
+            // Validate file size (max 2MB)
+            if (file.size > 2 * 1024 * 1024) {
+                showNotification('Image size must be less than 2MB', 'error');
+                return;
+            }
+            
+            // Show loading state
+            const profilePicture = document.getElementById('profile-picture');
+            const originalSrc = profilePicture.src;
+            
+            // Preview image immediately
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                profilePicture.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+            
+            // Upload to server
+            const formData = new FormData();
+            formData.append('profile_picture', file);
+            
+            try {
+                const response = await fetch('/api/student/profile/upload-picture', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showNotification('Profile picture updated successfully!', 'success');
+                    // Reload profile to get updated data
+                    await loadProfile();
+                } else {
+                    showNotification(result.message || 'Failed to upload profile picture', 'error');
+                    profilePicture.src = originalSrc; // Restore original
+                }
+            } catch (error) {
+                console.error('Error uploading profile picture:', error);
+                showNotification('Failed to upload profile picture', 'error');
+                profilePicture.src = originalSrc; // Restore original
+            }
+            
+            // Reset file input
+            event.target.value = '';
+        }
+        
+        // Remove profile picture
+        async function removeProfilePicture() {
+            if (!confirm('Are you sure you want to remove your profile picture?')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/student/profile/remove-picture', {
+                    method: 'DELETE'
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showNotification('Profile picture removed successfully!', 'success');
+                    // Reload profile to show default avatar
+                    await loadProfile();
+                } else {
+                    showNotification(result.message || 'Failed to remove profile picture', 'error');
+                }
+            } catch (error) {
+                console.error('Error removing profile picture:', error);
+                showNotification('Failed to remove profile picture', 'error');
+            }
+        }
+        
+        // Upload document with type selection
+        async function uploadDocument() {
+            // Create modal for document type selection
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+            modal.innerHTML = `
+                <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Upload Document</h3>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Document Type</label>
+                        <select id="document-type-select" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500">
+                            <option value="Transcript of Records">Transcript of Records</option>
+                            <option value="Certificate of Enrollment">Certificate of Enrollment</option>
+                            <option value="Birth Certificate">Birth Certificate</option>
+                            <option value="ID Card">ID Card</option>
+                            <option value="Recommendation Letter">Recommendation Letter</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Select File</label>
+                        <input type="file" id="document-file-input" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500">
+                        <p class="text-xs text-gray-500 mt-1">Allowed: PDF, JPG, PNG, DOC, DOCX (Max 5MB)</p>
+                    </div>
+                    <div class="flex space-x-3">
+                        <button id="upload-confirm-btn" class="flex-1 bg-primary-600 text-white py-2 px-4 rounded-md hover:bg-primary-700 transition-colors">
+                            <i class="fas fa-upload mr-2"></i>Upload
+                        </button>
+                        <button id="upload-cancel-btn" class="flex-1 border border-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-50 transition-colors">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // Handle upload
+            document.getElementById('upload-confirm-btn').onclick = async function() {
+                const fileInput = document.getElementById('document-file-input');
+                const documentType = document.getElementById('document-type-select').value;
+                const file = fileInput.files[0];
+                
+                if (!file) {
+                    showNotification('Please select a file', 'error');
+                    return;
+                }
+                
+                // Show loading
+                this.disabled = true;
+                this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Uploading...';
+                
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('document_type', documentType);
+                
+                try {
+                    const response = await fetch('/api/student/profile/documents/upload', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        showNotification('Document uploaded successfully!', 'success');
+                        modal.remove();
+                        loadDocuments();
+                    } else {
+                        showNotification(result.message || 'Failed to upload document', 'error');
+                        this.disabled = false;
+                        this.innerHTML = '<i class="fas fa-upload mr-2"></i>Upload';
+                    }
+                } catch (error) {
+                    console.error('Error uploading document:', error);
+                    showNotification('Failed to upload document', 'error');
+                    this.disabled = false;
+                    this.innerHTML = '<i class="fas fa-upload mr-2"></i>Upload';
+                }
+            };
+            
+            // Handle cancel
+            document.getElementById('upload-cancel-btn').onclick = function() {
+                modal.remove();
+            };
+            
+            // Close on backdrop click
+            modal.onclick = function(e) {
+                if (e.target === modal) {
+                    modal.remove();
+                }
+            };
+        }
+        
+        // View document
+        function viewDocument(filePath) {
+            // Normalize path: replace backslashes with forward slashes
+            const normalizedPath = filePath.replace(/\\/g, '/');
+            // Ensure path starts with /
+            const url = normalizedPath.startsWith('/') ? normalizedPath : '/' + normalizedPath;
+            
+            console.log('Opening document:', url);
+            window.open(url, '_blank');
+        }
+        
+        // Download document
+        function downloadDocument(filePath, fileName) {
+            // Normalize path: replace backslashes with forward slashes
+            const normalizedPath = filePath.replace(/\\/g, '/');
+            const url = normalizedPath.startsWith('/') ? normalizedPath : '/' + normalizedPath;
+            
+            console.log('Downloading document:', url);
+            
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.blob();
+                })
+                .then(blob => {
+                    // Create blob link to download
+                    const blobUrl = window.URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = blobUrl;
+                    link.download = fileName;
+                    document.body.appendChild(link);
+                    link.click();
+                    
+                    // Cleanup
+                    setTimeout(() => {
+                        document.body.removeChild(link);
+                        window.URL.revokeObjectURL(blobUrl);
+                    }, 100);
+                    
+                    showNotification('Download started', 'success');
+                })
+                .catch(error => {
+                    console.error('Download error:', error);
+                    showNotification(`Failed to download: ${error.message}`, 'error');
+                });
+        }
+        
+        // Delete document
+        async function deleteDocument(documentId) {
+            if (!confirm('Are you sure you want to delete this document?')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/student/profile/documents/${documentId}`, {
+                    method: 'DELETE'
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showNotification('Document deleted successfully', 'success');
+                    loadDocuments();
+                } else {
+                    showNotification(result.message || 'Failed to delete document', 'error');
+                }
+            } catch (error) {
+                console.error('Error deleting document:', error);
+                showNotification('Failed to delete document', 'error');
+            }
+        }
+        
+        // Show notification
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `fixed top-20 right-4 px-6 py-3 rounded-lg shadow-lg text-white z-50 ${
+                type === 'success' ? 'bg-green-600' : 
+                type === 'error' ? 'bg-red-600' : 
+                'bg-blue-600'
+            }`;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transition = 'opacity 0.5s';
+                setTimeout(() => notification.remove(), 500);
+            }, 3000);
+        }
+    </script>
+
+    <!-- Mobile Menu Handler -->
+    <script src="/Assets/js/mobile-menu.js"></script>
+</body>
+</html>

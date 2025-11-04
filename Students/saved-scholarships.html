@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saved Scholarships - EASECHOLAR</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Custom Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        secondary: {
+                            50: '#f8fafc',
+                            100: '#f1f5f9',
+                            200: '#e2e8f0',
+                            300: '#cbd5e1',
+                            400: '#94a3b8',
+                            500: '#64748b',
+                            600: '#475569',
+                            700: '#334155',
+                            800: '#1e293b',
+                            900: '#0f172a',
+                        }
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'ui-sans-serif', 'system-ui'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Mobile Responsive Styles -->
+    <link rel="stylesheet" href="/Assets/css/mobile-responsive.css">
+
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Sidebar component (fixed) -->
+    <div id="sidebar-container"></div>
+    
+    <!-- Navigation component (fixed) -->
+    <div id="nav-container"></div>
+
+    <!-- Main content with proper spacing for fixed sidebar and nav -->
+    <div class="ml-0 lg:ml-64 pt-20 sm:pt-16">
+        <div class="p-4 sm:p-6 lg:p-8">
+            <!-- Page Header -->
+            <div class="mb-6 sm:mb-8">
+                <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Saved Scholarships</h1>
+                <p class="text-sm sm:text-base text-gray-600">Your bookmarked scholarships for easy access and comparison.</p>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6 mb-6 sm:mb-8">
+                <div class="bg-white p-4 sm:p-6 rounded-lg shadow-md border border-gray-200">
+                    <div class="flex items-center">
+                        <div class="p-2 sm:p-3 rounded-full bg-red-100">
+                            <i class="fas fa-heart text-red-600 text-base sm:text-lg lg:text-xl"></i>
+                        </div>
+                        <div class="ml-3 sm:ml-4">
+                            <p class="text-xs sm:text-sm font-medium text-gray-600">Total Saved</p>
+                            <p id="stat-total" class="text-xl sm:text-2xl font-semibold text-gray-900">0</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-4 sm:p-6 rounded-lg shadow-md border border-gray-200">
+                    <div class="flex items-center">
+                        <div class="p-2 sm:p-3 rounded-full bg-green-100">
+                            <i class="fas fa-dollar-sign text-green-600 text-base sm:text-lg lg:text-xl"></i>
+                        </div>
+                        <div class="ml-3 sm:ml-4">
+                            <p class="text-xs sm:text-sm font-medium text-gray-600">Total Value</p>
+                            <p id="stat-value" class="text-xl sm:text-2xl font-semibold text-gray-900">₱0</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-4 sm:p-6 rounded-lg shadow-md border border-gray-200 sm:col-span-2 lg:col-span-1">
+                    <div class="flex items-center">
+                        <div class="p-2 sm:p-3 rounded-full bg-yellow-100">
+                            <i class="fas fa-clock text-yellow-600 text-base sm:text-lg lg:text-xl"></i>
+                        </div>
+                        <div class="ml-3 sm:ml-4">
+                            <p class="text-xs sm:text-sm font-medium text-gray-600">Expiring Soon</p>
+                            <p id="stat-expiring" class="text-xl sm:text-2xl font-semibold text-gray-900">0</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter and Organization -->
+            <div class="bg-white p-4 sm:p-6 rounded-lg shadow-md border border-gray-200 mb-6 sm:mb-8">
+                <div class="flex flex-col gap-3 sm:gap-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div>
+                            <select id="category-filter" class="w-full px-3 py-2.5 text-base border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500">
+                                <option value="">All Categories</option>
+                                <option value="engineering">Engineering</option>
+                                <option value="medicine">Medicine</option>
+                                <option value="business">Business</option>
+                                <option value="education">Education</option>
+                                <option value="arts">Arts & Humanities</option>
+                            </select>
+                        </div>
+                        <div>
+                            <select id="amount-filter" class="w-full px-3 py-2.5 text-base border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500">
+                                <option value="">Any Amount</option>
+                                <option value="0-50000">₱0 - ₱50,000</option>
+                                <option value="50000-100000">₱50,000 - ₱100,000</option>
+                                <option value="100000+">₱100,000+</option>
+                            </select>
+                        </div>
+                        <div>
+                            <select id="deadline-filter" class="w-full px-3 py-2.5 text-base border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500">
+                                <option value="">All Deadlines</option>
+                                <option value="this-month">This Month</option>
+                                <option value="next-month">Next Month</option>
+                                <option value="later">Later</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 sm:flex sm:space-x-2">
+                        <button onclick="exportSaved()" class="px-4 py-2.5 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors text-sm font-medium">
+                            <i class="fas fa-download sm:mr-2"></i><span class="hidden sm:inline">Export</span>
+                        </button>
+                        <button onclick="clearAllSaved()" class="px-4 py-2.5 border border-red-300 text-red-700 rounded-md hover:bg-red-50 transition-colors text-sm font-medium">
+                            <i class="fas fa-trash sm:mr-2"></i><span class="hidden sm:inline">Clear All</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Saved Scholarships Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6" id="scholarships-grid">
+                <!-- Loading state -->
+                <div id="loading-state" class="col-span-full text-center py-12">
+                    <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+                    <p class="text-sm sm:text-base text-gray-600 mt-4">Loading saved scholarships...</p>
+                </div>
+                <!-- Scholarships will be loaded dynamically -->
+            </div>
+
+            <!-- Empty State (hidden by default) -->
+            <div id="empty-state" class="text-center py-12 hidden">
+                <div class="w-24 h-24 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
+                    <i class="fas fa-heart text-gray-400 text-3xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">No Saved Scholarships</h3>
+                <p class="text-gray-600 mb-6">You haven't saved any scholarships yet. Start browsing to find opportunities that interest you.</p>
+                <a href="browse-scholarships.html" 
+                   class="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors">
+                    <i class="fas fa-search mr-2"></i>
+                    Browse Scholarships
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Component Loader Script -->
+    <script src="components.js"></script>
+
+    <!-- Page Scripts -->
+    <script>
+        let allScholarships = [];
+
+        // Load saved scholarships on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSavedScholarships();
+        });
+
+        // Load saved scholarships from API
+        async function loadSavedScholarships() {
+            try {
+                const response = await fetch('/api/student/saved-scholarships');
+                const result = await response.json();
+
+                if (result.success) {
+                    allScholarships = result.scholarships;
+                    
+                    // Update stats
+                    updateStats(result.stats);
+                    
+                    // Display scholarships
+                    displayScholarships(allScholarships);
+                } else {
+                    showError('Failed to load saved scholarships');
+                }
+            } catch (error) {
+                console.error('Error loading saved scholarships:', error);
+                showError('Failed to load saved scholarships');
+            }
+        }
+
+        // Update statistics
+        function updateStats(stats) {
+            document.getElementById('stat-total').textContent = stats.total_saved || 0;
+            
+            const totalValue = new Intl.NumberFormat('en-PH', { 
+                style: 'currency', 
+                currency: 'PHP',
+                maximumFractionDigits: 0
+            }).format(stats.total_value || 0);
+            document.getElementById('stat-value').textContent = totalValue;
+            
+            document.getElementById('stat-expiring').textContent = stats.expiring_soon || 0;
+        }
+
+        // Display scholarships
+        function displayScholarships(scholarships) {
+            const grid = document.getElementById('scholarships-grid');
+            const loadingState = document.getElementById('loading-state');
+            const emptyState = document.getElementById('empty-state');
+
+            // Hide loading
+            if (loadingState) {
+                loadingState.style.display = 'none';
+            }
+
+            if (scholarships.length === 0) {
+                grid.innerHTML = '';
+                grid.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            grid.classList.remove('hidden');
+            emptyState.classList.add('hidden');
+            grid.innerHTML = scholarships.map(scholarship => createScholarshipCard(scholarship)).join('');
+        }
+
+        // Create scholarship card HTML
+        function createScholarshipCard(scholarship) {
+            const amount = new Intl.NumberFormat('en-PH', { 
+                style: 'currency', 
+                currency: 'PHP',
+                maximumFractionDigits: 0
+            }).format(scholarship.amount);
+
+            const deadline = new Date(scholarship.application_deadline);
+            const deadlineFormatted = deadline.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'short', 
+                day: 'numeric' 
+            });
+
+            const savedDate = new Date(scholarship.saved_date).toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+
+            // Calculate days left
+            const today = new Date();
+            const daysLeft = Math.ceil((deadline - today) / (1000 * 60 * 60 * 24));
+            const daysLeftInfo = daysLeft > 0 ? 
+                `<div class="text-sm ${daysLeft <= 30 ? 'text-yellow-600' : 'text-green-600'} font-medium">
+                    <i class="fas fa-clock mr-1"></i>${daysLeft} days left
+                </div>` : 
+                '<div class="text-sm text-red-600 font-medium"><i class="fas fa-exclamation-circle mr-1"></i>Expired</div>';
+
+            const typeColors = {
+                'FULL_SCHOLARSHIP': { bg: 'bg-green-100', text: 'text-green-800', label: 'Full Scholarship' },
+                'PARTIAL_SCHOLARSHIP': { bg: 'bg-blue-100', text: 'text-blue-800', label: 'Partial' },
+                'MERIT_BASED': { bg: 'bg-purple-100', text: 'text-purple-800', label: 'Merit-based' },
+                'NEED_BASED': { bg: 'bg-yellow-100', text: 'text-yellow-800', label: 'Need-based' }
+            };
+            const typeStyle = typeColors[scholarship.scholarship_type] || typeColors['PARTIAL_SCHOLARSHIP'];
+
+            return `
+                <div class="scholarship-card bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow" 
+                     data-amount="${scholarship.amount}" data-deadline="${scholarship.application_deadline}">
+                    <div class="p-4 sm:p-6">
+                        <div class="flex justify-between items-start mb-3 sm:mb-4">
+                            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-primary-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-graduation-cap text-primary-600 text-lg sm:text-xl"></i>
+                            </div>
+                            <!-- Desktop: Icon buttons -->
+                            <div class="hidden sm:flex space-x-2">
+                                <button class="text-red-500 hover:text-red-600 transition-colors p-1" onclick="removeSaved(${scholarship.scholarship_id})">
+                                    <i class="fas fa-heart text-lg"></i>
+                                </button>
+                                <button class="text-gray-400 hover:text-blue-500 transition-colors p-1" onclick="shareScholarship(${scholarship.scholarship_id})">
+                                    <i class="fas fa-share text-lg"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <h3 class="text-base sm:text-lg font-semibold text-gray-900 mb-2">${scholarship.title}</h3>
+                        <p class="text-xs sm:text-sm text-gray-600 mb-3 sm:mb-4 line-clamp-2">${scholarship.description || 'No description available'}</p>
+                        
+                        <div class="flex items-center justify-between mb-3 sm:mb-4">
+                            <div class="text-base sm:text-lg font-bold text-primary-600">${amount}</div>
+                        </div>
+                        
+                        <div class="flex flex-wrap gap-2 mb-3 sm:mb-4">
+                            <span class="px-2 py-1 ${typeStyle.bg} ${typeStyle.text} text-xs rounded-full">${typeStyle.label}</span>
+                            ${scholarship.has_applied ? '<span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full"><i class="fas fa-check-circle mr-1"></i>Applied</span>' : ''}
+                        </div>
+                        
+                        <div class="text-xs sm:text-sm text-gray-600 mb-3 sm:mb-4">
+                            <div class="mb-1"><strong>Provider:</strong> ${scholarship.provider_name}</div>
+                            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-0">
+                                <span><i class="fas fa-calendar mr-1"></i>Deadline: ${deadlineFormatted}</span>
+                                ${daysLeftInfo}
+                            </div>
+                        </div>
+                        
+                        <!-- Mobile: Full buttons for Save and Share (above View Details) -->
+                        <div class="flex sm:hidden gap-2 mb-2">
+                            <button onclick="removeSaved(${scholarship.scholarship_id})" 
+                                    class="flex-1 border border-red-300 text-red-600 py-2.5 px-3 rounded-md hover:bg-red-50 transition-colors text-sm font-medium">
+                                <i class="fas fa-heart mr-1"></i>Remove
+                            </button>
+                            <button onclick="shareScholarship(${scholarship.scholarship_id})" 
+                                    class="flex-1 border border-gray-300 text-gray-700 py-2.5 px-3 rounded-md hover:bg-gray-50 transition-colors text-sm font-medium">
+                                <i class="fas fa-share mr-1"></i>Share
+                            </button>
+                        </div>
+                        
+                        <div class="flex flex-col sm:flex-row gap-2">
+                            <button onclick="viewScholarship(${scholarship.scholarship_id})" 
+                                    class="w-full sm:flex-1 bg-primary-600 text-white py-2.5 px-4 rounded-md hover:bg-primary-700 transition-colors text-sm font-medium">
+                                View Details
+                            </button>
+                            ${!scholarship.has_applied ? 
+                                `<button onclick="applyScholarship(${scholarship.scholarship_id})" 
+                                        class="w-full sm:flex-1 border border-primary-600 text-primary-600 py-2.5 px-4 rounded-md hover:bg-primary-50 transition-colors text-sm font-medium">
+                                    Apply Now
+                                </button>` : 
+                                `<button disabled
+                                        class="w-full sm:flex-1 border border-gray-300 text-gray-400 py-2.5 px-4 rounded-md cursor-not-allowed text-sm font-medium">
+                                    Applied
+                                </button>`
+                            }
+                        </div>
+                        
+                        <div class="mt-3 text-xs text-gray-500">
+                            <i class="fas fa-bookmark mr-1"></i>
+                            Saved on ${savedDate}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Remove saved scholarship
+        async function removeSaved(scholarshipId) {
+            if (!confirm('Remove this scholarship from your saved list?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/student/unsave-scholarship/${scholarshipId}`, {
+                    method: 'DELETE'
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showNotification('Scholarship removed from saved list', 'success');
+                    // Reload the list
+                    loadSavedScholarships();
+                } else {
+                    showNotification(result.message || 'Failed to remove scholarship', 'error');
+                }
+            } catch (error) {
+                console.error('Error removing scholarship:', error);
+                showNotification('Failed to remove scholarship', 'error');
+            }
+        }
+
+        // Share scholarship
+        function shareScholarship(id) {
+            const url = `${window.location.origin}/Students/scholarship-details.html?id=${id}`;
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Check out this scholarship',
+                    url: url
+                }).catch(err => console.log('Error sharing:', err));
+            } else {
+                // Fallback: copy to clipboard
+                navigator.clipboard.writeText(url).then(() => {
+                    showNotification('Link copied to clipboard!', 'success');
+                });
+            }
+        }
+
+        // View scholarship details
+        function viewScholarship(id) {
+            window.location.href = `scholarship-details.html?id=${id}`;
+        }
+
+        // Apply for scholarship
+        function applyScholarship(id) {
+            window.location.href = `scholarship-details.html?id=${id}`;
+        }
+
+        // Export saved scholarships
+        function exportSaved() {
+            if (allScholarships.length === 0) {
+                showNotification('No scholarships to export', 'error');
+                return;
+            }
+
+            // Create CSV content
+            const headers = ['Scholarship Title', 'Provider', 'Amount', 'Deadline', 'Saved Date'];
+            const rows = allScholarships.map(s => [
+                s.title,
+                s.provider_name,
+                s.amount,
+                new Date(s.application_deadline).toLocaleDateString(),
+                new Date(s.saved_date).toLocaleDateString()
+            ]);
+
+            const csvContent = [headers, ...rows].map(row => row.join(',')).join('\\n');
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'saved-scholarships.csv';
+            a.click();
+            URL.revokeObjectURL(url);
+
+            showNotification('Scholarships exported successfully!', 'success');
+        }
+
+        // Clear all saved scholarships
+        async function clearAllSaved() {
+            if (!confirm('Are you sure you want to remove ALL saved scholarships? This action cannot be undone.')) {
+                return;
+            }
+
+            try {
+                // Remove all scholarships one by one
+                for (const scholarship of allScholarships) {
+                    await fetch(`/api/student/unsave-scholarship/${scholarship.scholarship_id}`, {
+                        method: 'DELETE'
+                    });
+                }
+
+                showNotification('All saved scholarships removed', 'success');
+                loadSavedScholarships();
+            } catch (error) {
+                console.error('Error clearing saved scholarships:', error);
+                showNotification('Failed to clear saved scholarships', 'error');
+            }
+        }
+
+        // Filter scholarships (not implemented yet - can be added later)
+        function filterScholarships() {
+            // Filter logic can be added here if needed
+            displayScholarships(allScholarships);
+        }
+
+        // Show error message
+        function showError(message) {
+            const grid = document.getElementById('scholarships-grid');
+            const loadingState = document.getElementById('loading-state');
+            
+            if (loadingState) {
+                loadingState.style.display = 'none';
+            }
+
+            grid.innerHTML = `
+                <div class="col-span-full text-center py-12">
+                    <div class="w-24 h-24 mx-auto mb-4 bg-red-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-exclamation-circle text-red-600 text-3xl"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Error Loading Scholarships</h3>
+                    <p class="text-gray-600 mb-6">${message}</p>
+                    <button onclick="loadSavedScholarships()" 
+                            class="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors">
+                        <i class="fas fa-redo mr-2"></i>
+                        Try Again
+                    </button>
+                </div>
+            `;
+        }
+
+        // Show notification
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `fixed top-20 right-4 px-6 py-3 rounded-lg shadow-lg text-white z-50 ${
+                type === 'success' ? 'bg-green-600' : 
+                type === 'error' ? 'bg-red-600' : 
+                'bg-blue-600'
+            }`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+        
+        // Event listeners for filters (optional)
+        // document.getElementById('category-filter').addEventListener('change', filterScholarships);
+        // document.getElementById('amount-filter').addEventListener('change', filterScholarships);
+        // document.getElementById('deadline-filter').addEventListener('change', filterScholarships);
+    </script>
+
+    <!-- Mobile Menu Handler -->
+    <script src="/Assets/js/mobile-menu.js"></script>
+</body>
+</html>

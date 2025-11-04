@@ -1,0 +1,363 @@
+<!-- Provider Sidebar -->
+<style>
+    /* Active link hover effect */
+    .nav-link.active-page:hover {
+        background-color: #15803d !important; /* green-700 */
+    }
+    .nav-link.active-page:hover .nav-icon {
+        background-color: #166534 !important; /* green-800 */
+    }
+    .nav-link.active-page:hover i {
+        color: white !important;
+    }
+    
+    /* Mobile Sidebar Styles - iPhone 12 Pro Optimized */
+    @media (max-width: 768px) {
+        #provider-sidebar {
+            transform: translateX(-100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 280px !important;
+            max-width: 85vw;
+        }
+        
+        #provider-sidebar.mobile-open {
+            transform: translateX(0);
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Compact logo on mobile */
+        #provider-sidebar .p-6:first-of-type {
+            padding: 1rem 1.25rem;
+        }
+        
+        /* Compact navigation links */
+        #provider-sidebar .nav-link {
+            padding: 0.625rem 1rem !important;
+            font-size: 0.9rem;
+        }
+        
+        #provider-sidebar .nav-link .nav-icon {
+            width: 1.75rem;
+            height: 1.75rem;
+        }
+        
+        #provider-sidebar .nav-link i {
+            font-size: 0.813rem;
+        }
+    }
+    
+    /* Hamburger Menu Button - Small & Left */
+    .mobile-menu-btn {
+        display: none;
+        position: fixed;
+        top: 0.75rem;
+        left: 0.75rem;
+        z-index: 60;
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 0.375rem;
+        padding: 0.5rem;
+        width: 36px;
+        height: 36px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    
+    .mobile-menu-btn:active {
+        transform: scale(0.92);
+    }
+    
+    .mobile-menu-btn i {
+        font-size: 1rem;
+        color: #374151;
+    }
+    
+    @media (max-width: 768px) {
+        .mobile-menu-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    }
+    
+    /* Mobile Overlay */
+    .mobile-sidebar-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 45;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    
+    .mobile-sidebar-overlay.active {
+        display: block;
+        opacity: 1;
+    }
+</style>
+
+<!-- Hamburger Menu Button -->
+<button class="mobile-menu-btn" id="mobile-menu-toggle" aria-label="Toggle menu">
+    <i class="fas fa-bars"></i>
+</button>
+
+<!-- Mobile Overlay -->
+<div class="mobile-sidebar-overlay" id="mobile-overlay"></div>
+
+<div id="provider-sidebar" class="fixed left-0 top-0 w-64 bg-white shadow-lg min-h-screen border-r border-gray-100 z-50">
+    <!-- Logo Section -->
+    <div class="p-6 border-b border-gray-100">
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg">
+                <i class="fas fa-building text-white text-lg"></i>
+            </div>
+            <div>
+                <h2 class="text-xl font-bold bg-gradient-to-r from-green-600 to-green-800 bg-clip-text text-transparent">EASECHOLAR</h2>
+                <p class="text-xs text-gray-500 font-medium">Provider Portal</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Navigation Menu -->
+    <div class="p-6">
+        <nav class="space-y-2">
+            <!-- Dashboard -->
+            <a href="dashboard.html" data-page="dashboard" class="nav-link group flex items-center space-x-3 text-gray-600 hover:text-green-600 hover:bg-gray-50 px-4 py-3 rounded-xl transition-all duration-200">
+                <div class="nav-icon w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-green-100 transition-colors">
+                    <i class="fas fa-chart-line text-gray-500 group-hover:text-green-600 text-sm transition-colors"></i>
+                </div>
+                <span class="font-medium">Dashboard</span>
+            </a>
+            
+            <!-- Scholarship Management -->
+            <a href="scholarships.html" data-page="scholarships" class="nav-link group flex items-center space-x-3 text-gray-600 hover:text-green-600 hover:bg-gray-50 px-4 py-3 rounded-xl transition-all duration-200">
+                <div class="nav-icon w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-green-100 transition-colors">
+                    <i class="fas fa-graduation-cap text-gray-500 group-hover:text-green-600 text-sm transition-colors"></i>
+                </div>
+                <span class="font-medium">Scholarships</span>
+            </a>
+            
+            <!-- Application Reviews -->
+            <a href="applications.html" data-page="applications" class="nav-link group flex items-center space-x-3 text-gray-600 hover:text-green-600 hover:bg-gray-50 px-4 py-3 rounded-xl transition-all duration-200">
+                <div class="nav-icon w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-green-100 transition-colors">
+                    <i class="fas fa-file-alt text-gray-500 group-hover:text-green-600 text-sm transition-colors"></i>
+                </div>
+                <span class="font-medium">Applications</span>
+                <span id="app-badge" class="ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full" style="display: none;"></span>
+            </a>
+            
+            <!-- Students -->
+            <a href="students.html" data-page="students" class="nav-link group flex items-center space-x-3 text-gray-600 hover:text-green-600 hover:bg-gray-50 px-4 py-3 rounded-xl transition-all duration-200">
+                <div class="nav-icon w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-green-100 transition-colors">
+                    <i class="fas fa-users text-gray-500 group-hover:text-green-600 text-sm transition-colors"></i>
+                </div>
+                <span class="font-medium">Students</span>
+            </a>
+            
+            <!-- Analytics -->
+            <a href="analytics.html" data-page="analytics" class="nav-link group flex items-center space-x-3 text-gray-600 hover:text-green-600 hover:bg-gray-50 px-4 py-3 rounded-xl transition-all duration-200">
+                <div class="nav-icon w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-green-100 transition-colors">
+                    <i class="fas fa-chart-bar text-gray-500 group-hover:text-green-600 text-sm transition-colors"></i>
+                </div>
+                <span class="font-medium">Analytics</span>
+            </a>
+            
+        </nav>
+        
+        <!-- Secondary Navigation -->
+        <div class="mt-8 pt-8 border-t border-gray-200">
+            <nav class="space-y-2">
+                <!-- Settings -->
+                <a href="settings.html" data-page="settings" class="nav-link group flex items-center space-x-3 text-gray-600 hover:text-green-600 hover:bg-gray-50 px-4 py-3 rounded-xl transition-all duration-200">
+                    <div class="nav-icon w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-green-100 transition-colors">
+                        <i class="fas fa-cog text-gray-500 group-hover:text-green-600 text-sm transition-colors"></i>
+                    </div>
+                    <span class="font-medium">Settings</span>
+                </a>
+                
+                <!-- Help -->
+                <a href="help.html" data-page="help" class="nav-link group flex items-center space-x-3 text-gray-600 hover:text-green-600 hover:bg-gray-50 px-4 py-3 rounded-xl transition-all duration-200">
+                    <div class="nav-icon w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-green-100 transition-colors">
+                        <i class="fas fa-question-circle text-gray-500 group-hover:text-green-600 text-sm transition-colors"></i>
+                    </div>
+                    <span class="font-medium">Help & Support</span>
+                </a>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<script>
+// Load application count for badge
+async function loadApplicationCount() {
+    try {
+        const response = await fetch('/api/provider/dashboard-stats');
+        
+        if (!response.ok) {
+            console.error('API error:', response.status);
+            hideBadge();
+            return;
+        }
+        
+        const result = await response.json();
+        console.log('Dashboard stats response:', result);
+        
+        // The API returns 'data' not 'stats'
+        if (result.success && result.data) {
+            const count = result.data.pending_applications || 0;
+            console.log('Pending applications count:', count);
+            updateApplicationBadge(count);
+        } else {
+            console.error('Invalid response structure:', result);
+            hideBadge();
+        }
+    } catch (error) {
+        console.error('Error loading application count:', error);
+        hideBadge();
+    }
+}
+
+function updateApplicationBadge(count) {
+    const badge = document.getElementById('app-badge');
+    if (badge) {
+        if (count > 0) {
+            badge.textContent = count;
+            badge.style.display = 'inline-block';
+            console.log('Application badge updated:', count);
+        } else {
+            hideBadge();
+        }
+    } else {
+        console.error('Application badge element not found');
+    }
+}
+
+function hideBadge() {
+    const badge = document.getElementById('app-badge');
+    if (badge) {
+        badge.style.display = 'none';
+        console.log('Application badge hidden (count is 0)');
+    }
+}
+
+// Load application count when component is ready
+window.loadProviderSidebar = function() {
+    console.log('Loading sidebar application count...');
+    loadApplicationCount();
+    setActivePage();
+};
+
+// Set active page based on current URL
+function setActivePage() {
+    const currentPage = window.location.pathname.split('/').pop().replace('.html', '');
+    console.log('Current page:', currentPage);
+    
+    // Remove active classes from all nav links
+    const navLinks = document.querySelectorAll('.nav-link');
+    navLinks.forEach(link => {
+        link.classList.remove('text-green-600', 'bg-green-50', 'font-semibold');
+        link.classList.add('text-gray-600', 'font-medium');
+        
+        // Reset icon styles
+        const icon = link.querySelector('.nav-icon');
+        const iconElement = link.querySelector('.nav-icon i');
+        if (icon && iconElement) {
+            icon.classList.remove('bg-green-100', 'bg-green-200');
+            icon.classList.add('bg-gray-100');
+            iconElement.classList.remove('text-green-600');
+            iconElement.classList.add('text-gray-500');
+        }
+    });
+    
+    // Add active classes to current page
+    const activeLink = document.querySelector(`.nav-link[data-page="${currentPage}"]`);
+    if (activeLink) {
+        activeLink.classList.remove('text-gray-600', 'font-medium');
+        activeLink.classList.add('text-green-600', 'bg-green-50', 'font-semibold');
+        
+        // Style the active icon
+        const icon = activeLink.querySelector('.nav-icon');
+        const iconElement = activeLink.querySelector('.nav-icon i');
+        if (icon && iconElement) {
+            icon.classList.remove('bg-gray-100');
+            icon.classList.add('bg-green-100');
+            iconElement.classList.remove('text-gray-500');
+            iconElement.classList.add('text-green-600');
+        }
+        
+        console.log('Active page set:', currentPage);
+    }
+}
+
+// Mobile menu toggle functionality
+function initMobileMenu() {
+    const menuToggle = document.getElementById('mobile-menu-toggle');
+    const sidebar = document.getElementById('provider-sidebar');
+    const overlay = document.getElementById('mobile-overlay');
+    const navLinks = document.querySelectorAll('#provider-sidebar .nav-link');
+    
+    if (menuToggle && sidebar && overlay) {
+        // Toggle menu on button click
+        menuToggle.addEventListener('click', function(e) {
+            e.stopPropagation();
+            sidebar.classList.toggle('mobile-open');
+            overlay.classList.toggle('active');
+            
+            // Update hamburger icon
+            const icon = this.querySelector('i');
+            if (sidebar.classList.contains('mobile-open')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        });
+        
+        // Close menu on overlay click
+        overlay.addEventListener('click', function() {
+            sidebar.classList.remove('mobile-open');
+            overlay.classList.remove('active');
+            const icon = menuToggle.querySelector('i');
+            icon.classList.remove('fa-times');
+            icon.classList.add('fa-bars');
+        });
+        
+        // Close menu when nav link is clicked (mobile only)
+        navLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.remove('mobile-open');
+                    overlay.classList.remove('active');
+                    const icon = menuToggle.querySelector('i');
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                }
+            });
+        });
+        
+        // Close menu on escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && sidebar.classList.contains('mobile-open')) {
+                sidebar.classList.remove('mobile-open');
+                overlay.classList.remove('active');
+                const icon = menuToggle.querySelector('i');
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        });
+    }
+}
+
+// Initialize mobile menu when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initMobileMenu);
+} else {
+    initMobileMenu();
+}
+</script>

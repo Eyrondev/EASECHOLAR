@@ -1,0 +1,199 @@
+<!-- Navigation -->
+<style>
+    /* Mobile Navigation Styles - iPhone 12 Pro Optimized */
+    @media (max-width: 768px) {
+        #student-nav {
+            left: 0 !important;
+            padding-left: 3rem;
+            padding-right: 0.5rem;
+        }
+        
+        #student-nav .nav-user-name-text {
+            display: none;
+        }
+        
+        /* Fix dropdown positioning for mobile */
+        #student-nav #user-menu {
+            position: fixed !important;
+            right: 0.5rem !important;
+            left: auto !important;
+            top: 4rem !important;
+            width: 15rem;
+            max-width: calc(100vw - 1rem);
+            z-index: 9999 !important;
+        }
+        
+        /* Improve touch targets */
+        #student-nav #user-menu-button {
+            min-width: 44px;
+            min-height: 44px;
+            padding: 0.5rem;
+        }
+        
+        /* Dropdown links larger for touch */
+        #student-nav #user-menu a {
+            padding: 0.875rem 1rem !important;
+            font-size: 0.9375rem !important;
+        }
+    }
+    
+    @media (max-width: 390px) {
+        #student-nav {
+            padding-left: 2.75rem;
+            padding-right: 0.25rem;
+        }
+        
+        #student-nav #user-menu {
+            right: 0.25rem !important;
+            width: calc(100vw - 0.5rem);
+            max-width: 20rem;
+        }
+    }
+</style>
+
+<nav id="student-nav" class="fixed top-0 left-64 right-0 bg-white shadow-sm border-b border-gray-200 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16">
+            <!-- Logo and brand (hidden since it's in sidebar) -->
+            <div class="flex items-center">
+                <!-- Spacer for alignment -->
+            </div>
+            
+            <!-- User menu -->
+            <div class="flex items-center space-x-4">
+                <!-- User dropdown -->
+                <div class="relative">
+                    <button onclick="toggleUserMenu(event)" id="user-menu-button" class="flex items-center space-x-2 text-gray-600 hover:text-gray-900">
+                        <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                            <i class="fas fa-user text-blue-600 text-sm"></i>
+                        </div>
+                        <span id="nav-user-name" class="nav-user-name-text text-sm font-medium">Loading...</span>
+                        <i class="fas fa-chevron-down text-xs"></i>
+                    </button>
+                    
+                    <div id="user-menu" class="hidden absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                        <div class="p-4 border-b border-gray-200">
+                            <p id="nav-full-name" class="text-sm font-semibold text-gray-900">Loading...</p>
+                            <p id="nav-user-email" class="text-xs text-gray-500 mt-1">Loading...</p>
+                        </div>
+                        <div class="py-2">
+                            <a href="profile.html" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <i class="fas fa-user mr-3"></i>
+                                Profile
+                            </a>
+                            <a href="settings.html" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <i class="fas fa-cog mr-3"></i>
+                                Settings
+                            </a>
+                            <div class="border-t border-gray-100 mt-2 pt-2">
+                                <a href="/logout" class="flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50">
+                                    <i class="fas fa-sign-out-alt mr-3"></i>
+                                    Sign Out
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<script>
+// Toggle user menu dropdown
+function toggleUserMenu(event) {
+    if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
+    
+    const menu = document.getElementById('user-menu');
+    if (menu) {
+        menu.classList.toggle('hidden');
+    }
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click', function(event) {
+    const userMenu = document.getElementById('user-menu');
+    const userButton = document.getElementById('user-menu-button');
+    
+    if (userMenu && !userButton.contains(event.target) && !userMenu.contains(event.target)) {
+        userMenu.classList.add('hidden');
+    }
+});
+
+// Also handle touch events for better mobile support
+document.addEventListener('touchstart', function(event) {
+    const userMenu = document.getElementById('user-menu');
+    const userButton = document.getElementById('user-menu-button');
+    
+    if (userMenu && !userButton.contains(event.target) && !userMenu.contains(event.target)) {
+        userMenu.classList.add('hidden');
+    }
+}, { passive: true });
+
+// Load student profile data
+async function loadStudentNav() {
+    console.log('Loading student navigation data...');
+    try {
+        const response = await fetch('/api/student/profile');
+        
+        if (!response.ok) {
+            console.error('API error:', response.status);
+            setNavFallback();
+            return;
+        }
+        
+        const result = await response.json();
+        
+        if (result.success && result.profile) {
+            console.log('Student profile loaded:', result.profile);
+            updateNavigation(result.profile);
+        } else {
+            console.error('Failed to load profile:', result.message);
+            setNavFallback();
+        }
+    } catch (error) {
+        console.error('Error loading student navigation:', error);
+        setNavFallback();
+    }
+}
+
+// Update navigation with real data
+function updateNavigation(profile) {
+    // Update user name
+    const fullName = `${profile.first_name || ''} ${profile.last_name || ''}`.trim();
+    const navUserName = document.getElementById('nav-user-name');
+    if (navUserName) {
+        navUserName.textContent = fullName || 'Student';
+    }
+    
+    // Update full name in dropdown
+    const navFullName = document.getElementById('nav-full-name');
+    if (navFullName) {
+        navFullName.textContent = fullName || 'Student';
+    }
+    
+    // Update email
+    const navUserEmail = document.getElementById('nav-user-email');
+    if (navUserEmail) {
+        navUserEmail.textContent = profile.email || 'No email';
+    }
+}
+
+// Set fallback values
+function setNavFallback() {
+    const navUserName = document.getElementById('nav-user-name');
+    if (navUserName) navUserName.textContent = 'Student';
+    
+    const navFullName = document.getElementById('nav-full-name');
+    if (navFullName) navFullName.textContent = 'Student';
+    
+    const navUserEmail = document.getElementById('nav-user-email');
+    if (navUserEmail) navUserEmail.textContent = 'No email';
+}
+
+// Make function globally available for components.js
+window.loadStudentNav = loadStudentNav;
+</script>

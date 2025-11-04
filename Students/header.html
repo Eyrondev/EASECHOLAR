@@ -1,0 +1,73 @@
+<!-- Welcome section -->
+<style>
+    /* Mobile Header Styles - iPhone 12 Pro Optimized */
+    @media (max-width: 768px) {
+        .student-welcome-header h1 {
+            font-size: 1.5rem;
+            line-height: 2rem;
+        }
+        
+        .student-welcome-header p {
+            font-size: 0.875rem;
+        }
+    }
+    
+    @media (max-width: 390px) {
+        .student-welcome-header {
+            margin-bottom: 1.5rem;
+        }
+        
+        .student-welcome-header h1 {
+            font-size: 1.25rem;
+            line-height: 1.75rem;
+        }
+        
+        .student-welcome-header p {
+            font-size: 0.813rem;
+            line-height: 1.25rem;
+        }
+    }
+</style>
+
+<div class="student-welcome-header mb-8">
+    <h1 class="text-2xl font-bold text-gray-900 mb-2">Welcome back, <span id="header-user-name">Student</span>!</h1>
+    <p class="text-gray-600">Here's an overview of your scholarship journey</p>
+</div>
+
+<script>
+// Load student header data
+async function loadStudentHeader() {
+    console.log('Loading student header data...');
+    try {
+        const response = await fetch('/api/student/profile');
+        
+        if (!response.ok) {
+            console.error('API error:', response.status);
+            return;
+        }
+        
+        const result = await response.json();
+        
+        if (result.success && result.profile) {
+            console.log('Header profile loaded:', result.profile);
+            updateHeaderName(result.profile);
+        } else {
+            console.error('Failed to load profile:', result.message);
+        }
+    } catch (error) {
+        console.error('Error loading student header:', error);
+    }
+}
+
+// Update header with student name
+function updateHeaderName(profile) {
+    const firstName = profile.first_name || 'Student';
+    const headerName = document.getElementById('header-user-name');
+    if (headerName) {
+        headerName.textContent = firstName;
+    }
+}
+
+// Make function globally available for components.js
+window.loadStudentHeader = loadStudentHeader;
+</script>

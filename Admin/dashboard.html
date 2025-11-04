@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - EASECHOLAR</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Custom Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            200: '#c7d2fe',
+                            300: '#a5b4fc',
+                            400: '#818cf8',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            800: '#3730a3',
+                            900: '#312e81',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Mobile Responsive Styles -->
+    <link rel="stylesheet" href="/Assets/css/mobile-responsive.css">
+
+    
+    <!-- Component loader script -->
+    <script src="components.js"></script>
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Sidebar component -->
+    <div id="sidebar-container"></div>
+    
+    <!-- Navigation component -->
+    <div id="nav-container"></div>
+
+    <!-- Main content -->
+    <div class="ml-0 lg:ml-64 pt-20 sm:pt-16">
+        <div class="p-4 sm:p-6 lg:p-8">
+            <!-- Header component -->
+            <div id="header-container"></div>
+
+            <!-- Stats Overview -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8">
+                <!-- Total Users -->
+                <div class="bg-white p-3 sm:p-6 rounded-xl shadow-md border border-gray-200 hover:shadow-lg transition-shadow">
+                    <div class="flex items-center justify-between">
+                        <div class="flex-1 min-w-0">
+                            <p class="text-xs sm:text-sm font-medium text-gray-600 mb-1 truncate">Total Users</p>
+                            <p id="stat-total-users" class="text-xl sm:text-3xl font-bold text-gray-900">0</p>
+                            <p class="text-xs text-green-600 mt-1 sm:mt-2">
+                                <i class="fas fa-arrow-up"></i>
+                                <span id="stat-users-growth">0%</span><span class="hidden sm:inline"> from last month</span>
+                            </p>
+                        </div>
+                        <div class="p-2 sm:p-4 bg-blue-100 rounded-full flex-shrink-0 ml-2">
+                            <i class="fas fa-users text-blue-600 text-lg sm:text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pending Approvals -->
+                <div class="bg-white p-3 sm:p-6 rounded-xl shadow-md border border-gray-200 hover:shadow-lg transition-shadow">
+                    <div class="flex items-center justify-between">
+                        <div class="flex-1 min-w-0">
+                            <p class="text-xs sm:text-sm font-medium text-gray-600 mb-1 truncate">Pending</p>
+                            <p id="stat-pending-approvals" class="text-xl sm:text-3xl font-bold text-gray-900">0</p>
+                            <p class="text-xs text-yellow-600 mt-1 sm:mt-2">
+                                <i class="fas fa-clock"></i>
+                                <span class="hidden sm:inline">Requires </span>Attention
+                            </p>
+                        </div>
+                        <div class="p-2 sm:p-4 bg-yellow-100 rounded-full flex-shrink-0 ml-2">
+                            <i class="fas fa-clipboard-check text-yellow-600 text-lg sm:text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Active Scholarships -->
+                <div class="bg-white p-3 sm:p-6 rounded-xl shadow-md border border-gray-200 hover:shadow-lg transition-shadow">
+                    <div class="flex items-center justify-between">
+                        <div class="flex-1 min-w-0">
+                            <p class="text-xs sm:text-sm font-medium text-gray-600 mb-1 truncate">Scholarships</p>
+                            <p id="stat-active-scholarships" class="text-xl sm:text-3xl font-bold text-gray-900">0</p>
+                            <p class="text-xs text-gray-500 mt-1 sm:mt-2">
+                                <span id="stat-total-scholarships">0</span> total
+                            </p>
+                        </div>
+                        <div class="p-2 sm:p-4 bg-green-100 rounded-full flex-shrink-0 ml-2">
+                            <i class="fas fa-graduation-cap text-green-600 text-lg sm:text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Total Applications -->
+                <div class="bg-white p-3 sm:p-6 rounded-xl shadow-md border border-gray-200 hover:shadow-lg transition-shadow">
+                    <div class="flex items-center justify-between">
+                        <div class="flex-1 min-w-0">
+                            <p class="text-xs sm:text-sm font-medium text-gray-600 mb-1 truncate">Applications</p>
+                            <p id="stat-total-applications" class="text-xl sm:text-3xl font-bold text-gray-900">0</p>
+                            <p class="text-xs text-green-600 mt-1 sm:mt-2">
+                                <i class="fas fa-arrow-up"></i>
+                                <span id="stat-applications-growth">0%</span><span class="hidden sm:inline"> this month</span>
+                            </p>
+                        </div>
+                        <div class="p-2 sm:p-4 bg-indigo-100 rounded-full flex-shrink-0 ml-2">
+                            <i class="fas fa-file-alt text-indigo-600 text-lg sm:text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Secondary Stats -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
+                <!-- Students -->
+                <div class="bg-gradient-to-br from-blue-500 to-blue-600 p-4 sm:p-6 rounded-xl shadow-lg text-white">
+                    <div class="mb-3 sm:mb-4">
+                        <h3 class="text-base sm:text-lg font-semibold">Students</h3>
+                    </div>
+                    <div class="space-y-2 sm:space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs sm:text-sm text-blue-100">Total Registered</span>
+                            <span id="stat-total-students" class="text-xl sm:text-2xl font-bold">0</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs sm:text-sm text-blue-100">Verified Students</span>
+                            <span id="stat-verified-students" class="text-xl sm:text-2xl font-bold">0</span>
+                        </div>
+                        <div class="hidden sm:block w-full bg-blue-400 bg-opacity-30 rounded-full h-2.5 mt-3">
+                            <div id="students-progress" class="bg-white h-2.5 rounded-full shadow-lg" style="width: 0%"></div>
+                        </div>
+                        <p class="hidden sm:block text-xs text-blue-100 mt-2">
+                            <i class="fas fa-chart-line mr-1"></i>
+                            <span id="students-verification-rate">0%</span> verification rate
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Providers -->
+                <div class="bg-gradient-to-br from-green-500 to-green-600 p-4 sm:p-6 rounded-xl shadow-lg text-white">
+                    <div class="mb-3 sm:mb-4">
+                        <h3 class="text-base sm:text-lg font-semibold">Scholarship Providers</h3>
+                    </div>
+                    <div class="space-y-2 sm:space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs sm:text-sm text-green-100">Total Registered</span>
+                            <span id="stat-total-providers" class="text-xl sm:text-2xl font-bold">0</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs sm:text-sm text-green-100">Verified Providers</span>
+                            <span id="stat-verified-providers" class="text-xl sm:text-2xl font-bold">0</span>
+                        </div>
+                        <div class="hidden sm:block w-full bg-green-400 bg-opacity-30 rounded-full h-2.5 mt-3">
+                            <div id="providers-progress" class="bg-white h-2.5 rounded-full shadow-lg" style="width: 0%"></div>
+                        </div>
+                        <p class="hidden sm:block text-xs text-green-100 mt-2">
+                            <i class="fas fa-chart-line mr-1"></i>
+                            <span id="providers-verification-rate">0%</span> verification rate
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics Charts -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
+                <!-- Application Status Distribution -->
+                <div class="bg-white p-4 sm:p-6 rounded-xl shadow-md border border-gray-200">
+                    <div class="flex items-center justify-between mb-4 sm:mb-6">
+                        <h3 class="text-base sm:text-lg font-semibold text-gray-900">Application Status</h3>
+                        <i class="fas fa-chart-pie text-indigo-500 text-lg sm:text-xl"></i>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3 sm:gap-4">
+                        <div class="text-center p-3 sm:p-4 bg-green-50 rounded-lg">
+                            <div class="text-xl sm:text-3xl font-bold text-green-600" id="stat-approved-apps">0</div>
+                            <p class="text-xs sm:text-sm text-gray-600 mt-1">Approved</p>
+                            <div class="hidden sm:block w-full bg-green-200 rounded-full h-1.5 mt-2">
+                                <div id="approved-bar" class="bg-green-600 h-1.5 rounded-full" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div class="text-center p-3 sm:p-4 bg-yellow-50 rounded-lg">
+                            <div class="text-xl sm:text-3xl font-bold text-yellow-600" id="stat-pending-apps">0</div>
+                            <p class="text-xs sm:text-sm text-gray-600 mt-1">Pending</p>
+                            <div class="hidden sm:block w-full bg-yellow-200 rounded-full h-1.5 mt-2">
+                                <div id="pending-bar" class="bg-yellow-600 h-1.5 rounded-full" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div class="text-center p-3 sm:p-4 bg-blue-50 rounded-lg">
+                            <div class="text-xl sm:text-3xl font-bold text-blue-600" id="stat-review-apps">0</div>
+                            <p class="text-xs sm:text-sm text-gray-600 mt-1">In Review</p>
+                            <div class="hidden sm:block w-full bg-blue-200 rounded-full h-1.5 mt-2">
+                                <div id="review-bar" class="bg-blue-600 h-1.5 rounded-full" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div class="text-center p-3 sm:p-4 bg-red-50 rounded-lg">
+                            <div class="text-xl sm:text-3xl font-bold text-red-600" id="stat-rejected-apps">0</div>
+                            <p class="text-xs sm:text-sm text-gray-600 mt-1">Rejected</p>
+                            <div class="hidden sm:block w-full bg-red-200 rounded-full h-1.5 mt-2">
+                                <div id="rejected-bar" class="bg-red-600 h-1.5 rounded-full" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Monthly Growth Trend -->
+                <div class="bg-white p-4 sm:p-6 rounded-xl shadow-md border border-gray-200">
+                    <div class="flex items-center justify-between mb-4 sm:mb-6">
+                        <h3 class="text-base sm:text-lg font-semibold text-gray-900">Monthly Growth</h3>
+                        <i class="fas fa-chart-line text-indigo-500 text-lg sm:text-xl"></i>
+                    </div>
+                    <div class="space-y-3 sm:space-y-4">
+                        <div class="flex items-center justify-between p-2 sm:p-3 bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg">
+                            <div class="flex items-center space-x-2 sm:space-x-3 min-w-0">
+                                <div class="p-1.5 sm:p-2 bg-blue-500 rounded-lg flex-shrink-0">
+                                    <i class="fas fa-users text-white text-sm sm:text-base"></i>
+                                </div>
+                                <div class="min-w-0">
+                                    <p class="text-xs sm:text-sm font-medium text-gray-900 truncate">New Users</p>
+                                    <p class="text-xs text-gray-600">This month</p>
+                                </div>
+                            </div>
+                            <div class="text-right flex-shrink-0 ml-2">
+                                <p class="text-lg sm:text-2xl font-bold text-blue-600" id="stat-new-users-month">0</p>
+                                <p class="text-xs text-green-600"><i class="fas fa-arrow-up"></i> <span id="stat-users-growth-detailed">0%</span></p>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between p-2 sm:p-3 bg-gradient-to-r from-green-50 to-green-100 rounded-lg">
+                            <div class="flex items-center space-x-2 sm:space-x-3 min-w-0">
+                                <div class="p-1.5 sm:p-2 bg-green-500 rounded-lg flex-shrink-0">
+                                    <i class="fas fa-graduation-cap text-white text-sm sm:text-base"></i>
+                                </div>
+                                <div class="min-w-0">
+                                    <p class="text-xs sm:text-sm font-medium text-gray-900 truncate">New Scholarships</p>
+                                    <p class="text-xs text-gray-600">This month</p>
+                                </div>
+                            </div>
+                            <div class="text-right flex-shrink-0 ml-2">
+                                <p class="text-lg sm:text-2xl font-bold text-green-600" id="stat-new-scholarships-month">0</p>
+                                <p class="text-xs text-green-600"><i class="fas fa-arrow-up"></i> <span id="stat-scholarships-growth">0%</span></p>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between p-2 sm:p-3 bg-gradient-to-r from-purple-50 to-purple-100 rounded-lg">
+                            <div class="flex items-center space-x-2 sm:space-x-3 min-w-0">
+                                <div class="p-1.5 sm:p-2 bg-purple-500 rounded-lg flex-shrink-0">
+                                    <i class="fas fa-file-alt text-white text-sm sm:text-base"></i>
+                                </div>
+                                <div class="min-w-0">
+                                    <p class="text-xs sm:text-sm font-medium text-gray-900 truncate">New Applications</p>
+                                    <p class="text-xs text-gray-600">This month</p>
+                                </div>
+                            </div>
+                            <div class="text-right flex-shrink-0 ml-2">
+                                <p class="text-lg sm:text-2xl font-bold text-purple-600" id="stat-new-apps-month">0</p>
+                                <p class="text-xs text-green-600"><i class="fas fa-arrow-up"></i> <span id="stat-apps-growth-detailed">0%</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-8">
+                <!-- Pending Approvals List -->
+                <div class="lg:col-span-2">
+                    <div class="bg-white rounded-xl shadow-md border border-gray-200">
+                        <div class="p-4 sm:p-6 border-b border-gray-200">
+                            <div class="flex items-center justify-between">
+                                <h2 class="text-lg sm:text-xl font-semibold text-gray-900">Pending Approvals</h2>
+                                <a href="/Admin/approvals.html" class="text-xs sm:text-sm text-indigo-600 hover:text-indigo-700 font-medium">
+                                    View All <i class="fas fa-arrow-right ml-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div id="pending-approvals-list" class="divide-y divide-gray-200">
+                            <!-- Approvals will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div>
+                    <!-- Quick Actions -->
+                    <div class="bg-white rounded-xl shadow-md border border-gray-200 p-4 sm:p-6">
+                        <h3 class="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">Quick Actions</h3>
+                        <div class="space-y-2 sm:space-y-3">
+                            <button onclick="window.location.href='/Admin/approvals.html'" class="w-full flex items-center justify-center px-3 sm:px-4 py-2.5 sm:py-3 bg-indigo-600 text-white text-sm sm:text-base rounded-lg hover:bg-indigo-700 transition-colors shadow-md">
+                                <i class="fas fa-user-check mr-2"></i>
+                                Review Approvals
+                            </button>
+                            <button onclick="window.location.href='/Admin/users.html'" class="w-full flex items-center justify-center px-3 sm:px-4 py-2.5 sm:py-3 border-2 border-indigo-600 text-indigo-600 text-sm sm:text-base rounded-lg hover:bg-indigo-50 transition-colors">
+                                <i class="fas fa-users mr-2"></i>
+                                Manage Users
+                            </button>
+                            <button onclick="window.location.href='/Admin/reports.html'" class="w-full flex items-center justify-center px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-300 text-gray-700 text-sm sm:text-base rounded-lg hover:bg-gray-50 transition-colors">
+                                <i class="fas fa-chart-bar mr-2"></i>
+                                Generate Report
+                            </button>
+                            <button onclick="window.location.href='/Admin/settings.html'" class="w-full flex items-center justify-center px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-300 text-gray-700 text-sm sm:text-base rounded-lg hover:bg-gray-50 transition-colors">
+                                <i class="fas fa-cog mr-2"></i>
+                                System Settings
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDashboardData();
+        });
+
+        function loadDashboardData() {
+            // Load dashboard statistics
+            fetch('/api/admin/dashboard-stats')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        updateStatistics(data.data);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading dashboard stats:', error);
+                });
+
+            // Load pending approvals
+            loadPendingApprovals();
+        }
+
+        function updateStatistics(stats) {
+            // Update main stats
+            document.getElementById('stat-total-users').textContent = stats.total_users || 0;
+            document.getElementById('stat-pending-approvals').textContent = stats.pending_approvals || 0;
+            document.getElementById('stat-active-scholarships').textContent = stats.active_scholarships || 0;
+            document.getElementById('stat-total-scholarships').textContent = stats.total_scholarships || 0;
+            document.getElementById('stat-total-applications').textContent = stats.total_applications || 0;
+            
+            // Update growth percentages
+            document.getElementById('stat-users-growth').textContent = (stats.users_growth || 0).toFixed(1) + '%';
+            document.getElementById('stat-applications-growth').textContent = (stats.applications_growth || 0).toFixed(1) + '%';
+
+            // Update student stats with verification rate
+            document.getElementById('stat-total-students').textContent = stats.total_students || 0;
+            document.getElementById('stat-verified-students').textContent = stats.verified_students || 0;
+            const studentProgress = stats.total_students > 0 ? (stats.verified_students / stats.total_students * 100) : 0;
+            document.getElementById('students-progress').style.width = studentProgress + '%';
+            document.getElementById('students-verification-rate').textContent = studentProgress.toFixed(0) + '%';
+
+            // Update provider stats with verification rate
+            document.getElementById('stat-total-providers').textContent = stats.total_providers || 0;
+            document.getElementById('stat-verified-providers').textContent = stats.verified_providers || 0;
+            const providerProgress = stats.total_providers > 0 ? (stats.verified_providers / stats.total_providers * 100) : 0;
+            document.getElementById('providers-progress').style.width = providerProgress + '%';
+            document.getElementById('providers-verification-rate').textContent = providerProgress.toFixed(0) + '%';
+
+            // Update application status distribution
+            const totalApps = stats.total_applications || 0;
+            const approvedApps = stats.approved_applications || 0;
+            const pendingApps = stats.pending_applications || 0;
+            const reviewApps = stats.review_applications || 0;
+            const rejectedApps = stats.rejected_applications || 0;
+
+            document.getElementById('stat-approved-apps').textContent = approvedApps;
+            document.getElementById('stat-pending-apps').textContent = pendingApps;
+            document.getElementById('stat-review-apps').textContent = reviewApps;
+            document.getElementById('stat-rejected-apps').textContent = rejectedApps;
+
+            // Update application status bars
+            if (totalApps > 0) {
+                document.getElementById('approved-bar').style.width = (approvedApps / totalApps * 100) + '%';
+                document.getElementById('pending-bar').style.width = (pendingApps / totalApps * 100) + '%';
+                document.getElementById('review-bar').style.width = (reviewApps / totalApps * 100) + '%';
+                document.getElementById('rejected-bar').style.width = (rejectedApps / totalApps * 100) + '%';
+            }
+
+            // Update monthly growth stats
+            document.getElementById('stat-new-users-month').textContent = stats.new_users_this_month || 0;
+            document.getElementById('stat-new-scholarships-month').textContent = stats.new_scholarships_this_month || 0;
+            document.getElementById('stat-new-apps-month').textContent = stats.new_applications_this_month || 0;
+            
+            document.getElementById('stat-users-growth-detailed').textContent = (stats.users_growth || 0).toFixed(1) + '%';
+            document.getElementById('stat-scholarships-growth').textContent = (stats.scholarships_growth || 0).toFixed(1) + '%';
+            document.getElementById('stat-apps-growth-detailed').textContent = (stats.applications_growth || 0).toFixed(1) + '%';
+        }
+
+        function loadPendingApprovals() {
+            const container = document.getElementById('pending-approvals-list');
+            showLoading('pending-approvals-list');
+
+            fetch('/api/admin/pending-approvals')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.pending_users) {
+                        displayPendingApprovals(data.pending_users.slice(0, 5)); // Show only first 5
+                    } else {
+                        container.innerHTML = `
+                            <div class="p-8 text-center text-gray-500">
+                                <i class="fas fa-check-circle text-4xl mb-3"></i>
+                                <p>No pending approvals</p>
+                            </div>
+                        `;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading pending approvals:', error);
+                    showError('pending-approvals-list', 'Failed to load pending approvals');
+                });
+        }
+
+        function displayPendingApprovals(users) {
+            const container = document.getElementById('pending-approvals-list');
+            
+            if (users.length === 0) {
+                container.innerHTML = `
+                    <div class="p-8 text-center text-gray-500">
+                        <i class="fas fa-check-circle text-4xl mb-3"></i>
+                        <p>No pending approvals</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = users.map(user => `
+                <div class="p-4 sm:p-6 hover:bg-gray-50 transition-colors">
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                        <div class="flex items-center space-x-3 sm:space-x-4 flex-1 min-w-0">
+                            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br ${user.user_type === 'STUDENT' ? 'from-blue-400 to-blue-600' : 'from-green-400 to-green-600'} flex items-center justify-center text-white font-bold text-sm sm:text-lg flex-shrink-0">
+                                ${user.first_name.charAt(0)}${user.last_name.charAt(0)}
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center space-x-2 flex-wrap">
+                                    <h4 class="text-sm sm:text-base font-medium text-gray-900 truncate">${user.full_name}</h4>
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${user.user_type === 'STUDENT' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'}">
+                                        ${user.user_type}
+                                    </span>
+                                </div>
+                                <p class="text-xs sm:text-sm text-gray-600 truncate">${user.email}</p>
+                                <p class="text-xs text-gray-500 mt-1">
+                                    <span class="truncate inline-block max-w-[200px]">${user.user_type === 'STUDENT' ? user.school_name || 'No school info' : user.organization_name || 'No org info'}</span> • 
+                                    <span class="hidden sm:inline">Registered </span>${getRelativeTime(user.created_at)}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-2 sm:ml-4">
+                            <button onclick="approveUser(${user.id}, '${user.full_name}')" class="flex-1 sm:flex-none px-2 sm:px-3 py-1.5 bg-green-600 text-white text-xs sm:text-sm rounded-lg hover:bg-green-700 transition-colors">
+                                <i class="fas fa-check mr-1"></i> <span class="hidden sm:inline">Approve</span><span class="sm:hidden">OK</span>
+                            </button>
+                            <button onclick="rejectUser(${user.id}, '${user.full_name}')" class="flex-1 sm:flex-none px-2 sm:px-3 py-1.5 bg-red-600 text-white text-xs sm:text-sm rounded-lg hover:bg-red-700 transition-colors">
+                                <i class="fas fa-times mr-1"></i> <span class="hidden sm:inline">Reject</span><span class="sm:hidden">No</span>
+                            </button>
+                            <a href="/Admin/approvals.html?user=${user.id}" class="px-2 sm:px-3 py-1.5 border border-gray-300 text-gray-700 text-xs sm:text-sm rounded-lg hover:bg-gray-50 transition-colors">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function approveUser(userId, userName) {
+            if (!confirm(`Are you sure you want to approve ${userName}?`)) return;
+
+            fetch(`/api/admin/approve-user/${userId}`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'}
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showSuccess(`${userName} approved successfully!`);
+                    loadDashboardData();
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error approving user:', error);
+                alert('Failed to approve user');
+            });
+        }
+
+        function rejectUser(userId, userName) {
+            const reason = prompt(`Enter reason for rejecting ${userName}:`);
+            if (!reason) return;
+
+            fetch(`/api/admin/reject-user/${userId}`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ reason: reason })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showSuccess(`${userName} rejected successfully`);
+                    loadDashboardData();
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error rejecting user:', error);
+                alert('Failed to reject user');
+            });
+        }
+    </script>
+
+    <!-- Mobile Menu Handler -->
+    <script src="/Assets/js/mobile-menu.js"></script>
+</body>
+</html>

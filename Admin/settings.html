@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Admin - EASECHOLAR</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eef2ff', 100: '#e0e7ff', 200: '#c7d2fe', 300: '#a5b4fc', 400: '#818cf8',
+                            500: '#6366f1', 600: '#4f46e5', 700: '#4338ca', 800: '#3730a3', 900: '#312e81',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Mobile Responsive Styles -->
+    <link rel="stylesheet" href="/Assets/css/mobile-responsive.css">
+
+    <script src="components.js"></script>
+    <style>
+        @keyframes slide-in {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slide-out {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+        
+        .animate-slide-in {
+            animation: slide-in 0.3s ease-out;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <div id="sidebar-container"></div>
+    <div id="nav-container"></div>
+
+    <div class="ml-64 pt-16">
+        <div class="p-8">
+            <div id="header-container"></div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Sidebar Menu -->
+                <div class="lg:col-span-1">
+                    <div class="bg-white rounded-xl shadow-md border border-gray-200 p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Settings Menu</h3>
+                        <nav class="space-y-2">
+                            <button onclick="showSection('profile')" id="btn-profile" class="w-full text-left px-4 py-2 rounded-lg bg-indigo-50 text-indigo-700 font-medium">
+                                <i class="fas fa-user mr-2"></i>My Profile
+                            </button>
+                            <button onclick="showSection('security')" id="btn-security" class="w-full text-left px-4 py-2 rounded-lg hover:bg-gray-50 text-gray-700">
+                                <i class="fas fa-lock mr-2"></i>Security
+                            </button>
+                            <button onclick="showSection('system')" id="btn-system" class="w-full text-left px-4 py-2 rounded-lg hover:bg-gray-50 text-gray-700">
+                                <i class="fas fa-cog mr-2"></i>System Settings
+                            </button>
+                        </nav>
+                    </div>
+                </div>
+
+                <!-- Content Area -->
+                <div class="lg:col-span-2">
+                    <!-- Profile Section -->
+                    <div id="section-profile" class="bg-white rounded-xl shadow-md border border-gray-200 p-6">
+                        <h3 class="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                            <i class="fas fa-user text-indigo-600 mr-2"></i>
+                            Admin Profile
+                        </h3>
+
+                        <form id="profile-form" class="space-y-6">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">First Name</label>
+                                    <input type="text" id="first-name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
+                                    <input type="text" id="last-name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                                <input type="email" id="email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                            </div>
+
+                            <div class="flex space-x-3 pt-4 border-t border-gray-200">
+                                <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg font-medium transition-colors">
+                                    <i class="fas fa-save mr-2"></i>Save Changes
+                                </button>
+                                <button type="button" onclick="loadProfile()" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-2 rounded-lg font-medium transition-colors">
+                                    <i class="fas fa-undo mr-2"></i>Reset
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Security Section -->
+                    <div id="section-security" class="bg-white rounded-xl shadow-md border border-gray-200 p-6 hidden">
+                        <h3 class="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                            <i class="fas fa-lock text-indigo-600 mr-2"></i>
+                            Security Settings
+                        </h3>
+
+                        <form id="password-form" class="space-y-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Current Password</label>
+                                <input type="password" id="current-password" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">New Password</label>
+                                <input type="password" id="new-password" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Confirm New Password</label>
+                                <input type="password" id="confirm-password" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                            </div>
+
+                            <div class="flex space-x-3 pt-4 border-t border-gray-200">
+                                <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg font-medium transition-colors">
+                                    <i class="fas fa-key mr-2"></i>Change Password
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- System Settings Section -->
+                    <div id="section-system" class="bg-white rounded-xl shadow-md border border-gray-200 p-6 hidden">
+                        <h3 class="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                            <i class="fas fa-cog text-indigo-600 mr-2"></i>
+                            System Settings
+                        </h3>
+
+                        <div class="space-y-6">
+                            <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900">Maintenance Mode</p>
+                                    <p class="text-xs text-gray-500">Temporarily disable public access</p>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" class="sr-only peer" id="maintenance-mode">
+                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-red-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"></div>
+                                </label>
+                            </div>
+
+                            <div class="flex space-x-3 pt-4 border-t border-gray-200">
+                                <button onclick="saveSystemSettings()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg font-medium transition-colors">
+                                    <i class="fas fa-save mr-2"></i>Save Settings
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('✅ Settings page loaded');
+            // Components are loaded automatically by components.js
+            loadProfile();
+        });
+
+        function showSection(section) {
+            console.log('📄 Switching to section:', section);
+            // Hide all sections
+            ['profile', 'security', 'system'].forEach(s => {
+                const sectionEl = document.getElementById(`section-${s}`);
+                const btnEl = document.getElementById(`btn-${s}`);
+                
+                if (sectionEl) sectionEl.classList.add('hidden');
+                if (btnEl) {
+                    btnEl.classList.remove('bg-indigo-50', 'text-indigo-700', 'font-medium');
+                    btnEl.classList.add('hover:bg-gray-50', 'text-gray-700');
+                }
+            });
+
+            // Show selected section
+            const selectedSection = document.getElementById(`section-${section}`);
+            const selectedBtn = document.getElementById(`btn-${section}`);
+            
+            if (selectedSection) {
+                selectedSection.classList.remove('hidden');
+                console.log('✅ Section displayed:', section);
+            }
+            if (selectedBtn) {
+                selectedBtn.classList.add('bg-indigo-50', 'text-indigo-700', 'font-medium');
+                selectedBtn.classList.remove('hover:bg-gray-50', 'text-gray-700');
+            }
+        }
+
+        function loadProfile() {
+            console.log('📊 Loading profile data...');
+            fetch('/api/admin/profile')
+                .then(response => response.json())
+                .then(data => {
+                    console.log('📦 Profile data received:', data);
+                    if (data.success) {
+                        document.getElementById('first-name').value = data.first_name || '';
+                        document.getElementById('last-name').value = data.last_name || '';
+                        document.getElementById('email').value = data.email || '';
+                        console.log('✅ Profile loaded successfully');
+                    }
+                })
+                .catch(error => {
+                    console.error('❌ Error loading profile:', error);
+                });
+            
+            // Load system settings
+            loadSystemSettings();
+        }
+
+        function loadSystemSettings() {
+            console.log('⚙️ Loading system settings...');
+            fetch('/api/admin/system-settings')
+                .then(response => response.json())
+                .then(data => {
+                    console.log('📦 System settings received:', data);
+                    if (data.success) {
+                        document.getElementById('maintenance-mode').checked = data.maintenance_mode || false;
+                        console.log('✅ System settings loaded');
+                    }
+                })
+                .catch(error => {
+                    console.error('❌ Error loading system settings:', error);
+                });
+        }
+
+        document.getElementById('profile-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const firstName = document.getElementById('first-name').value.trim();
+            const lastName = document.getElementById('last-name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            
+            if (!firstName || !email) {
+                showErrorToast('First name and email are required');
+                return;
+            }
+            
+            console.log('💾 Updating profile...', { firstName, lastName, email });
+            
+            fetch('/api/admin/profile', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    first_name: firstName,
+                    last_name: lastName,
+                    email: email
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('📦 Profile update response:', data);
+                if (data.success) {
+                    showSuccessToast('Profile updated successfully!');
+                    console.log('✅ Profile updated');
+                    
+                    // Reload navigation to update displayed name
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1500);
+                } else {
+                    showErrorToast(data.message || 'Failed to update profile');
+                }
+            })
+            .catch(error => {
+                console.error('❌ Error updating profile:', error);
+                showErrorToast('Failed to update profile. Check console for details.');
+            });
+        });
+
+        document.getElementById('password-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const currentPass = document.getElementById('current-password').value;
+            const newPass = document.getElementById('new-password').value;
+            const confirmPass = document.getElementById('confirm-password').value;
+            
+            if (!currentPass || !newPass || !confirmPass) {
+                showErrorToast('All password fields are required');
+                return;
+            }
+            
+            if (newPass !== confirmPass) {
+                showErrorToast('New passwords do not match!');
+                return;
+            }
+            
+            if (newPass.length < 6) {
+                showErrorToast('New password must be at least 6 characters');
+                return;
+            }
+            
+            console.log('🔐 Changing password...');
+            
+            fetch('/api/admin/change-password', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    current_password: currentPass,
+                    new_password: newPass
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('📦 Password change response:', data);
+                if (data.success) {
+                    showSuccessToast('Password changed successfully!');
+                    console.log('✅ Password changed');
+                    
+                    // Clear form
+                    document.getElementById('password-form').reset();
+                } else {
+                    showErrorToast(data.message || 'Failed to change password');
+                }
+            })
+            .catch(error => {
+                console.error('❌ Error changing password:', error);
+                showErrorToast('Failed to change password. Check console for details.');
+            });
+        });
+
+        function saveSystemSettings() {
+            const maintenanceMode = document.getElementById('maintenance-mode').checked;
+            
+            console.log('💾 Saving system settings...', { maintenance_mode: maintenanceMode });
+            
+            fetch('/api/admin/system-settings', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    maintenance_mode: maintenanceMode
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('📦 Save response:', data);
+                if (data.success) {
+                    // Show success message
+                    showSuccessToast('System settings saved successfully!');
+                    console.log('✅ Settings saved');
+                    
+                    // Show warning if maintenance mode is enabled
+                    if (maintenanceMode) {
+                        setTimeout(() => {
+                            showWarningToast('⚠️ Maintenance mode is now ACTIVE - Public access disabled!');
+                        }, 500);
+                    }
+                } else {
+                    alert('Error: ' + (data.message || 'Failed to save settings'));
+                }
+            })
+            .catch(error => {
+                console.error('❌ Error saving settings:', error);
+                alert('Failed to save settings. Check console for details.');
+            });
+        }
+
+        function showSuccessToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed top-20 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-slide-in';
+            toast.innerHTML = `
+                <div class="flex items-center">
+                    <i class="fas fa-check-circle mr-3"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.animation = 'slide-out 0.3s ease-out';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        function showWarningToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed top-32 right-4 bg-orange-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-slide-in';
+            toast.innerHTML = `
+                <div class="flex items-center">
+                    <i class="fas fa-exclamation-triangle mr-3"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.animation = 'slide-out 0.3s ease-out';
+                setTimeout(() => toast.remove(), 300);
+            }, 5000);
+        }
+
+        function showErrorToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed top-20 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-slide-in';
+            toast.innerHTML = `
+                <div class="flex items-center">
+                    <i class="fas fa-times-circle mr-3"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.animation = 'slide-out 0.3s ease-out';
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+    </script>
+
+    <!-- Mobile Menu Handler -->
+    <script src="/Assets/js/mobile-menu.js"></script>
+</body>
+</html>

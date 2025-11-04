@@ -1,0 +1,29 @@
+<!-- Admin Page Header Component -->
+<div class="mb-8">
+    <div class="flex items-center justify-between">
+        <div>
+            <h1 id="page-title" class="text-3xl font-bold text-gray-900 mb-2">Dashboard</h1>
+            <p id="page-subtitle" class="text-gray-600">Welcome back! Here's what's happening today.</p>
+        </div>
+        <div id="page-actions" class="flex items-center space-x-3">
+            <!-- Page-specific action buttons will be inserted here -->
+        </div>
+    </div>
+</div>
+
+<script>
+    function setPageHeader(title, subtitle, actions = []) {
+        document.getElementById('page-title').textContent = title;
+        document.getElementById('page-subtitle').textContent = subtitle;
+        
+        const actionsContainer = document.getElementById('page-actions');
+        if (actions.length > 0) {
+            actionsContainer.innerHTML = actions.map(action => `
+                <button onclick="${action.onclick}" class="flex items-center px-4 py-2 ${action.class || 'bg-indigo-600 text-white hover:bg-indigo-700'} rounded-lg transition-colors shadow-md">
+                    ${action.icon ? `<i class="${action.icon} mr-2"></i>` : ''}
+                    ${action.text}
+                </button>
+            `).join('');
+        }
+    }
+</script>

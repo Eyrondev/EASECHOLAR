@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Students - EASECHOLAR</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Custom Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            200: '#bbf7d0',
+                            300: '#86efac',
+                            400: '#4ade80',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        },
+                        secondary: {
+                            50: '#f8fafc',
+                            100: '#f1f5f9',
+                            200: '#e2e8f0',
+                            300: '#cbd5e1',
+                            400: '#94a3b8',
+                            500: '#64748b',
+                            600: '#475569',
+                            700: '#334155',
+                            800: '#1e293b',
+                            900: '#0f172a',
+                        }
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'ui-sans-serif', 'system-ui'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Mobile Responsive Styles -->
+    <link rel="stylesheet" href="/Assets/css/mobile-responsive.css">
+
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Sidebar component (fixed) -->
+    <div id="sidebar-container"></div>
+    
+    <!-- Navigation component (fixed) -->
+    <div id="nav-container"></div>
+
+    <!-- Main content with proper spacing for fixed sidebar and nav -->
+    <div class="ml-0 lg:ml-64 pt-20 sm:pt-16">
+        <div class="p-4 sm:p-6 lg:p-8">
+            <!-- Page Header -->
+            <div class="mb-6 sm:mb-8">
+                <div class="sm:flex sm:items-center sm:justify-between">
+                    <div>
+                        <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">Students</h1>
+                        <p class="mt-1 sm:mt-2 text-sm sm:text-base text-gray-600">Manage and track your scholarship recipients</p>
+                    </div>
+                    <div class="mt-3 sm:mt-4 lg:mt-0 sm:flex-none">
+                        <button onclick="exportStudents()" type="button" class="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                            <i class="fas fa-download w-4 h-4 mr-2"></i>
+                            Export Data
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8">
+                <div class="bg-white p-3 sm:p-6 rounded-lg shadow-md border border-gray-200">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 sm:w-12 sm:h-12 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-users text-green-600 text-lg sm:text-xl"></i>
+                        </div>
+                        <div class="ml-2 sm:ml-4 min-w-0">
+                            <p class="text-xs sm:text-sm font-medium text-gray-600 truncate">Active Recipients</p>
+                            <p id="total-students" class="text-lg sm:text-2xl font-bold text-gray-900">
+                                <span class="inline-block animate-pulse bg-gray-200 rounded w-12 h-8"></span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-3 sm:p-6 rounded-lg shadow-md border border-gray-200">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-graduation-cap text-blue-600 text-lg sm:text-xl"></i>
+                        </div>
+                        <div class="ml-2 sm:ml-4 min-w-0">
+                            <p class="text-xs sm:text-sm font-medium text-gray-600 truncate">Active Scholarships</p>
+                            <p id="active-scholarships" class="text-lg sm:text-2xl font-bold text-gray-900">
+                                <span class="inline-block animate-pulse bg-gray-200 rounded w-12 h-8"></span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-3 sm:p-6 rounded-lg shadow-md border border-gray-200">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 sm:w-12 sm:h-12 bg-yellow-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-exclamation-triangle text-yellow-600 text-lg sm:text-xl"></i>
+                        </div>
+                        <div class="ml-2 sm:ml-4 min-w-0">
+                            <p class="text-xs sm:text-sm font-medium text-gray-600 truncate">Total Disbursed</p>
+                            <p id="total-disbursed" class="text-lg sm:text-2xl font-bold text-gray-900">
+                                <span class="inline-block animate-pulse bg-gray-200 rounded w-12 h-8"></span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-3 sm:p-6 rounded-lg shadow-md border border-gray-200">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 sm:w-12 sm:h-12 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-star text-purple-600 text-lg sm:text-xl"></i>
+                        </div>
+                        <div class="ml-2 sm:ml-4 min-w-0">
+                            <p class="text-xs sm:text-sm font-medium text-gray-600 truncate">Universities</p>
+                            <p id="total-universities" class="text-lg sm:text-2xl font-bold text-gray-900">
+                                <span class="inline-block animate-pulse bg-gray-200 rounded w-12 h-8"></span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filters and Search -->
+            <div class="bg-white p-4 sm:p-6 rounded-lg shadow-md border border-gray-200 mb-6 sm:mb-8">
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-3 sm:gap-4">
+                    <div class="md:col-span-2">
+                        <div class="relative">
+                            <input type="text" id="search" placeholder="Search students..."
+                                   class="w-full px-3 sm:pl-10 pr-4 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500">
+                            <div class="hidden sm:flex absolute inset-y-0 left-0 pl-3 items-center">
+                                <i class="fas fa-search text-gray-400"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <select id="scholarship-filter" class="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500">
+                            <option value="">All Scholarships</option>
+                            <!-- Will be populated dynamically -->
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <select id="status-filter" class="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500">
+                            <option value="">All Status</option>
+                            <option value="active">Active</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <select id="university-filter" class="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500">
+                            <option value="">All Universities</option>
+                            <!-- Will be populated dynamically -->
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Students List -->
+            <div id="students-list" class="space-y-4 sm:space-y-6">
+                <!-- Loading state -->
+                <div class="text-center py-12">
+                    <i class="fas fa-spinner fa-spin text-4xl text-green-500 mb-4"></i>
+                    <p class="text-gray-600">Loading students...</p>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            <div id="pagination" class="mt-8 flex items-center justify-between" style="display: none;">
+                <div id="pagination-info" class="text-sm text-gray-700"></div>
+                <div id="pagination-controls" class="flex items-center space-x-2"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Student Detail Modal -->
+    <script src="components.js"></script>
+
+    <!-- Page Scripts -->
+    <script>
+        let allStudents = [];
+        let filteredStudents = [];
+
+        // Load students on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadStudents();
+        });
+
+        async function loadStudents() {
+            try {
+                // Get all applications (we'll filter for approved ones to show as students)
+                const response = await fetch('/api/provider/applications');
+                const data = await response.json();
+
+                if (data.success) {
+                    // Filter approved applications and group by student
+                    const approvedApplications = data.applications.filter(app => app.status === 'APPROVED');
+                    
+                    // Group by student ID to avoid duplicates
+                    const studentMap = new Map();
+                    approvedApplications.forEach(app => {
+                        if (!studentMap.has(app.student_id)) {
+                            studentMap.set(app.student_id, {
+                                student_id: app.student_id,
+                                first_name: app.student_first_name,
+                                last_name: app.student_last_name,
+                                email: app.student_email,
+                                school_name: app.school_name,
+                                gpa: app.gpa,
+                                scholarships: [],
+                                total_amount: 0
+                            });
+                        }
+                        
+                        const student = studentMap.get(app.student_id);
+                        student.scholarships.push({
+                            id: app.scholarship_id,
+                            title: app.scholarship_title,
+                            amount: parseFloat(app.scholarship_amount || 0),
+                            application_id: app.id,
+                            submitted_at: app.submitted_at
+                        });
+                        student.total_amount += parseFloat(app.scholarship_amount || 0);
+                    });
+
+                    allStudents = Array.from(studentMap.values());
+                    filteredStudents = [...allStudents];
+                    renderStudents();
+                    updateStats();
+                    populateFilters();
+                } else {
+                    showError('Failed to load students');
+                }
+            } catch (error) {
+                console.error('Error loading students:', error);
+                showError('Error connecting to server');
+            }
+        }
+
+        function renderStudents() {
+            const container = document.getElementById('students-list');
+            
+            if (filteredStudents.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12">
+                        <i class="fas fa-inbox text-6xl text-gray-300 mb-4"></i>
+                        <p class="text-gray-600">No scholarship recipients found</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = filteredStudents.map(student => `
+                <div class="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden">
+                    <div class="p-4 sm:p-6">
+                        <div class="flex flex-col sm:flex-row items-start justify-between mb-3 sm:mb-4 gap-3 sm:gap-0">
+                            <div class="flex items-start space-x-3 sm:space-x-4 w-full sm:w-auto">
+                                <div class="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center text-white font-bold text-base sm:text-lg flex-shrink-0">
+                                    ${getInitials(student.first_name, student.last_name)}
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <h3 class="text-base sm:text-lg font-semibold text-gray-900 truncate">${student.first_name} ${student.last_name}</h3>
+                                    <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 mt-1">
+                                        <span class="text-xs sm:text-sm text-gray-500 truncate">${student.email}</span>
+                                        ${student.gpa ? `<span class="text-xs sm:text-sm text-gray-500">GPA: ${student.gpa}</span>` : ''}
+                                    </div>
+                                    <div class="flex flex-wrap items-center gap-2 mt-2">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                            Active Recipient
+                                        </span>
+                                        ${student.scholarships.length > 1 ? `
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                                ${student.scholarships.length} Scholarships
+                                            </span>
+                                        ` : ''}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-left sm:text-right w-full sm:w-auto">
+                                <p class="text-xs sm:text-sm text-gray-500">Total Scholarship Amount</p>
+                                <p class="text-base sm:text-lg font-bold text-green-600">₱${student.total_amount.toLocaleString()}</p>
+                                <p class="text-xs sm:text-sm text-gray-500 truncate">${student.scholarships.length > 1 ? `${student.scholarships.length} Scholarships` : student.scholarships[0].title}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3 sm:mb-4">
+                            <h4 class="font-medium text-sm sm:text-base text-gray-900 mb-1 sm:mb-2">Scholarships (${student.scholarships.length})</h4>
+                            <div class="space-y-1">
+                                ${student.scholarships.map(s => `
+                                    <p class="text-xs sm:text-sm text-gray-600 truncate">• ${s.title} - ₱${s.amount.toLocaleString()}</p>
+                                `).join('')}
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-3 sm:gap-4 mb-3 sm:mb-4">
+                            <div>
+                                <p class="text-xs sm:text-sm text-gray-500">Active Since</p>
+                                <p class="font-semibold text-sm sm:text-base text-gray-900">${new Date(student.scholarships[0].submitted_at).toLocaleDateString()}</p>
+                            </div>
+                            <div>
+                                <p class="text-xs sm:text-sm text-gray-500">Total Disbursed</p>
+                                <p class="font-semibold text-sm sm:text-base text-gray-900 truncate">₱${student.total_amount.toLocaleString()}</p>
+                            </div>
+                        </div>
+                        
+
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateStats() {
+            const totalStudents = allStudents.length;
+            const activeScholarships = allStudents.reduce((sum, s) => sum + s.scholarships.length, 0);
+            const totalDisbursed = allStudents.reduce((sum, s) => sum + s.total_amount, 0);
+            const universities = [...new Set(allStudents.map(s => s.school_name).filter(Boolean))].length;
+
+            document.getElementById('total-students').textContent = totalStudents;
+            document.getElementById('active-scholarships').textContent = activeScholarships;
+            document.getElementById('total-disbursed').textContent = `₱${totalDisbursed.toLocaleString()}`;
+            document.getElementById('total-universities').textContent = universities;
+        }
+
+        function populateFilters() {
+            // Populate scholarship filter
+            const scholarships = [...new Set(allStudents.flatMap(s => 
+                s.scholarships.map(sch => JSON.stringify({ id: sch.id, title: sch.title }))
+            ))].map(s => JSON.parse(s));
+
+            const scholarshipFilter = document.getElementById('scholarship-filter');
+            scholarshipFilter.innerHTML = '<option value="">All Scholarships</option>' +
+                scholarships.map(s => `<option value="${s.id}">${s.title}</option>`).join('');
+
+            // Populate university filter
+            const universities = [...new Set(allStudents.map(s => s.school_name).filter(Boolean))];
+            const universityFilter = document.getElementById('university-filter');
+            universityFilter.innerHTML = '<option value="">All Universities</option>' +
+                universities.map(u => `<option value="${u}">${u}</option>`).join('');
+        }
+
+        function getInitials(firstName, lastName) {
+            return ((firstName || '?').charAt(0) + (lastName || '?').charAt(0)).toUpperCase();
+        }
+
+        function viewStudentProfile(studentId) {
+            const student = allStudents.find(s => s.student_id === studentId);
+            if (!student) {
+                alert('Student not found');
+                return;
+            }
+
+            const modalContent = document.getElementById('student-modal-content');
+            modalContent.innerHTML = `
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                    <div>
+                        <h4 class="font-semibold text-base sm:text-lg text-gray-900 mb-2">Personal Information</h4>
+                        <dl class="space-y-2">
+                            <div>
+                                <dt class="text-xs sm:text-sm text-gray-500">Name</dt>
+                                <dd class="text-sm sm:text-base font-medium text-gray-900">${student.first_name} ${student.last_name}</dd>
+                            </div>
+                            <div>
+                                <dt class="text-xs sm:text-sm text-gray-500">Email</dt>
+                                <dd class="text-sm sm:text-base font-medium text-gray-900 break-all">${student.email}</dd>
+                            </div>
+                            <div>
+                                <dt class="text-xs sm:text-sm text-gray-500">University</dt>
+                                <dd class="text-sm sm:text-base font-medium text-gray-900">${student.school_name || 'N/A'}</dd>
+                            </div>
+                            <div>
+                                <dt class="text-xs sm:text-sm text-gray-500">GPA</dt>
+                                <dd class="text-sm sm:text-base font-medium text-gray-900">${student.gpa || 'N/A'}</dd>
+                            </div>
+                        </dl>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-base sm:text-lg text-gray-900 mb-2">Scholarship Information</h4>
+                        <dl class="space-y-2">
+                            <div>
+                                <dt class="text-xs sm:text-sm text-gray-500">Active Scholarships</dt>
+                                <dd class="text-sm sm:text-base font-medium text-gray-900">${student.scholarships.length}</dd>
+                            </div>
+                            <div>
+                                <dt class="text-xs sm:text-sm text-gray-500">Total Amount</dt>
+                                <dd class="text-sm sm:text-base font-medium text-gray-900">₱${student.total_amount.toLocaleString()}</dd>
+                            </div>
+                        </dl>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <h4 class="font-semibold text-base sm:text-lg text-gray-900 mb-2">Active Scholarships</h4>
+                    <div class="space-y-2">
+                        ${student.scholarships.map(s => `
+                            <div class="p-3 bg-gray-50 rounded-md">
+                                <p class="font-medium text-sm sm:text-base text-gray-900">${s.title}</p>
+                                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mt-1 gap-1">
+                                    <span class="text-xs sm:text-sm text-gray-600">Amount: ₱${s.amount.toLocaleString()}</span>
+                                    <span class="text-xs sm:text-sm text-gray-600">Since: ${new Date(s.submitted_at).toLocaleDateString()}</span>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('student-modal').classList.remove('hidden');
+        }
+
+        function closeStudentModal() {
+            document.getElementById('student-modal').classList.add('hidden');
+        }
+
+        function sendMessage(studentId) {
+            alert('Messaging functionality will be implemented soon');
+        }
+
+        function filterStudents() {
+            const search = document.getElementById('search').value.toLowerCase();
+            const scholarshipFilter = document.getElementById('scholarship-filter').value;
+            const universityFilter = document.getElementById('university-filter').value;
+
+            filteredStudents = allStudents.filter(student => {
+                const matchesSearch = search === '' || 
+                    student.first_name.toLowerCase().includes(search) ||
+                    student.last_name.toLowerCase().includes(search) ||
+                    student.email.toLowerCase().includes(search);
+                
+                const matchesScholarship = scholarshipFilter === '' || 
+                    student.scholarships.some(s => s.id == scholarshipFilter);
+                
+                const matchesUniversity = universityFilter === '' || student.school_name === universityFilter;
+
+                return matchesSearch && matchesScholarship && matchesUniversity;
+            });
+
+            renderStudents();
+        }
+
+        function showError(message) {
+            const container = document.getElementById('students-list');
+            container.innerHTML = `
+                <div class="text-center py-12">
+                    <i class="fas fa-exclamation-triangle text-6xl text-red-300 mb-4"></i>
+                    <p class="text-gray-600">${message}</p>
+                    <button onclick="loadStudents()" class="mt-4 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
+                        Retry
+                    </button>
+                </div>
+            `;
+        }
+
+        function exportStudents() {
+            alert('Export functionality will be implemented soon');
+        }
+
+        // Event listeners
+        document.getElementById('search').addEventListener('input', filterStudents);
+        document.getElementById('scholarship-filter').addEventListener('change', filterStudents);
+        document.getElementById('status-filter').addEventListener('change', filterStudents);
+        document.getElementById('university-filter').addEventListener('change', filterStudents);
+    </script>
+
+    <!-- Mobile Menu Handler -->
+    <script src="/Assets/js/mobile-menu.js"></script>
+</body>
+</html>

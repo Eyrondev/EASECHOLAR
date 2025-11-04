@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Students Management - Admin - EASECHOLAR</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Custom Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            200: '#c7d2fe',
+                            300: '#a5b4fc',
+                            400: '#818cf8',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            800: '#3730a3',
+                            900: '#312e81',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Mobile Responsive Styles -->
+    <link rel="stylesheet" href="/Assets/css/mobile-responsive.css">
+
+    
+    <!-- Component loader script -->
+    <script src="components.js"></script>
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Sidebar component -->
+    <div id="sidebar-container"></div>
+    
+    <!-- Navigation component -->
+    <div id="nav-container"></div>
+
+    <!-- Main content -->
+    <div class="ml-0 lg:ml-64 pt-20 sm:pt-16">
+        <div class="p-4 sm:p-6 lg:p-8">
+            <!-- Header component -->
+            <div id="header-container"></div>
+
+            <!-- Stats Overview -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8">
+                <div class="bg-white p-3 sm:p-6 rounded-xl shadow-md border border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div class="flex-1 min-w-0">
+                            <p class="text-xs sm:text-sm font-medium text-gray-600 truncate">Total Students</p>
+                            <p id="stat-total" class="text-xl sm:text-3xl font-bold text-gray-900 mt-1">0</p>
+                        </div>
+                        <div class="p-2 sm:p-3 bg-blue-100 rounded-full flex-shrink-0 ml-2">
+                            <i class="fas fa-user-graduate text-blue-600 text-lg sm:text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-3 sm:p-6 rounded-xl shadow-md border border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div class="flex-1 min-w-0">
+                            <p class="text-xs sm:text-sm font-medium text-gray-600 truncate">Verified</p>
+                            <p id="stat-verified" class="text-xl sm:text-3xl font-bold text-green-600 mt-1">0</p>
+                        </div>
+                        <div class="p-2 sm:p-3 bg-green-100 rounded-full flex-shrink-0 ml-2">
+                            <i class="fas fa-check-circle text-green-600 text-lg sm:text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-3 sm:p-6 rounded-xl shadow-md border border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div class="flex-1 min-w-0">
+                            <p class="text-xs sm:text-sm font-medium text-gray-600 truncate">Pending</p>
+                            <p id="stat-pending" class="text-xl sm:text-3xl font-bold text-yellow-600 mt-1">0</p>
+                        </div>
+                        <div class="p-2 sm:p-3 bg-yellow-100 rounded-full flex-shrink-0 ml-2">
+                            <i class="fas fa-clock text-yellow-600 text-lg sm:text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-3 sm:p-6 rounded-xl shadow-md border border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div class="flex-1 min-w-0">
+                            <p class="text-xs sm:text-sm font-medium text-gray-600 truncate">Active</p>
+                            <p id="stat-active" class="text-xl sm:text-3xl font-bold text-indigo-600 mt-1">0</p>
+                        </div>
+                        <div class="p-2 sm:p-3 bg-indigo-100 rounded-full flex-shrink-0 ml-2">
+                            <i class="fas fa-user-check text-indigo-600 text-lg sm:text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filters and Search -->
+            <div class="bg-white rounded-xl shadow-md border border-gray-200 p-4 sm:p-6 mb-4 sm:mb-6">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                    <!-- Search -->
+                    <div class="sm:col-span-2 lg:col-span-2">
+                        <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Search Students</label>
+                        <div class="relative">
+                            <input type="text" id="search-input" placeholder="Search by name, email, or ID..." 
+                                   class="w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                            <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                        </div>
+                    </div>
+
+                    <!-- Status Filter -->
+                    <div>
+                        <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Verification Status</label>
+                        <select id="status-filter" class="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                            <option value="">All Status</option>
+                            <option value="verified">Verified</option>
+                            <option value="pending">Pending</option>
+                        </select>
+                    </div>
+
+                    <!-- Active Filter -->
+                    <div>
+                        <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Account Status</label>
+                        <select id="active-filter" class="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                            <option value="">All Accounts</option>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-col sm:flex-row items-center justify-between mt-4 pt-4 border-t border-gray-200 gap-2">
+                    <button onclick="resetFilters()" class="w-full sm:w-auto text-gray-600 hover:text-gray-900 text-xs sm:text-sm font-medium px-4 py-2">
+                        <i class="fas fa-undo mr-2"></i>Reset Filters
+                    </button>
+                    <button onclick="exportStudents()" class="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors">
+                        <i class="fas fa-download mr-2"></i>Export to CSV
+                    </button>
+                </div>
+            </div>
+
+            <!-- Students Table -->
+            <div class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
+                <div class="p-4 sm:p-6 border-b border-gray-200">
+                    <h2 class="text-lg sm:text-xl font-bold text-gray-900">Students List</h2>
+                    <p class="text-xs sm:text-sm text-gray-600 mt-1">Manage and monitor all student accounts</p>
+                </div>
+
+                <!-- Table (hidden on mobile) -->
+                <div class="hidden lg:block overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-gray-50 border-b border-gray-200">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">School</th>
+                                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Registered</th>
+                                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="students-table-body" class="bg-white divide-y divide-gray-200">
+                            <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Mobile Card View -->
+                <div id="students-mobile-view" class="lg:hidden divide-y divide-gray-200">
+                    <!-- Mobile cards will be loaded here -->
+                </div>
+
+                <!-- Pagination -->
+                <div id="pagination" class="px-4 sm:px-6 py-3 sm:py-4 bg-gray-50 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-2">
+                    <!-- Populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Student Detail Modal -->
+    <div id="studentModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="sticky top-0 bg-gradient-to-r from-indigo-600 to-indigo-700 text-white p-6 rounded-t-2xl">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-2xl font-bold">Student Details</h3>
+                    <button onclick="closeStudentModal()" class="text-white hover:text-gray-200 transition-colors">
+                        <i class="fas fa-times text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div id="student-detail-content" class="p-6">
+                <!-- Populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let studentsData = [];
+        let filteredStudents = [];
+        let currentPage = 1;
+        const itemsPerPage = 10;
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Components are loaded automatically by components.js
+            loadStudents();
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            document.getElementById('search-input').addEventListener('input', applyFilters);
+            document.getElementById('status-filter').addEventListener('change', applyFilters);
+            document.getElementById('active-filter').addEventListener('change', applyFilters);
+        }
+
+        function loadStudents() {
+            console.log('📊 Loading students data...');
+            showLoading('students-table-body');
+
+            fetch('/api/admin/students')
+                .then(response => {
+                    console.log('✅ Students API response:', response.status);
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('📦 Students data received:', data);
+                    if (data.success) {
+                        studentsData = data.students || [];
+                        filteredStudents = [...studentsData];
+                        console.log(`✅ Loaded ${studentsData.length} students`);
+                        updateStats();
+                        displayStudents();
+                    } else {
+                        console.error('❌ API returned success=false:', data.message);
+                        showError('students-table-body', data.message || 'Failed to load students');
+                    }
+                })
+                .catch(error => {
+                    console.error('❌ Error loading students:', error);
+                    showError('students-table-body', `Failed to load students: ${error.message}`);
+                });
+        }
+
+        function updateStats() {
+            const total = studentsData.length;
+            const verified = studentsData.filter(s => s.is_verified).length;
+            const pending = studentsData.filter(s => !s.is_verified).length;
+            const active = studentsData.filter(s => s.is_active).length;
+
+            document.getElementById('stat-total').textContent = total;
+            document.getElementById('stat-verified').textContent = verified;
+            document.getElementById('stat-pending').textContent = pending;
+            document.getElementById('stat-active').textContent = active;
+        }
+
+        function applyFilters() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const statusFilter = document.getElementById('status-filter').value;
+            const activeFilter = document.getElementById('active-filter').value;
+
+            filteredStudents = studentsData.filter(student => {
+                const matchesSearch = !searchTerm || 
+                    student.full_name.toLowerCase().includes(searchTerm) ||
+                    student.email.toLowerCase().includes(searchTerm) ||
+                    (student.student_id && student.student_id.toLowerCase().includes(searchTerm));
+
+                const matchesStatus = !statusFilter || 
+                    (statusFilter === 'verified' && student.is_verified) ||
+                    (statusFilter === 'pending' && !student.is_verified);
+
+                const matchesActive = !activeFilter ||
+                    (activeFilter === 'active' && student.is_active) ||
+                    (activeFilter === 'inactive' && !student.is_active);
+
+                return matchesSearch && matchesStatus && matchesActive;
+            });
+
+            currentPage = 1;
+            displayStudents();
+        }
+
+        function displayStudents() {
+            const tbody = document.getElementById('students-table-body');
+            const mobileView = document.getElementById('students-mobile-view');
+            const start = (currentPage - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const pageStudents = filteredStudents.slice(start, end);
+
+            if (pageStudents.length === 0) {
+                const emptyMessage = `
+                    <div class="px-6 py-12 text-center text-gray-500">
+                        <i class="fas fa-user-graduate text-4xl mb-3 block"></i>
+                        <p>No students found</p>
+                    </div>
+                `;
+                tbody.innerHTML = `<tr><td colspan="6">${emptyMessage}</td></tr>`;
+                mobileView.innerHTML = emptyMessage;
+                document.getElementById('pagination').innerHTML = '';
+                return;
+            }
+
+            tbody.innerHTML = pageStudents.map(student => `
+                <tr class="hover:bg-gray-50 transition-colors">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white font-bold">
+                                ${student.first_name.charAt(0)}${student.last_name.charAt(0)}
+                            </div>
+                            <div class="ml-4">
+                                <div class="text-sm font-medium text-gray-900">${student.full_name}</div>
+                                <div class="text-sm text-gray-500">ID: ${student.student_id || 'N/A'}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-900">${student.email}</div>
+                        <div class="text-sm text-gray-500">${student.phone_number || 'No phone'}</div>
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="text-sm text-gray-900">${student.school_name || 'N/A'}</div>
+                        <div class="text-sm text-gray-500">${student.program || 'N/A'}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-center">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${student.is_verified ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}">
+                            <i class="fas fa-${student.is_verified ? 'check-circle' : 'clock'} mr-1"></i>
+                            ${student.is_verified ? 'Verified' : 'Pending'}
+                        </span>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ml-1 ${student.is_active ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800'}">
+                            ${student.is_active ? 'Active' : 'Inactive'}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500">
+                        ${formatDate(student.created_at)}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
+                        <button onclick="viewStudent(${student.user_id})" class="text-indigo-600 hover:text-indigo-900 mr-3" title="View Details">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button onclick="toggleActive(${student.user_id}, ${student.is_active})" class="text-${student.is_active ? 'red' : 'green'}-600 hover:text-${student.is_active ? 'red' : 'green'}-900" title="${student.is_active ? 'Deactivate' : 'Activate'}">
+                            <i class="fas fa-${student.is_active ? 'user-slash' : 'user-check'}"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+
+            // Mobile card view
+            mobileView.innerHTML = pageStudents.map(student => `
+                <div class="p-4 hover:bg-gray-50 transition-colors">
+                    <div class="flex items-start space-x-3 mb-3">
+                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white font-bold text-base flex-shrink-0">
+                            ${student.first_name.charAt(0)}${student.last_name.charAt(0)}
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h3 class="text-sm font-semibold text-gray-900 truncate">${student.full_name}</h3>
+                            <p class="text-xs text-gray-500 truncate">ID: ${student.student_id || 'N/A'}</p>
+                            <div class="flex items-center space-x-2 mt-2 flex-wrap gap-1">
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${student.is_verified ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}">
+                                    <i class="fas fa-${student.is_verified ? 'check-circle' : 'clock'} mr-1"></i>
+                                    ${student.is_verified ? 'Verified' : 'Pending'}
+                                </span>
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${student.is_active ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800'}">
+                                    ${student.is_active ? 'Active' : 'Inactive'}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 text-xs text-gray-600 mb-3">
+                        <div>
+                            <span class="font-medium">Email:</span>
+                            <p class="truncate">${student.email}</p>
+                        </div>
+                        <div>
+                            <span class="font-medium">Phone:</span>
+                            <p class="truncate">${student.phone_number || 'N/A'}</p>
+                        </div>
+                        <div>
+                            <span class="font-medium">School:</span>
+                            <p class="truncate">${student.school_name || 'N/A'}</p>
+                        </div>
+                        <div>
+                            <span class="font-medium">Registered:</span>
+                            <p>${formatDate(student.created_at)}</p>
+                        </div>
+                    </div>
+                    <div class="flex space-x-2">
+                        <button onclick="viewStudent(${student.user_id})" class="flex-1 px-3 py-2 border border-indigo-600 text-indigo-600 rounded-lg hover:bg-indigo-50 transition-colors text-xs font-medium">
+                            <i class="fas fa-eye mr-1"></i> View Details
+                        </button>
+                        <button onclick="toggleActive(${student.user_id}, ${student.is_active})" class="flex-1 px-3 py-2 bg-${student.is_active ? 'red' : 'green'}-600 text-white rounded-lg hover:bg-${student.is_active ? 'red' : 'green'}-700 transition-colors text-xs font-medium">
+                            <i class="fas fa-${student.is_active ? 'user-slash' : 'user-check'} mr-1"></i> ${student.is_active ? 'Deactivate' : 'Activate'}
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+
+            updatePagination();
+        }
+
+        function updatePagination() {
+            const totalPages = Math.ceil(filteredStudents.length / itemsPerPage);
+            const pagination = document.getElementById('pagination');
+
+            if (totalPages <= 1) {
+                pagination.innerHTML = `<div class="text-xs sm:text-sm text-gray-700">Showing ${filteredStudents.length} student(s)</div>`;
+                return;
+            }
+
+            pagination.innerHTML = `
+                <div class="text-xs sm:text-sm text-gray-700">
+                    Showing ${(currentPage - 1) * itemsPerPage + 1} to ${Math.min(currentPage * itemsPerPage, filteredStudents.length)} of ${filteredStudents.length} students
+                </div>
+                <div class="flex space-x-2">
+                    <button onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''} 
+                            class="px-3 py-1 rounded text-sm ${currentPage === 1 ? 'bg-gray-200 text-gray-400' : 'bg-indigo-600 text-white hover:bg-indigo-700'}">
+                        Previous
+                    </button>
+                    <span class="px-3 py-1 text-sm">Page ${currentPage} of ${totalPages}</span>
+                    <button onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''} 
+                            class="px-3 py-1 rounded text-sm ${currentPage === totalPages ? 'bg-gray-200 text-gray-400' : 'bg-indigo-600 text-white hover:bg-indigo-700'}">
+                        Next
+                    </button>
+                </div>
+            `;
+        }
+
+        function changePage(page) {
+            const totalPages = Math.ceil(filteredStudents.length / itemsPerPage);
+            if (page >= 1 && page <= totalPages) {
+                currentPage = page;
+                displayStudents();
+            }
+        }
+
+        function viewStudent(userId) {
+            const student = studentsData.find(s => s.user_id === userId);
+            if (!student) return;
+
+            const content = document.getElementById('student-detail-content');
+            content.innerHTML = `
+                <div class="space-y-6">
+                    <!-- Personal Information -->
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                            <i class="fas fa-user text-indigo-600 mr-2"></i>
+                            Personal Information
+                        </h4>
+                        <div class="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg">
+                            <div><span class="font-medium text-gray-700">Full Name:</span> ${student.full_name}</div>
+                            <div><span class="font-medium text-gray-700">Student ID:</span> ${student.student_id || 'N/A'}</div>
+                            <div><span class="font-medium text-gray-700">Email:</span> ${student.email}</div>
+                            <div><span class="font-medium text-gray-700">Phone:</span> ${student.phone_number || 'N/A'}</div>
+                            <div><span class="font-medium text-gray-700">Date of Birth:</span> ${student.date_of_birth ? formatDate(student.date_of_birth) : 'N/A'}</div>
+                            <div><span class="font-medium text-gray-700">Gender:</span> ${student.gender || 'N/A'}</div>
+                        </div>
+                    </div>
+
+                    <!-- Academic Information -->
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                            <i class="fas fa-graduation-cap text-indigo-600 mr-2"></i>
+                            Academic Information
+                        </h4>
+                        <div class="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg">
+                            <div><span class="font-medium text-gray-700">School:</span> ${student.school_name || 'N/A'}</div>
+                            <div><span class="font-medium text-gray-700">Program:</span> ${student.program || 'N/A'}</div>
+                            <div><span class="font-medium text-gray-700">Year Level:</span> ${student.year_level || 'N/A'}</div>
+                            <div><span class="font-medium text-gray-700">GPA:</span> ${student.gpa || 'N/A'}</div>
+                        </div>
+                    </div>
+
+                    <!-- Account Status -->
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                            <i class="fas fa-info-circle text-indigo-600 mr-2"></i>
+                            Account Status
+                        </h4>
+                        <div class="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg">
+                            <div>
+                                <span class="font-medium text-gray-700">Verification Status:</span>
+                                <span class="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${student.is_verified ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}">
+                                    ${student.is_verified ? 'Verified' : 'Pending'}
+                                </span>
+                            </div>
+                            <div>
+                                <span class="font-medium text-gray-700">Account Status:</span>
+                                <span class="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${student.is_active ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800'}">
+                                    ${student.is_active ? 'Active' : 'Inactive'}
+                                </span>
+                            </div>
+                            <div><span class="font-medium text-gray-700">Registered:</span> ${formatDate(student.created_at)}</div>
+                            <div><span class="font-medium text-gray-700">Last Login:</span> ${student.last_login ? formatDate(student.last_login) : 'Never'}</div>
+                        </div>
+                    </div>
+
+                    <!-- Documents -->
+                    ${student.cor_document || student.coe_document ? `
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                            <i class="fas fa-file-alt text-indigo-600 mr-2"></i>
+                            Documents
+                        </h4>
+                        <div class="space-y-2 bg-gray-50 p-4 rounded-lg">
+                            ${student.cor_document ? `
+                            <div class="flex items-center justify-between">
+                                <span class="text-gray-700"><i class="fas fa-file-pdf text-red-500 mr-2"></i>Certificate of Registration</span>
+                                <a href="/api/admin/download-document/${student.user_id}/cor" target="_blank" class="text-indigo-600 hover:text-indigo-800">
+                                    <i class="fas fa-download mr-1"></i>Download
+                                </a>
+                            </div>
+                            ` : ''}
+                            ${student.coe_document ? `
+                            <div class="flex items-center justify-between">
+                                <span class="text-gray-700"><i class="fas fa-file-pdf text-red-500 mr-2"></i>Certificate of Enrollment</span>
+                                <a href="/api/admin/download-document/${student.user_id}/coe" target="_blank" class="text-indigo-600 hover:text-indigo-800">
+                                    <i class="fas fa-download mr-1"></i>Download
+                                </a>
+                            </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                    ` : ''}
+
+                    <!-- Actions -->
+                    <div class="flex space-x-3 pt-4 border-t border-gray-200">
+                        ${!student.is_verified ? `
+                        <button onclick="approveStudent(${student.user_id})" class="flex-1 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+                            <i class="fas fa-check mr-2"></i>Approve Student
+                        </button>
+                        ` : ''}
+                        <button onclick="toggleActive(${student.user_id}, ${student.is_active})" class="flex-1 bg-${student.is_active ? 'red' : 'green'}-600 hover:bg-${student.is_active ? 'red' : 'green'}-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+                            <i class="fas fa-${student.is_active ? 'ban' : 'check-circle'} mr-2"></i>${student.is_active ? 'Deactivate' : 'Activate'} Account
+                        </button>
+                        <button onclick="closeStudentModal()" class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg font-medium transition-colors">
+                            Close
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('studentModal').classList.remove('hidden');
+        }
+
+        function closeStudentModal() {
+            document.getElementById('studentModal').classList.add('hidden');
+        }
+
+        function approveStudent(userId) {
+            if (!confirm('Are you sure you want to approve this student?')) return;
+
+            fetch('/api/admin/approve-user', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ user_id: userId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showNotification('Student approved successfully', 'success');
+                    closeStudentModal();
+                    loadStudents();
+                } else {
+                    showNotification(data.message || 'Failed to approve student', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('Failed to approve student', 'error');
+            });
+        }
+
+        function toggleActive(userId, currentStatus) {
+            const action = currentStatus ? 'deactivate' : 'activate';
+            if (!confirm(`Are you sure you want to ${action} this student account?`)) return;
+
+            fetch('/api/admin/toggle-user-status', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ user_id: userId, is_active: !currentStatus })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showNotification(`Student ${action}d successfully`, 'success');
+                    closeStudentModal();
+                    loadStudents();
+                } else {
+                    showNotification(data.message || `Failed to ${action} student`, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification(`Failed to ${action} student`, 'error');
+            });
+        }
+
+        function resetFilters() {
+            document.getElementById('search-input').value = '';
+            document.getElementById('status-filter').value = '';
+            document.getElementById('active-filter').value = '';
+            applyFilters();
+        }
+
+        function exportStudents() {
+            const csv = convertToCSV(filteredStudents);
+            downloadCSV(csv, 'students_export.csv');
+        }
+
+        function convertToCSV(data) {
+            const headers = ['ID', 'Name', 'Email', 'Phone', 'School', 'Program', 'Year Level', 'GPA', 'Verified', 'Active', 'Registered'];
+            const rows = data.map(s => [
+                s.student_id || '',
+                s.full_name,
+                s.email,
+                s.phone_number || '',
+                s.school_name || '',
+                s.program || '',
+                s.year_level || '',
+                s.gpa || '',
+                s.is_verified ? 'Yes' : 'No',
+                s.is_active ? 'Yes' : 'No',
+                formatDate(s.created_at)
+            ]);
+
+            return [headers, ...rows].map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
+        }
+
+        function downloadCSV(csv, filename) {
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return 'N/A';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+        }
+
+        function showLoading(elementId) {
+            document.getElementById(elementId).innerHTML = `
+                <tr><td colspan="6" class="px-6 py-12 text-center">
+                    <i class="fas fa-spinner fa-spin text-4xl text-indigo-600 mb-3 block"></i>
+                    <p class="text-gray-600">Loading students...</p>
+                </td></tr>
+            `;
+        }
+
+        function showError(elementId, message) {
+            document.getElementById(elementId).innerHTML = `
+                <tr><td colspan="6" class="px-6 py-12 text-center">
+                    <i class="fas fa-exclamation-circle text-4xl text-red-600 mb-3 block"></i>
+                    <p class="text-gray-600">${message}</p>
+                </td></tr>
+            `;
+        }
+
+        function showNotification(message, type) {
+            // Simple notification - you can enhance this
+            alert(message);
+        }
+
+        // Close modal with ESC key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeStudentModal();
+            }
+        });
+    </script>
+
+    <!-- Mobile Menu Handler -->
+    <script src="/Assets/js/mobile-menu.js"></script>
+</body>
+</html>

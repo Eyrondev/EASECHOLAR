@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maintenance Mode - EASECHOLAR</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Mobile Responsive Styles -->
+    <link rel="stylesheet" href="/Assets/css/mobile-responsive.css">
+
+    <style>
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .float-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .pulse-animation {
+            animation: pulse 2s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-orange-50 via-red-50 to-yellow-50 min-h-screen flex items-center justify-center p-4">
+    <div class="max-w-2xl mx-auto text-center">
+        <!-- Icon -->
+        <div class="mb-8 float-animation">
+            <div class="inline-block bg-white rounded-full p-8 shadow-2xl">
+                <i class="fas fa-tools text-7xl text-orange-500"></i>
+            </div>
+        </div>
+
+        <!-- Main Message -->
+        <h1 class="text-5xl font-bold text-gray-800 mb-4">
+            Under Maintenance
+        </h1>
+        
+        <p class="text-xl text-gray-600 mb-8">
+            We're currently performing scheduled maintenance to improve your experience.
+        </p>
+
+        <!-- Info Box -->
+        <div class="bg-white rounded-2xl shadow-xl p-8 mb-8">
+            <div class="flex items-start space-x-4 mb-6">
+                <div class="flex-shrink-0">
+                    <i class="fas fa-clock text-3xl text-blue-500"></i>
+                </div>
+                <div class="text-left">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">Temporary Downtime</h3>
+                    <p class="text-gray-600">
+                        Our scholarship platform is temporarily unavailable while we upgrade our systems. 
+                        This ensures better performance and security for all users.
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex items-start space-x-4 mb-6">
+                <div class="flex-shrink-0">
+                    <i class="fas fa-shield-alt text-3xl text-green-500"></i>
+                </div>
+                <div class="text-left">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">Your Data is Safe</h3>
+                    <p class="text-gray-600">
+                        All your scholarship applications, documents, and profile information remain secure 
+                        during this maintenance period.
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex items-start space-x-4">
+                <div class="flex-shrink-0">
+                    <i class="fas fa-hourglass-half text-3xl text-purple-500"></i>
+                </div>
+                <div class="text-left">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">We'll Be Back Soon</h3>
+                    <p class="text-gray-600">
+                        We're working hard to complete this maintenance as quickly as possible. 
+                        Please check back in a little while.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- What You Can Do -->
+        <div class="bg-yellow-50 border-2 border-yellow-200 rounded-xl p-6 mb-8">
+            <h3 class="text-lg font-semibold text-yellow-800 mb-3">
+                <i class="fas fa-info-circle mr-2"></i>
+                What You Can Do
+            </h3>
+            <ul class="text-left text-gray-700 space-y-2">
+                <li class="flex items-start">
+                    <i class="fas fa-check text-green-500 mr-2 mt-1"></i>
+                    <span>Bookmark this page and check back later</span>
+                </li>
+                <li class="flex items-start">
+                    <i class="fas fa-check text-green-500 mr-2 mt-1"></i>
+                    <span>Follow us on social media for updates</span>
+                </li>
+                <li class="flex items-start">
+                    <i class="fas fa-check text-green-500 mr-2 mt-1"></i>
+                    <span>Contact our support team if you have urgent matters</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Admin Login Notice -->
+        <div class="bg-blue-50 border-2 border-blue-200 rounded-xl p-6 mb-8">
+            <i class="fas fa-user-shield text-3xl text-blue-600 mb-3"></i>
+            <h3 class="text-lg font-semibold text-blue-800 mb-2">
+                Administrator Access
+            </h3>
+            <p class="text-gray-700 mb-4">
+                If you're an administrator, you can still access the admin panel.
+            </p>
+            <a href="/login.html" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors">
+                <i class="fas fa-sign-in-alt mr-2"></i>
+                Admin Login
+            </a>
+        </div>
+
+        <!-- Auto Refresh Notice -->
+        <div class="text-gray-500 text-sm pulse-animation">
+            <i class="fas fa-sync-alt mr-2"></i>
+            This page will automatically check for updates every 30 seconds
+        </div>
+
+        <!-- Footer -->
+        <div class="mt-12 text-gray-500 text-sm">
+            <p>&copy; 2025 EASECHOLAR. All rights reserved.</p>
+            <p class="mt-2">Thank you for your patience and understanding.</p>
+        </div>
+    </div>
+
+    <script>
+        // Auto-refresh every 30 seconds to check if maintenance is over
+        setInterval(function() {
+            fetch('/api/auth/status')
+                .then(response => response.json())
+                .then(data => {
+                    // If we can reach the API, maintenance might be over
+                    // Reload the page to check
+                    console.log('Checking if maintenance is over...');
+                    location.reload();
+                })
+                .catch(error => {
+                    console.log('Still in maintenance mode');
+                });
+        }, 30000); // 30 seconds
+
+        // Show loading indicator when checking
+        console.log('⚠️ Site is in maintenance mode');
+        console.log('🔄 Auto-refresh enabled - checking every 30 seconds');
+    </script>
+</body>
+</html>

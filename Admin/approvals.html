@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pending Approvals - EASECHOLAR Admin</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Mobile Responsive Styles -->
+    <link rel="stylesheet" href="/Assets/css/mobile-responsive.css">
+
+    
+    <!-- Component loader script -->
+    <script src="components.js"></script>
+    
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Sidebar component -->
+    <div id="sidebar-container"></div>
+    
+    <!-- Navigation component -->
+    <div id="nav-container"></div>
+
+    <!-- Main content -->
+    <div class="ml-0 lg:ml-64 pt-20 sm:pt-16">
+        <div class="p-4 sm:p-6 lg:p-8">
+            <!-- Header -->
+            <div class="mb-6 sm:mb-8">
+                <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Pending Approvals</h1>
+                <p class="text-sm sm:text-base text-gray-600">Review and approve new student and provider registrations</p>
+            </div>
+
+            <!-- Filters -->
+            <div class="bg-white rounded-lg shadow-md border border-gray-200 p-4 sm:p-6 mb-4 sm:mb-6">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                    <div>
+                        <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Filter by Type</label>
+                        <select id="filter-type" class="w-full border border-gray-300 rounded-lg px-3 sm:px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option value="ALL">All Users</option>
+                            <option value="STUDENT">Students Only</option>
+                            <option value="PROVIDER">Providers Only</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Sort By</label>
+                        <select id="sort-by" class="w-full border border-gray-300 rounded-lg px-3 sm:px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option value="date_desc">Newest First</option>
+                            <option value="date_asc">Oldest First</option>
+                            <option value="name_asc">Name A-Z</option>
+                            <option value="name_desc">Name Z-A</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Search</label>
+                        <input type="text" id="search-input" placeholder="Search by name or email..." class="w-full border border-gray-300 rounded-lg px-3 sm:px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+                    <div class="flex items-end">
+                        <button onclick="applyFilters()" class="w-full px-3 sm:px-4 py-2 bg-indigo-600 text-white text-sm sm:text-base rounded-lg hover:bg-indigo-700 transition-colors">
+                            <i class="fas fa-filter mr-2"></i>Apply Filters
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Statistics -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
+                <div class="bg-white p-4 sm:p-6 rounded-lg shadow-md border border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div class="flex-1 min-w-0">
+                            <p class="text-xs sm:text-sm font-medium text-gray-600 truncate">Total Pending</p>
+                            <p id="stat-total-pending" class="text-2xl sm:text-3xl font-bold text-gray-900 mt-1">0</p>
+                        </div>
+                        <div class="p-3 sm:p-4 bg-yellow-100 rounded-full flex-shrink-0 ml-2">
+                            <i class="fas fa-clock text-yellow-600 text-xl sm:text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-4 sm:p-6 rounded-lg shadow-md border border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div class="flex-1 min-w-0">
+                            <p class="text-xs sm:text-sm font-medium text-gray-600 truncate">Pending Students</p>
+                            <p id="stat-pending-students" class="text-2xl sm:text-3xl font-bold text-blue-600 mt-1">0</p>
+                        </div>
+                        <div class="p-3 sm:p-4 bg-blue-100 rounded-full flex-shrink-0 ml-2">
+                            <i class="fas fa-user-graduate text-blue-600 text-xl sm:text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-4 sm:p-6 rounded-lg shadow-md border border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div class="flex-1 min-w-0">
+                            <p class="text-xs sm:text-sm font-medium text-gray-600 truncate">Pending Providers</p>
+                            <p id="stat-pending-providers" class="text-2xl sm:text-3xl font-bold text-green-600 mt-1">0</p>
+                        </div>
+                        <div class="p-3 sm:p-4 bg-green-100 rounded-full flex-shrink-0 ml-2">
+                            <i class="fas fa-building text-green-600 text-xl sm:text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pending Approvals List -->
+            <div class="bg-white rounded-lg shadow-md border border-gray-200">
+                <div class="p-4 sm:p-6 border-b border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <h2 class="text-lg sm:text-xl font-semibold text-gray-900">Pending Registrations</h2>
+                        <button onclick="loadPendingApprovals()" class="text-indigo-600 hover:text-indigo-700 text-sm">
+                            <i class="fas fa-sync-alt mr-1 sm:mr-2"></i><span class="hidden sm:inline">Refresh</span>
+                        </button>
+                    </div>
+                </div>
+                <div id="approvals-list" class="divide-y divide-gray-200">
+                    <!-- Approvals will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Details Modal -->
+    <div id="details-modal" class="modal">
+        <div class="bg-white rounded-lg shadow-2xl max-w-4xl w-full m-4 max-h-[90vh] overflow-y-auto">
+            <div class="p-6 border-b border-gray-200 bg-indigo-600 text-white">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-2xl font-bold">User Details</h2>
+                    <button onclick="closeDetailsModal()" class="text-white hover:text-gray-200">
+                        <i class="fas fa-times text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+            <div id="details-content" class="p-6">
+                <!-- Details will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allPendingUsers = [];
+        let filteredUsers = [];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadPendingApprovals();
+            
+            // Set up event listeners
+            document.getElementById('search-input').addEventListener('keyup', debounce(applyFilters, 300));
+        });
+
+        function loadPendingApprovals() {
+            showLoading('approvals-list');
+            
+            fetch('/api/admin/pending-approvals')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        allPendingUsers = data.pending_users || [];
+                        updateStatistics();
+                        applyFilters();
+                    } else {
+                        showError('approvals-list', 'Failed to load pending approvals');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading pending approvals:', error);
+                    showError('approvals-list', 'Failed to load pending approvals');
+                });
+        }
+
+        function updateStatistics() {
+            const totalPending = allPendingUsers.length;
+            const pendingStudents = allPendingUsers.filter(u => u.user_type === 'STUDENT').length;
+            const pendingProviders = allPendingUsers.filter(u => u.user_type === 'PROVIDER').length;
+            
+            document.getElementById('stat-total-pending').textContent = totalPending;
+            document.getElementById('stat-pending-students').textContent = pendingStudents;
+            document.getElementById('stat-pending-providers').textContent = pendingProviders;
+        }
+
+        function applyFilters() {
+            const filterType = document.getElementById('filter-type').value;
+            const sortBy = document.getElementById('sort-by').value;
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            
+            // Filter
+            filteredUsers = allPendingUsers.filter(user => {
+                const matchesType = filterType === 'ALL' || user.user_type === filterType;
+                const matchesSearch = !searchTerm || 
+                    user.full_name.toLowerCase().includes(searchTerm) ||
+                    user.email.toLowerCase().includes(searchTerm) ||
+                    (user.school_name && user.school_name.toLowerCase().includes(searchTerm)) ||
+                    (user.organization_name && user.organization_name.toLowerCase().includes(searchTerm));
+                
+                return matchesType && matchesSearch;
+            });
+            
+            // Sort
+            filteredUsers.sort((a, b) => {
+                switch(sortBy) {
+                    case 'date_asc':
+                        return new Date(a.created_at) - new Date(b.created_at);
+                    case 'date_desc':
+                        return new Date(b.created_at) - new Date(a.created_at);
+                    case 'name_asc':
+                        return a.full_name.localeCompare(b.full_name);
+                    case 'name_desc':
+                        return b.full_name.localeCompare(a.full_name);
+                    default:
+                        return 0;
+                }
+            });
+            
+            displayApprovals();
+        }
+
+        function displayApprovals() {
+            const container = document.getElementById('approvals-list');
+            
+            if (filteredUsers.length === 0) {
+                container.innerHTML = `
+                    <div class="p-12 text-center text-gray-500">
+                        <i class="fas fa-check-circle text-6xl mb-4 text-gray-300"></i>
+                        <p class="text-lg font-medium">No pending approvals found</p>
+                        <p class="text-sm mt-2">All registrations have been reviewed</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = filteredUsers.map(user => `
+                <div class="p-4 sm:p-6 hover:bg-gray-50 transition-colors">
+                    <div class="flex flex-col gap-4">
+                        <div class="flex items-start space-x-3 sm:space-x-4 flex-1">
+                            <div class="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br ${user.user_type === 'STUDENT' ? 'from-blue-400 to-blue-600' : 'from-green-400 to-green-600'} flex items-center justify-center text-white font-bold text-base sm:text-xl flex-shrink-0">
+                                ${user.first_name.charAt(0)}${user.last_name.charAt(0)}
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center space-x-2 mb-2 flex-wrap">
+                                    <h3 class="text-base sm:text-lg font-semibold text-gray-900 truncate">${user.full_name}</h3>
+                                    <span class="inline-flex items-center px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-xs font-medium ${user.user_type === 'STUDENT' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'}">
+                                        <i class="fas fa-${user.user_type === 'STUDENT' ? 'user-graduate' : 'building'} mr-1"></i>
+                                        ${user.user_type}
+                                    </span>
+                                </div>
+                                <div class="grid grid-cols-1 gap-2 text-xs sm:text-sm">
+                                    <div class="flex items-center text-gray-600">
+                                        <i class="fas fa-envelope w-4 sm:w-5 mr-2 text-gray-400 flex-shrink-0"></i>
+                                        <span class="truncate">${user.email}</span>
+                                    </div>
+                                    <div class="flex items-center text-gray-600">
+                                        <i class="fas fa-phone w-4 sm:w-5 mr-2 text-gray-400 flex-shrink-0"></i>
+                                        ${user.phone_number || 'N/A'}
+                                    </div>
+                                    ${user.user_type === 'STUDENT' ? `
+                                        <div class="flex items-center text-gray-600">
+                                            <i class="fas fa-school w-4 sm:w-5 mr-2 text-gray-400 flex-shrink-0"></i>
+                                            <span class="truncate">${user.school_name || 'N/A'}</span>
+                                        </div>
+                                        <div class="flex items-center text-gray-600">
+                                            <i class="fas fa-book w-4 sm:w-5 mr-2 text-gray-400 flex-shrink-0"></i>
+                                            <span class="truncate">${user.course || 'N/A'} ${user.year_level ? '- ' + user.year_level : ''}</span>
+                                        </div>
+                                        ${user.gpa ? `
+                                            <div class="flex items-center text-gray-600">
+                                                <i class="fas fa-star w-4 sm:w-5 mr-2 text-gray-400 flex-shrink-0"></i>
+                                                GPA: ${user.gpa.toFixed(2)}
+                                            </div>
+                                        ` : ''}
+                                    ` : `
+                                        <div class="flex items-center text-gray-600">
+                                            <i class="fas fa-building w-4 sm:w-5 mr-2 text-gray-400 flex-shrink-0"></i>
+                                            <span class="truncate">${user.organization_name || 'N/A'}</span>
+                                        </div>
+                                        <div class="flex items-center text-gray-600">
+                                            <i class="fas fa-briefcase w-4 sm:w-5 mr-2 text-gray-400 flex-shrink-0"></i>
+                                            ${user.organization_type || 'N/A'}
+                                        </div>
+                                        ${user.website ? `
+                                            <div class="flex items-center text-gray-600">
+                                                <i class="fas fa-globe w-4 sm:w-5 mr-2 text-gray-400 flex-shrink-0"></i>
+                                                <a href="${user.website}" target="_blank" class="text-indigo-600 hover:underline truncate">${user.website}</a>
+                                            </div>
+                                        ` : ''}
+                                    `}
+                                    <div class="flex items-center text-gray-600">
+                                        <i class="fas fa-calendar w-4 sm:w-5 mr-2 text-gray-400 flex-shrink-0"></i>
+                                        <span class="hidden sm:inline">Registered </span>${getRelativeTime(user.created_at)}
+                                    </div>
+                                </div>
+
+                                <!-- Documents -->
+                                <div class="mt-3 sm:mt-4 flex flex-wrap gap-2">
+                                    <span class="text-xs font-medium text-gray-700 mr-2">Documents:</span>
+                                    ${user.user_type === 'STUDENT' ? `
+                                        ${user.documents.cor ? `
+                                            <button onclick="downloadFile('${user.documents.cor}')" class="inline-flex items-center px-2 py-1 bg-blue-50 text-blue-700 text-xs rounded hover:bg-blue-100">
+                                                <i class="fas fa-file-pdf mr-1"></i> COR
+                                            </button>
+                                        ` : '<span class="text-xs text-red-500">COR Missing</span>'}
+                                        ${user.documents.coe ? `
+                                            <button onclick="downloadFile('${user.documents.coe}')" class="inline-flex items-center px-2 py-1 bg-blue-50 text-blue-700 text-xs rounded hover:bg-blue-100">
+                                                <i class="fas fa-file-pdf mr-1"></i> COE
+                                            </button>
+                                        ` : '<span class="text-xs text-red-500">COE Missing</span>'}
+                                        ${user.documents.transcript ? `
+                                            <button onclick="downloadFile('${user.documents.transcript}')" class="inline-flex items-center px-2 py-1 bg-blue-50 text-blue-700 text-xs rounded hover:bg-blue-100">
+                                                <i class="fas fa-file-pdf mr-1"></i> Transcript
+                                            </button>
+                                        ` : ''}
+                                    ` : `
+                                        ${user.documents.business_registration ? `
+                                            <button onclick="downloadFile('${user.documents.business_registration}')" class="inline-flex items-center px-2 py-1 bg-green-50 text-green-700 text-xs rounded hover:bg-green-100">
+                                                <i class="fas fa-file-pdf mr-1"></i> Business Registration
+                                            </button>
+                                        ` : '<span class="text-xs text-red-500">Business Registration Missing</span>'}
+                                    `}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex flex-col sm:flex-row gap-2">
+                            <button onclick="viewUserDetails(${user.id})" class="w-full sm:w-auto px-3 sm:px-4 py-2 border border-indigo-600 text-indigo-600 rounded-lg hover:bg-indigo-50 transition-colors text-xs sm:text-sm font-medium">
+                                <i class="fas fa-eye mr-1"></i> View Details
+                            </button>
+                            <button onclick="approveUser(${user.id}, '${user.full_name}')" class="w-full sm:w-auto px-3 sm:px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-xs sm:text-sm font-medium">
+                                <i class="fas fa-check mr-1"></i> Approve
+                            </button>
+                            <button onclick="rejectUser(${user.id}, '${user.full_name}')" class="w-full sm:w-auto px-3 sm:px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-xs sm:text-sm font-medium">
+                                <i class="fas fa-times mr-1"></i> Reject
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function viewUserDetails(userId) {
+            const modal = document.getElementById('details-modal');
+            const content = document.getElementById('details-content');
+            
+            content.innerHTML = '<div class="text-center py-8"><i class="fas fa-spinner fa-spin text-4xl text-indigo-600"></i></div>';
+            modal.classList.add('active');
+            
+            fetch(`/api/admin/user/${userId}/details`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        displayUserDetails(data.user);
+                    } else {
+                        content.innerHTML = '<div class="text-center py-8 text-red-600">Failed to load user details</div>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading user details:', error);
+                    content.innerHTML = '<div class="text-center py-8 text-red-600">Error loading details</div>';
+                });
+        }
+
+        function displayUserDetails(user) {
+            const content = document.getElementById('details-content');
+            
+            content.innerHTML = `
+                <div class="space-y-6">
+                    <!-- Basic Info -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Basic Information</h3>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="text-sm font-medium text-gray-600">Full Name</label>
+                                <p class="text-gray-900">${user.full_name}</p>
+                            </div>
+                            <div>
+                                <label class="text-sm font-medium text-gray-600">Email</label>
+                                <p class="text-gray-900">${user.email}</p>
+                            </div>
+                            <div>
+                                <label class="text-sm font-medium text-gray-600">Phone</label>
+                                <p class="text-gray-900">${user.phone_number || 'N/A'}</p>
+                            </div>
+                            <div>
+                                <label class="text-sm font-medium text-gray-600">User Type</label>
+                                <p class="text-gray-900">${user.user_type}</p>
+                            </div>
+                            <div>
+                                <label class="text-sm font-medium text-gray-600">Registration Date</label>
+                                <p class="text-gray-900">${formatDateTime(user.created_at)}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    ${user.profile ? `
+                        <div class="border-t pt-6">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">${user.user_type === 'STUDENT' ? 'Academic' : 'Organization'} Information</h3>
+                            <div class="grid grid-cols-2 gap-4">
+                                ${user.user_type === 'STUDENT' ? `
+                                    ${user.profile.student_number ? `<div><label class="text-sm font-medium text-gray-600">Student Number</label><p class="text-gray-900">${user.profile.student_number}</p></div>` : ''}
+                                    ${user.profile.school_name ? `<div><label class="text-sm font-medium text-gray-600">School</label><p class="text-gray-900">${user.profile.school_name}</p></div>` : ''}
+                                    ${user.profile.course ? `<div><label class="text-sm font-medium text-gray-600">Course</label><p class="text-gray-900">${user.profile.course}</p></div>` : ''}
+                                    ${user.profile.year_level ? `<div><label class="text-sm font-medium text-gray-600">Year Level</label><p class="text-gray-900">${user.profile.year_level}</p></div>` : ''}
+                                    ${user.profile.gpa ? `<div><label class="text-sm font-medium text-gray-600">GPA</label><p class="text-gray-900">${user.profile.gpa.toFixed(2)}</p></div>` : ''}
+                                    ${user.profile.expected_graduation_date ? `<div><label class="text-sm font-medium text-gray-600">Expected Graduation</label><p class="text-gray-900">${formatDate(user.profile.expected_graduation_date)}</p></div>` : ''}
+                                ` : `
+                                    ${user.profile.organization_name ? `<div><label class="text-sm font-medium text-gray-600">Organization Name</label><p class="text-gray-900">${user.profile.organization_name}</p></div>` : ''}
+                                    ${user.profile.organization_type ? `<div><label class="text-sm font-medium text-gray-600">Organization Type</label><p class="text-gray-900">${user.profile.organization_type}</p></div>` : ''}
+                                    ${user.profile.website ? `<div><label class="text-sm font-medium text-gray-600">Website</label><p class="text-gray-900"><a href="${user.profile.website}" target="_blank" class="text-indigo-600 hover:underline">${user.profile.website}</a></p></div>` : ''}
+                                    ${user.profile.description ? `<div class="col-span-2"><label class="text-sm font-medium text-gray-600">Description</label><p class="text-gray-900">${user.profile.description}</p></div>` : ''}
+                                `}
+                            </div>
+                        </div>
+                    ` : ''}
+
+                    ${user.profile && user.profile.documents ? `
+                        <div class="border-t pt-6">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Submitted Documents</h3>
+                            <div class="space-y-3">
+                                ${Object.entries(user.profile.documents).map(([key, value]) => {
+                                    if (!value) return '';
+                                    const docName = key.replace(/_/g, ' ').toUpperCase();
+                                    return `
+                                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                            <div class="flex items-center">
+                                                <i class="fas fa-file-pdf text-red-500 text-2xl mr-3"></i>
+                                                <div>
+                                                    <p class="font-medium text-gray-900">${docName}</p>
+                                                    <p class="text-xs text-gray-500">${value}</p>
+                                                </div>
+                                            </div>
+                                            <button onclick="downloadFile('${value}')" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm">
+                                                <i class="fas fa-download mr-1"></i> Download
+                                            </button>
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+
+                    <!-- Actions -->
+                    <div class="border-t pt-6 flex justify-end space-x-3">
+                        <button onclick="closeDetailsModal()" class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                            Close
+                        </button>
+                        <button onclick="rejectUser(${user.id}, '${user.full_name}'); closeDetailsModal();" class="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
+                            <i class="fas fa-times mr-1"></i> Reject
+                        </button>
+                        <button onclick="approveUser(${user.id}, '${user.full_name}'); closeDetailsModal();" class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                            <i class="fas fa-check mr-1"></i> Approve
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function closeDetailsModal() {
+            document.getElementById('details-modal').classList.remove('active');
+        }
+
+        function approveUser(userId, userName) {
+            if (!confirm(`Are you sure you want to approve ${userName}?`)) return;
+
+            fetch(`/api/admin/approve-user/${userId}`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'}
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showSuccess(`${userName} approved successfully!`);
+                    loadPendingApprovals();
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error approving user:', error);
+                alert('Failed to approve user');
+            });
+        }
+
+        function rejectUser(userId, userName) {
+            const reason = prompt(`Enter reason for rejecting ${userName}:`);
+            if (!reason) return;
+
+            fetch(`/api/admin/reject-user/${userId}`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ reason: reason })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showSuccess(`${userName} rejected successfully`);
+                    loadPendingApprovals();
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error rejecting user:', error);
+                alert('Failed to reject user');
+            });
+        }
+
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('details-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeDetailsModal();
+            }
+        });
+    </script>
+
+    <!-- Mobile Menu Handler -->
+    <script src="/Assets/js/mobile-menu.js"></script>
+</body>
+</html>

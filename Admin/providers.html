@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Providers Management - Admin - EASECHOLAR</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Custom Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            200: '#c7d2fe',
+                            300: '#a5b4fc',
+                            400: '#818cf8',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            800: '#3730a3',
+                            900: '#312e81',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Mobile Responsive Styles -->
+    <link rel="stylesheet" href="/Assets/css/mobile-responsive.css">
+
+    
+    <!-- Component loader script -->
+    <script src="components.js"></script>
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Sidebar component -->
+    <div id="sidebar-container"></div>
+    
+    <!-- Navigation component -->
+    <div id="nav-container"></div>
+
+    <!-- Main content -->
+    <div class="ml-0 lg:ml-64 pt-20 sm:pt-16">
+        <div class="p-4 sm:p-6 lg:p-8">
+            <!-- Header component -->
+            <div id="header-container"></div>
+
+            <!-- Stats Overview -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8">
+                <div class="bg-white p-3 sm:p-6 rounded-xl shadow-md border border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div class="flex-1 min-w-0">
+                            <p class="text-xs sm:text-sm font-medium text-gray-600 truncate">Total Providers</p>
+                            <p id="stat-total" class="text-xl sm:text-3xl font-bold text-gray-900 mt-1">0</p>
+                        </div>
+                        <div class="p-2 sm:p-3 bg-green-100 rounded-full flex-shrink-0 ml-2">
+                            <i class="fas fa-building text-green-600 text-lg sm:text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-3 sm:p-6 rounded-xl shadow-md border border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div class="flex-1 min-w-0">
+                            <p class="text-xs sm:text-sm font-medium text-gray-600 truncate">Verified</p>
+                            <p id="stat-verified" class="text-xl sm:text-3xl font-bold text-green-600 mt-1">0</p>
+                        </div>
+                        <div class="p-2 sm:p-3 bg-green-100 rounded-full flex-shrink-0 ml-2">
+                            <i class="fas fa-check-circle text-green-600 text-lg sm:text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-3 sm:p-6 rounded-xl shadow-md border border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div class="flex-1 min-w-0">
+                            <p class="text-xs sm:text-sm font-medium text-gray-600 truncate">Pending</p>
+                            <p id="stat-pending" class="text-xl sm:text-3xl font-bold text-yellow-600 mt-1">0</p>
+                        </div>
+                        <div class="p-2 sm:p-3 bg-yellow-100 rounded-full flex-shrink-0 ml-2">
+                            <i class="fas fa-clock text-yellow-600 text-lg sm:text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-3 sm:p-6 rounded-xl shadow-md border border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div class="flex-1 min-w-0">
+                            <p class="text-xs sm:text-sm font-medium text-gray-600 truncate">Active Scholarships</p>
+                            <p id="stat-scholarships" class="text-xl sm:text-3xl font-bold text-indigo-600 mt-1">0</p>
+                        </div>
+                        <div class="p-2 sm:p-3 bg-indigo-100 rounded-full flex-shrink-0 ml-2">
+                            <i class="fas fa-graduation-cap text-indigo-600 text-lg sm:text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filters and Search -->
+            <div class="bg-white rounded-xl shadow-md border border-gray-200 p-4 sm:p-6 mb-4 sm:mb-6">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                    <!-- Search -->
+                    <div class="sm:col-span-2 lg:col-span-2">
+                        <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Search Providers</label>
+                        <div class="relative">
+                            <input type="text" id="search-input" placeholder="Search by name, email..." 
+                                   class="w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                            <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                        </div>
+                    </div>
+
+                    <!-- Status Filter -->
+                    <div>
+                        <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Verification Status</label>
+                        <select id="status-filter" class="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                            <option value="">All Status</option>
+                            <option value="verified">Verified</option>
+                            <option value="pending">Pending</option>
+                        </select>
+                    </div>
+
+                    <!-- Active Filter -->
+                    <div>
+                        <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Account Status</label>
+                        <select id="active-filter" class="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                            <option value="">All Accounts</option>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-col sm:flex-row items-center justify-between mt-4 pt-4 border-t border-gray-200 gap-2">
+                    <button onclick="resetFilters()" class="w-full sm:w-auto text-gray-600 hover:text-gray-900 text-xs sm:text-sm font-medium px-4 py-2">
+                        <i class="fas fa-undo mr-2"></i>Reset Filters
+                    </button>
+                    <button onclick="exportProviders()" class="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors">
+                        <i class="fas fa-download mr-2"></i>Export to CSV
+                    </button>
+                </div>
+            </div>
+
+            <!-- Providers Table -->
+            <div class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
+                <div class="p-4 sm:p-6 border-b border-gray-200">
+                    <h2 class="text-lg sm:text-xl font-bold text-gray-900">Providers List</h2>
+                    <p class="text-xs sm:text-sm text-gray-600 mt-1">Manage and monitor all scholarship provider accounts</p>
+                </div>
+
+                <!-- Table (hidden on mobile) -->
+                <div class="hidden lg:block overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-gray-50 border-b border-gray-200">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Provider</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Organization</th>
+                                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Scholarships</th>
+                                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="providers-table-body" class="bg-white divide-y divide-gray-200">
+                            <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Mobile Card View -->
+                <div id="providers-mobile-view" class="lg:hidden divide-y divide-gray-200">
+                    <!-- Mobile cards will be loaded here -->
+                </div>
+
+                <!-- Pagination -->
+                <div id="pagination" class="px-4 sm:px-6 py-3 sm:py-4 bg-gray-50 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-2">
+                    <!-- Populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Provider Detail Modal -->
+    <div id="providerModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="sticky top-0 bg-gradient-to-r from-green-600 to-green-700 text-white p-6 rounded-t-2xl">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-2xl font-bold">Provider Details</h3>
+                    <button onclick="closeProviderModal()" class="text-white hover:text-gray-200 transition-colors">
+                        <i class="fas fa-times text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div id="provider-detail-content" class="p-6">
+                <!-- Populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let providersData = [];
+        let filteredProviders = [];
+        let currentPage = 1;
+        const itemsPerPage = 10;
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Components are loaded automatically by components.js
+            loadProviders();
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            document.getElementById('search-input').addEventListener('input', applyFilters);
+            document.getElementById('status-filter').addEventListener('change', applyFilters);
+            document.getElementById('active-filter').addEventListener('change', applyFilters);
+        }
+
+        function loadProviders() {
+            console.log('📊 Loading providers data...');
+            showLoading('providers-table-body');
+
+            fetch('/api/admin/providers')
+                .then(response => {
+                    console.log('✅ Providers API response:', response.status);
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('📦 Providers data received:', data);
+                    if (data.success) {
+                        providersData = data.providers || [];
+                        filteredProviders = [...providersData];
+                        console.log(`✅ Loaded ${providersData.length} providers`);
+                        updateStats();
+                        displayProviders();
+                    } else {
+                        console.error('❌ API returned success=false:', data.message);
+                        showError('providers-table-body', data.message || 'Failed to load providers');
+                    }
+                })
+                .catch(error => {
+                    console.error('❌ Error loading providers:', error);
+                    showError('providers-table-body', `Failed to load providers: ${error.message}`);
+                });
+        }
+
+        function updateStats() {
+            const total = providersData.length;
+            const verified = providersData.filter(p => p.is_verified).length;
+            const pending = providersData.filter(p => !p.is_verified).length;
+            const scholarships = providersData.reduce((sum, p) => sum + (p.scholarship_count || 0), 0);
+
+            document.getElementById('stat-total').textContent = total;
+            document.getElementById('stat-verified').textContent = verified;
+            document.getElementById('stat-pending').textContent = pending;
+            document.getElementById('stat-scholarships').textContent = scholarships;
+        }
+
+        function applyFilters() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const statusFilter = document.getElementById('status-filter').value;
+            const activeFilter = document.getElementById('active-filter').value;
+
+            filteredProviders = providersData.filter(provider => {
+                const matchesSearch = !searchTerm || 
+                    provider.full_name.toLowerCase().includes(searchTerm) ||
+                    provider.email.toLowerCase().includes(searchTerm) ||
+                    (provider.organization_name && provider.organization_name.toLowerCase().includes(searchTerm));
+
+                const matchesStatus = !statusFilter || 
+                    (statusFilter === 'verified' && provider.is_verified) ||
+                    (statusFilter === 'pending' && !provider.is_verified);
+
+                const matchesActive = !activeFilter ||
+                    (activeFilter === 'active' && provider.is_active) ||
+                    (activeFilter === 'inactive' && !provider.is_active);
+
+                return matchesSearch && matchesStatus && matchesActive;
+            });
+
+            currentPage = 1;
+            displayProviders();
+        }
+
+        function displayProviders() {
+            const tbody = document.getElementById('providers-table-body');
+            const mobileView = document.getElementById('providers-mobile-view');
+            const start = (currentPage - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const pageProviders = filteredProviders.slice(start, end);
+
+            if (pageProviders.length === 0) {
+                const emptyMessage = `
+                    <div class="px-6 py-12 text-center text-gray-500">
+                        <i class="fas fa-building text-4xl mb-3 block"></i>
+                        <p>No providers found</p>
+                    </div>
+                `;
+                tbody.innerHTML = `<tr><td colspan="6">${emptyMessage}</td></tr>`;
+                mobileView.innerHTML = emptyMessage;
+                document.getElementById('pagination').innerHTML = '';
+                return;
+            }
+
+            tbody.innerHTML = pageProviders.map(provider => `
+                <tr class="hover:bg-gray-50 transition-colors">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center text-white font-bold">
+                                ${provider.first_name.charAt(0)}${provider.last_name.charAt(0)}
+                            </div>
+                            <div class="ml-4">
+                                <div class="text-sm font-medium text-gray-900">${provider.full_name}</div>
+                                <div class="text-sm text-gray-500">${provider.organization_type || 'Provider'}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-900">${provider.email}</div>
+                        <div class="text-sm text-gray-500">${provider.phone_number || 'No phone'}</div>
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="text-sm text-gray-900">${provider.organization_name || 'N/A'}</div>
+                        <div class="text-sm text-gray-500">${provider.address || 'No address'}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-center">
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-indigo-100 text-indigo-800">
+                            <i class="fas fa-graduation-cap mr-1"></i>
+                            ${provider.scholarship_count || 0}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-center">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${provider.is_verified ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}">
+                            <i class="fas fa-${provider.is_verified ? 'check-circle' : 'clock'} mr-1"></i>
+                            ${provider.is_verified ? 'Verified' : 'Pending'}
+                        </span>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ml-1 ${provider.is_active ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800'}">
+                            ${provider.is_active ? 'Active' : 'Inactive'}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
+                        <button onclick="viewProvider(${provider.user_id})" class="text-indigo-600 hover:text-indigo-900 mr-3" title="View Details">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button onclick="toggleActive(${provider.user_id}, ${provider.is_active})" class="text-${provider.is_active ? 'red' : 'green'}-600 hover:text-${provider.is_active ? 'red' : 'green'}-900" title="${provider.is_active ? 'Deactivate' : 'Activate'}">
+                            <i class="fas fa-${provider.is_active ? 'ban' : 'check-circle'}"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+
+            // Mobile card view
+            mobileView.innerHTML = pageProviders.map(provider => `
+                <div class="p-4 hover:bg-gray-50 transition-colors">
+                    <div class="flex items-start space-x-3 mb-3">
+                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center text-white font-bold text-base flex-shrink-0">
+                            ${provider.first_name.charAt(0)}${provider.last_name.charAt(0)}
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h3 class="text-sm font-semibold text-gray-900 truncate">${provider.full_name}</h3>
+                            <p class="text-xs text-gray-500 truncate">${provider.organization_type || 'Provider'}</p>
+                            <div class="flex items-center space-x-2 mt-2 flex-wrap gap-1">
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+                                    <i class="fas fa-graduation-cap mr-1"></i>
+                                    ${provider.scholarship_count || 0}
+                                </span>
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${provider.is_verified ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}">
+                                    <i class="fas fa-${provider.is_verified ? 'check-circle' : 'clock'} mr-1"></i>
+                                    ${provider.is_verified ? 'Verified' : 'Pending'}
+                                </span>
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${provider.is_active ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800'}">
+                                    ${provider.is_active ? 'Active' : 'Inactive'}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 text-xs text-gray-600 mb-3">
+                        <div>
+                            <span class="font-medium">Email:</span>
+                            <p class="truncate">${provider.email}</p>
+                        </div>
+                        <div>
+                            <span class="font-medium">Phone:</span>
+                            <p class="truncate">${provider.phone_number || 'N/A'}</p>
+                        </div>
+                        <div class="col-span-2">
+                            <span class="font-medium">Organization:</span>
+                            <p class="truncate">${provider.organization_name || 'N/A'}</p>
+                        </div>
+                    </div>
+                    <div class="flex space-x-2">
+                        <button onclick="viewProvider(${provider.user_id})" class="flex-1 px-3 py-2 border border-indigo-600 text-indigo-600 rounded-lg hover:bg-indigo-50 transition-colors text-xs font-medium">
+                            <i class="fas fa-eye mr-1"></i> View Details
+                        </button>
+                        <button onclick="toggleActive(${provider.user_id}, ${provider.is_active})" class="flex-1 px-3 py-2 bg-${provider.is_active ? 'red' : 'green'}-600 text-white rounded-lg hover:bg-${provider.is_active ? 'red' : 'green'}-700 transition-colors text-xs font-medium">
+                            <i class="fas fa-${provider.is_active ? 'ban' : 'check-circle'} mr-1"></i> ${provider.is_active ? 'Deactivate' : 'Activate'}
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+
+            updatePagination();
+        }
+
+        function updatePagination() {
+            const totalPages = Math.ceil(filteredProviders.length / itemsPerPage);
+            const pagination = document.getElementById('pagination');
+
+            if (totalPages <= 1) {
+                pagination.innerHTML = `<div class="text-xs sm:text-sm text-gray-700">Showing ${filteredProviders.length} provider(s)</div>`;
+                return;
+            }
+
+            pagination.innerHTML = `
+                <div class="text-xs sm:text-sm text-gray-700">
+                    Showing ${(currentPage - 1) * itemsPerPage + 1} to ${Math.min(currentPage * itemsPerPage, filteredProviders.length)} of ${filteredProviders.length} providers
+                </div>
+                <div class="flex space-x-2">
+                    <button onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''} 
+                            class="px-3 py-1 rounded text-sm ${currentPage === 1 ? 'bg-gray-200 text-gray-400' : 'bg-indigo-600 text-white hover:bg-indigo-700'}">
+                        Previous
+                    </button>
+                    <span class="px-3 py-1 text-sm">Page ${currentPage} of ${totalPages}</span>
+                    <button onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''} 
+                            class="px-3 py-1 rounded text-sm ${currentPage === totalPages ? 'bg-gray-200 text-gray-400' : 'bg-indigo-600 text-white hover:bg-indigo-700'}">
+                        Next
+                    </button>
+                </div>
+            `;
+        }
+
+        function changePage(page) {
+            const totalPages = Math.ceil(filteredProviders.length / itemsPerPage);
+            if (page >= 1 && page <= totalPages) {
+                currentPage = page;
+                displayProviders();
+            }
+        }
+
+        function viewProvider(userId) {
+            const provider = providersData.find(p => p.user_id === userId);
+            if (!provider) return;
+
+            const content = document.getElementById('provider-detail-content');
+            content.innerHTML = `
+                <div class="space-y-6">
+                    <!-- Personal Information -->
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                            <i class="fas fa-user text-green-600 mr-2"></i>
+                            Contact Person
+                        </h4>
+                        <div class="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg">
+                            <div><span class="font-medium text-gray-700">Full Name:</span> ${provider.full_name}</div>
+                            <div><span class="font-medium text-gray-700">Email:</span> ${provider.email}</div>
+                            <div><span class="font-medium text-gray-700">Phone:</span> ${provider.phone_number || 'N/A'}</div>
+                            <div><span class="font-medium text-gray-700">Position:</span> ${provider.position || 'N/A'}</div>
+                        </div>
+                    </div>
+
+                    <!-- Organization Information -->
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                            <i class="fas fa-building text-green-600 mr-2"></i>
+                            Organization Information
+                        </h4>
+                        <div class="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg">
+                            <div><span class="font-medium text-gray-700">Organization:</span> ${provider.organization_name || 'N/A'}</div>
+                            <div><span class="font-medium text-gray-700">Type:</span> ${provider.organization_type || 'N/A'}</div>
+                            <div class="col-span-2"><span class="font-medium text-gray-700">Address:</span> ${provider.address || 'N/A'}</div>
+                            <div><span class="font-medium text-gray-700">Website:</span> ${provider.website ? `<a href="${provider.website}" target="_blank" class="text-indigo-600 hover:underline">${provider.website}</a>` : 'N/A'}</div>
+                            <div><span class="font-medium text-gray-700">Total Scholarships:</span> <span class="font-bold text-indigo-600">${provider.scholarship_count || 0}</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Account Status -->
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                            <i class="fas fa-info-circle text-green-600 mr-2"></i>
+                            Account Status
+                        </h4>
+                        <div class="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg">
+                            <div>
+                                <span class="font-medium text-gray-700">Verification Status:</span>
+                                <span class="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${provider.is_verified ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}">
+                                    ${provider.is_verified ? 'Verified' : 'Pending'}
+                                </span>
+                            </div>
+                            <div>
+                                <span class="font-medium text-gray-700">Account Status:</span>
+                                <span class="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${provider.is_active ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800'}">
+                                    ${provider.is_active ? 'Active' : 'Inactive'}
+                                </span>
+                            </div>
+                            <div><span class="font-medium text-gray-700">Registered:</span> ${formatDate(provider.created_at)}</div>
+                            <div><span class="font-medium text-gray-700">Last Login:</span> ${provider.last_login ? formatDate(provider.last_login) : 'Never'}</div>
+                        </div>
+                    </div>
+
+                    <!-- Documents -->
+                    ${provider.business_registration ? `
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                            <i class="fas fa-file-alt text-green-600 mr-2"></i>
+                            Documents
+                        </h4>
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <div class="flex items-center justify-between">
+                                <span class="text-gray-700"><i class="fas fa-file-pdf text-red-500 mr-2"></i>Business Registration Document</span>
+                                <a href="/api/admin/download-document/${provider.user_id}/business" target="_blank" class="text-indigo-600 hover:text-indigo-800">
+                                    <i class="fas fa-download mr-1"></i>Download
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    ` : ''}
+
+                    <!-- Actions -->
+                    <div class="flex space-x-3 pt-4 border-t border-gray-200">
+                        ${!provider.is_verified ? `
+                        <button onclick="approveProvider(${provider.user_id})" class="flex-1 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+                            <i class="fas fa-check mr-2"></i>Approve Provider
+                        </button>
+                        ` : ''}
+                        <button onclick="toggleActive(${provider.user_id}, ${provider.is_active})" class="flex-1 bg-${provider.is_active ? 'red' : 'green'}-600 hover:bg-${provider.is_active ? 'red' : 'green'}-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+                            <i class="fas fa-${provider.is_active ? 'ban' : 'check-circle'} mr-2"></i>${provider.is_active ? 'Deactivate' : 'Activate'} Account
+                        </button>
+                        <button onclick="closeProviderModal()" class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg font-medium transition-colors">
+                            Close
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('providerModal').classList.remove('hidden');
+        }
+
+        function closeProviderModal() {
+            document.getElementById('providerModal').classList.add('hidden');
+        }
+
+        function approveProvider(userId) {
+            if (!confirm('Are you sure you want to approve this provider?')) return;
+
+            fetch('/api/admin/approve-user', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ user_id: userId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showNotification('Provider approved successfully', 'success');
+                    closeProviderModal();
+                    loadProviders();
+                } else {
+                    showNotification(data.message || 'Failed to approve provider', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('Failed to approve provider', 'error');
+            });
+        }
+
+        function toggleActive(userId, currentStatus) {
+            const action = currentStatus ? 'deactivate' : 'activate';
+            if (!confirm(`Are you sure you want to ${action} this provider account?`)) return;
+
+            fetch('/api/admin/toggle-user-status', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ user_id: userId, is_active: !currentStatus })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showNotification(`Provider ${action}d successfully`, 'success');
+                    closeProviderModal();
+                    loadProviders();
+                } else {
+                    showNotification(data.message || `Failed to ${action} provider`, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification(`Failed to ${action} provider`, 'error');
+            });
+        }
+
+        function resetFilters() {
+            document.getElementById('search-input').value = '';
+            document.getElementById('status-filter').value = '';
+            document.getElementById('active-filter').value = '';
+            applyFilters();
+        }
+
+        function exportProviders() {
+            const csv = convertToCSV(filteredProviders);
+            downloadCSV(csv, 'providers_export.csv');
+        }
+
+        function convertToCSV(data) {
+            const headers = ['Name', 'Email', 'Phone', 'Organization', 'Type', 'Address', 'Website', 'Scholarships', 'Verified', 'Active', 'Registered'];
+            const rows = data.map(p => [
+                p.full_name,
+                p.email,
+                p.phone_number || '',
+                p.organization_name || '',
+                p.organization_type || '',
+                p.address || '',
+                p.website || '',
+                p.scholarship_count || 0,
+                p.is_verified ? 'Yes' : 'No',
+                p.is_active ? 'Yes' : 'No',
+                formatDate(p.created_at)
+            ]);
+
+            return [headers, ...rows].map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
+        }
+
+        function downloadCSV(csv, filename) {
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return 'N/A';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+        }
+
+        function showLoading(elementId) {
+            document.getElementById(elementId).innerHTML = `
+                <tr><td colspan="6" class="px-6 py-12 text-center">
+                    <i class="fas fa-spinner fa-spin text-4xl text-indigo-600 mb-3 block"></i>
+                    <p class="text-gray-600">Loading providers...</p>
+                </td></tr>
+            `;
+        }
+
+        function showError(elementId, message) {
+            document.getElementById(elementId).innerHTML = `
+                <tr><td colspan="6" class="px-6 py-12 text-center">
+                    <i class="fas fa-exclamation-circle text-4xl text-red-600 mb-3 block"></i>
+                    <p class="text-gray-600">${message}</p>
+                </td></tr>
+            `;
+        }
+
+        function showNotification(message, type) {
+            alert(message);
+        }
+
+        // Close modal with ESC key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeProviderModal();
+            }
+        });
+    </script>
+
+    <!-- Mobile Menu Handler -->
+    <script src="/Assets/js/mobile-menu.js"></script>
+</body>
+</html>

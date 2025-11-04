@@ -1,0 +1,159 @@
+<!-- Provider Header -->
+<div class="mb-8">
+    <div class="sm:flex sm:items-center sm:justify-between">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-900" id="provider-welcome">Welcome back</h1>
+            <p class="mt-2 text-gray-600">Monitor your scholarship programs and track student applications</p>
+        </div>
+        <div class="mt-4 sm:mt-0 sm:flex-none">
+            <button type="button" onclick="window.location.href='scholarships.html?action=create'" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                <i class="fas fa-plus w-4 h-4 mr-2"></i>
+                Create New Scholarship
+            </button>
+        </div>
+    </div>
+    
+    <!-- Quick Stats Banner -->
+    <div class="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <!-- Active Scholarships -->
+        <div class="bg-white overflow-hidden shadow-md rounded-lg border border-gray-200">
+            <div class="p-5">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-graduation-cap text-green-600"></i>
+                        </div>
+                    </div>
+                    <div class="ml-5 w-0 flex-1">
+                        <dl>
+                            <dt class="text-sm font-medium text-gray-500 truncate">Active Scholarships</dt>
+                            <dd class="text-lg font-semibold text-gray-900" id="stat-active-scholarships">
+                                <i class="fas fa-spinner fa-spin text-gray-400"></i>
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pending Applications -->
+        <div class="bg-white overflow-hidden shadow-md rounded-lg border border-gray-200">
+            <div class="p-5">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-clock text-yellow-600"></i>
+                        </div>
+                    </div>
+                    <div class="ml-5 w-0 flex-1">
+                        <dl>
+                            <dt class="text-sm font-medium text-gray-500 truncate">Pending Review</dt>
+                            <dd class="text-lg font-semibold text-gray-900" id="stat-pending-applications">
+                                <i class="fas fa-spinner fa-spin text-gray-400"></i>
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Applications -->
+        <div class="bg-white overflow-hidden shadow-md rounded-lg border border-gray-200">
+            <div class="p-5">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-file-alt text-blue-600"></i>
+                        </div>
+                    </div>
+                    <div class="ml-5 w-0 flex-1">
+                        <dl>
+                            <dt class="text-sm font-medium text-gray-500 truncate">Total Applications</dt>
+                            <dd class="text-lg font-semibold text-gray-900" id="stat-total-applications">
+                                <i class="fas fa-spinner fa-spin text-gray-400"></i>
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Approved -->
+        <div class="bg-white overflow-hidden shadow-md rounded-lg border border-gray-200">
+            <div class="p-5">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-check-circle text-green-600"></i>
+                        </div>
+                    </div>
+                    <div class="ml-5 w-0 flex-1">
+                        <dl>
+                            <dt class="text-sm font-medium text-gray-500 truncate">Approved</dt>
+                            <dd class="text-lg font-semibold text-gray-900" id="stat-approved-applications">
+                                <i class="fas fa-spinner fa-spin text-gray-400"></i>
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Load provider stats
+async function loadProviderStats() {
+    try {
+        const response = await fetch('/api/provider/dashboard-stats');
+        const result = await response.json();
+        
+        if (result.success && result.data) {
+            const data = result.data;
+            document.getElementById('stat-active-scholarships').textContent = data.active_scholarships || 0;
+            document.getElementById('stat-pending-applications').textContent = data.pending_applications || 0;
+            document.getElementById('stat-total-applications').textContent = data.total_applications || 0;
+            document.getElementById('stat-approved-applications').textContent = data.approved_applications || 0;
+        } else {
+            // Show zeros if no data
+            document.getElementById('stat-active-scholarships').textContent = '0';
+            document.getElementById('stat-pending-applications').textContent = '0';
+            document.getElementById('stat-total-applications').textContent = '0';
+            document.getElementById('stat-approved-applications').textContent = '0';
+        }
+    } catch (error) {
+        console.error('Error loading stats:', error);
+        // Show zeros on error
+        document.getElementById('stat-active-scholarships').textContent = '0';
+        document.getElementById('stat-pending-applications').textContent = '0';
+        document.getElementById('stat-total-applications').textContent = '0';
+        document.getElementById('stat-approved-applications').textContent = '0';
+    }
+}
+
+// Load profile to get organization name
+async function loadProviderProfile() {
+    try {
+        const response = await fetch('/api/provider/profile');
+        const result = await response.json();
+        
+        if (result.success && result.profile) {
+            const orgName = result.profile.organization_name || 'Provider';
+            document.getElementById('provider-welcome').textContent = `Welcome back, ${orgName}`;
+        }
+    } catch (error) {
+        console.error('Error loading profile:', error);
+    }
+}
+
+// Initialize on load
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+        loadProviderStats();
+        loadProviderProfile();
+    });
+} else {
+    loadProviderStats();
+    loadProviderProfile();
+}
+</script>

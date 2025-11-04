@@ -1,0 +1,220 @@
+<!-- Provider Navigation -->
+<style>
+    /* Mobile Navigation Styles - iPhone 12 Pro Optimized */
+    @media (max-width: 768px) {
+        #provider-nav {
+            left: 0 !important;
+            padding-left: 3rem;
+            padding-right: 0.5rem;
+        }
+        
+        #provider-nav h1 {
+            font-size: 1.125rem !important;
+            display: none;
+        }
+        
+        #provider-nav .quick-action-btn {
+            padding: 0.5rem 0.75rem !important;
+            font-size: 0.813rem !important;
+        }
+        
+        #provider-nav .quick-action-btn span {
+            display: none;
+        }
+        
+        #provider-nav .quick-action-btn i {
+            margin-right: 0 !important;
+        }
+        
+        /* User menu adjustments */
+        #provider-nav #user-menu-button .text-left {
+            display: none;
+        }
+        
+        #provider-nav #user-menu-button .fa-chevron-down {
+            display: none;
+        }
+        
+        /* Fix dropdown positioning for mobile */
+        #provider-nav #user-menu {
+            position: fixed !important;
+            right: 0.5rem !important;
+            left: auto !important;
+            top: 4rem !important;
+            width: 15rem;
+            max-width: calc(100vw - 1rem);
+            z-index: 9999 !important;
+        }
+        
+        /* Improve touch targets */
+        #provider-nav #user-menu-button {
+            min-width: 44px;
+            min-height: 44px;
+            padding: 0.5rem;
+        }
+        
+        /* Dropdown links larger for touch */
+        #provider-nav #user-menu a {
+            padding: 0.875rem 1rem !important;
+            font-size: 0.9375rem !important;
+        }
+    }
+    
+    @media (max-width: 390px) {
+        #provider-nav {
+            padding-left: 2.75rem;
+            padding-right: 0.25rem;
+        }
+        
+        #provider-nav #user-menu {
+            right: 0.25rem !important;
+            width: calc(100vw - 0.5rem);
+            max-width: 20rem;
+        }
+    }
+</style>
+
+<nav id="provider-nav" class="fixed top-0 left-64 right-0 bg-white border-b border-gray-200 shadow-sm z-40">
+    <div class="px-6 py-4">
+        <div class="flex justify-between items-center">
+            <!-- Page Title -->
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900">Provider Dashboard</h1>
+            </div>
+
+            <!-- Right Side Actions -->
+            <div class="flex items-center space-x-4">
+                <!-- Quick Action Button -->
+                <button onclick="window.location.href='scholarships.html'" class="quick-action-btn inline-flex items-center px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition-colors">
+                    <i class="fas fa-plus mr-2"></i>
+                    <span>New Scholarship</span>
+                </button>
+
+                <!-- User Menu -->
+                <div class="relative">
+                    <button onclick="toggleUserMenu()" id="user-menu-button" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                        <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
+                            <i class="fas fa-building text-green-600 text-sm"></i>
+                        </div>
+                        <div class="text-left">
+                            <p class="text-sm font-medium text-gray-900" id="nav-user-name">Loading...</p>
+                            <p class="text-xs text-gray-500">Provider</p>
+                        </div>
+                        <i class="fas fa-chevron-down text-gray-400 text-sm"></i>
+                    </button>
+                    
+                    <!-- Dropdown Menu -->
+                    <div id="user-menu" class="hidden absolute right-0 mt-2 w-64 rounded-lg shadow-lg bg-white border border-gray-200 z-50">
+                        <div class="p-4 border-b border-gray-200">
+                            <p class="text-sm font-semibold text-gray-900" id="nav-org-name">Loading...</p>
+                            <p class="text-xs text-gray-500 mt-1" id="nav-user-email">Loading...</p>
+                        </div>
+                        <div class="py-2">
+                            <a href="settings.html" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <i class="fas fa-cog mr-3"></i>
+                                Settings
+                            </a>
+                            <a href="help.html" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <i class="fas fa-question-circle mr-3"></i>
+                                Help & Support
+                            </a>
+                            <div class="border-t border-gray-100 mt-2 pt-2">
+                                <a href="/logout" class="flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50">
+                                    <i class="fas fa-sign-out-alt mr-3"></i>
+                                    Sign Out
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<script>
+// Toggle user menu dropdown
+function toggleUserMenu() {
+    const menu = document.getElementById('user-menu');
+    if (menu) {
+        menu.classList.toggle('hidden');
+    }
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click', function(event) {
+    const userMenu = document.getElementById('user-menu');
+    const userButton = document.getElementById('user-menu-button');
+    
+    if (userMenu && !userButton.contains(event.target) && !userMenu.contains(event.target)) {
+        userMenu.classList.add('hidden');
+    }
+});
+
+// Load provider profile data
+async function loadProviderNav() {
+    console.log('Loading provider navigation data...');
+    try {
+        const response = await fetch('/api/provider/profile');
+        
+        if (!response.ok) {
+            console.error('API error:', response.status);
+            setFallbackValues();
+            return;
+        }
+        
+        const result = await response.json();
+        
+        if (result.success && result.profile) {
+            console.log('Navigation profile loaded:', result.profile);
+            updateNavigation(result.profile);
+        } else {
+            console.error('Failed to load profile:', result.message);
+            setFallbackValues();
+        }
+    } catch (error) {
+        console.error('Error loading provider navigation:', error);
+        setFallbackValues();
+    }
+}
+
+// Update navigation with real data
+function updateNavigation(profile) {
+    // Update user name
+    const fullName = `${profile.first_name || ''} ${profile.last_name || ''}`.trim();
+    const navUserName = document.getElementById('nav-user-name');
+    if (navUserName) {
+        navUserName.textContent = fullName || 'Provider';
+        console.log('Nav user name updated to:', fullName);
+    }
+    
+    // Update organization name
+    const navOrgName = document.getElementById('nav-org-name');
+    if (navOrgName) {
+        navOrgName.textContent = profile.organization_name || 'Organization';
+        console.log('Nav org name updated to:', profile.organization_name);
+    }
+    
+    // Update email
+    const navUserEmail = document.getElementById('nav-user-email');
+    if (navUserEmail) {
+        navUserEmail.textContent = profile.email || 'No email';
+        console.log('Nav email updated to:', profile.email);
+    }
+}
+
+// Set fallback values when API fails
+function setFallbackValues() {
+    const navUserName = document.getElementById('nav-user-name');
+    if (navUserName) navUserName.textContent = 'Provider';
+    
+    const navOrgName = document.getElementById('nav-org-name');
+    if (navOrgName) navOrgName.textContent = 'Organization';
+    
+    const navUserEmail = document.getElementById('nav-user-email');
+    if (navUserEmail) navUserEmail.textContent = 'No email';
+}
+
+// Make function globally available for components.js
+window.loadProviderNav = loadProviderNav;
+</script>

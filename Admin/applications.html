@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Applications Management - Admin - EASECHOLAR</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eef2ff', 100: '#e0e7ff', 200: '#c7d2fe', 300: '#a5b4fc', 400: '#818cf8',
+                            500: '#6366f1', 600: '#4f46e5', 700: '#4338ca', 800: '#3730a3', 900: '#312e81',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Mobile Responsive Styles -->
+    <link rel="stylesheet" href="/Assets/css/mobile-responsive.css">
+
+    <script src="components.js"></script>
+</head>
+<body class="bg-gray-50 font-sans">
+    <div id="sidebar-container"></div>
+    <div id="nav-container"></div>
+
+    <div class="ml-64 pt-16">
+        <div class="p-8">
+            <div id="header-container"></div>
+
+            <!-- Stats -->
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
+                <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600">Total</p>
+                            <p id="stat-total" class="text-3xl font-bold text-gray-900 mt-1">0</p>
+                        </div>
+                        <div class="p-3 bg-blue-100 rounded-full">
+                            <i class="fas fa-file-alt text-blue-600 text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600">Pending</p>
+                            <p id="stat-pending" class="text-3xl font-bold text-yellow-600 mt-1">0</p>
+                        </div>
+                        <div class="p-3 bg-yellow-100 rounded-full">
+                            <i class="fas fa-clock text-yellow-600 text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600">Under Review</p>
+                            <p id="stat-review" class="text-3xl font-bold text-orange-600 mt-1">0</p>
+                        </div>
+                        <div class="p-3 bg-orange-100 rounded-full">
+                            <i class="fas fa-search text-orange-600 text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600">Approved</p>
+                            <p id="stat-approved" class="text-3xl font-bold text-green-600 mt-1">0</p>
+                        </div>
+                        <div class="p-3 bg-green-100 rounded-full">
+                            <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600">Rejected</p>
+                            <p id="stat-rejected" class="text-3xl font-bold text-red-600 mt-1">0</p>
+                        </div>
+                        <div class="p-3 bg-red-100 rounded-full">
+                            <i class="fas fa-times-circle text-red-600 text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="bg-white rounded-xl shadow-md border border-gray-200 p-6 mb-6">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Search Applications</label>
+                        <div class="relative">
+                            <input type="text" id="search-input" placeholder="Search by student, scholarship..." 
+                                   class="w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                            <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                        <select id="status-filter" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                            <option value="">All Status</option>
+                            <option value="PENDING">Pending</option>
+                            <option value="UNDER_REVIEW">Under Review</option>
+                            <option value="APPROVED">Approved</option>
+                            <option value="REJECTED">Rejected</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Sort By</label>
+                        <select id="sort-filter" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                            <option value="newest">Newest First</option>
+                            <option value="oldest">Oldest First</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="flex items-center justify-between mt-4 pt-4 border-t border-gray-200">
+                    <button onclick="resetFilters()" class="text-gray-600 hover:text-gray-900 text-sm font-medium">
+                        <i class="fas fa-undo mr-2"></i>Reset Filters
+                    </button>
+                    <button onclick="exportApplications()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium">
+                        <i class="fas fa-download mr-2"></i>Export to CSV
+                    </button>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
+                <div class="p-6 border-b border-gray-200">
+                    <h2 class="text-xl font-bold text-gray-900">Applications List</h2>
+                    <p class="text-sm text-gray-600 mt-1">Monitor all scholarship applications</p>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-gray-50 border-b border-gray-200">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Student</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Scholarship</th>
+                                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Submitted</th>
+                                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Status</th>
+                                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="applications-table-body" class="bg-white divide-y divide-gray-200">
+                        </tbody>
+                    </table>
+                </div>
+                <div id="pagination" class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex items-center justify-between"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detail Modal -->
+    <div id="applicationModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="sticky top-0 bg-gradient-to-r from-blue-600 to-blue-700 text-white p-6 rounded-t-2xl">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-2xl font-bold">Application Details</h3>
+                    <button onclick="closeModal()" class="text-white hover:text-gray-200">
+                        <i class="fas fa-times text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+            <div id="application-detail-content" class="p-6"></div>
+        </div>
+    </div>
+
+    <script>
+        let applicationsData = [];
+        let filteredApplications = [];
+        let currentPage = 1;
+        const itemsPerPage = 10;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Components are loaded automatically by components.js
+            loadApplications();
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            document.getElementById('search-input').addEventListener('input', applyFilters);
+            document.getElementById('status-filter').addEventListener('change', applyFilters);
+            document.getElementById('sort-filter').addEventListener('change', applyFilters);
+        }
+
+        function loadApplications() {
+            showLoading();
+            fetch('/api/admin/applications')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        applicationsData = data.applications || [];
+                        filteredApplications = [...applicationsData];
+                        updateStats();
+                        displayApplications();
+                    } else {
+                        showError(data.message || 'Failed to load applications');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showError('Failed to load applications');
+                });
+        }
+
+        function updateStats() {
+            const total = applicationsData.length;
+            const pending = applicationsData.filter(a => a.status === 'PENDING').length;
+            const review = applicationsData.filter(a => a.status === 'UNDER_REVIEW').length;
+            const approved = applicationsData.filter(a => a.status === 'APPROVED').length;
+            const rejected = applicationsData.filter(a => a.status === 'REJECTED').length;
+
+            document.getElementById('stat-total').textContent = total;
+            document.getElementById('stat-pending').textContent = pending;
+            document.getElementById('stat-review').textContent = review;
+            document.getElementById('stat-approved').textContent = approved;
+            document.getElementById('stat-rejected').textContent = rejected;
+        }
+
+        function applyFilters() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const statusFilter = document.getElementById('status-filter').value;
+            const sortOrder = document.getElementById('sort-filter').value;
+
+            filteredApplications = applicationsData.filter(app => {
+                const matchesSearch = !searchTerm || 
+                    (app.student_name && app.student_name.toLowerCase().includes(searchTerm)) ||
+                    (app.scholarship_title && app.scholarship_title.toLowerCase().includes(searchTerm));
+                const matchesStatus = !statusFilter || app.status === statusFilter;
+                return matchesSearch && matchesStatus;
+            });
+
+            // Sort
+            filteredApplications.sort((a, b) => {
+                const dateA = new Date(a.submitted_at);
+                const dateB = new Date(b.submitted_at);
+                return sortOrder === 'newest' ? dateB - dateA : dateA - dateB;
+            });
+
+            currentPage = 1;
+            displayApplications();
+        }
+
+        function displayApplications() {
+            const tbody = document.getElementById('applications-table-body');
+            const start = (currentPage - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const pageApplications = filteredApplications.slice(start, end);
+
+            if (pageApplications.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-12 text-center text-gray-500"><i class="fas fa-file-alt text-4xl mb-3 block"></i><p>No applications found</p></td></tr>';
+                document.getElementById('pagination').innerHTML = '';
+                return;
+            }
+
+            tbody.innerHTML = pageApplications.map(app => `
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4">
+                        <div class="text-sm font-medium text-gray-900">${app.student_name || 'N/A'}</div>
+                        <div class="text-sm text-gray-500">${app.student_email || ''}</div>
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="text-sm font-medium text-gray-900">${app.scholarship_title || 'N/A'}</div>
+                        <div class="text-sm text-gray-500">${app.provider_name || ''}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-center">
+                        <div class="text-sm text-gray-900">${formatDate(app.submitted_at)}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-center">
+                        <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(app.status)}">
+                            ${formatStatus(app.status)}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
+                        <button onclick="viewApplication(${app.id})" class="text-indigo-600 hover:text-indigo-900">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+
+            updatePagination();
+        }
+
+        function viewApplication(id) {
+            const app = applicationsData.find(a => a.id === id);
+            if (!app) return;
+
+            document.getElementById('application-detail-content').innerHTML = `
+                <div class="space-y-6">
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-900 mb-4"><i class="fas fa-user text-blue-600 mr-2"></i>Student Information</h4>
+                        <div class="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg">
+                            <div><span class="font-medium">Name:</span> ${app.student_name || 'N/A'}</div>
+                            <div><span class="font-medium">Email:</span> ${app.student_email || 'N/A'}</div>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-900 mb-4"><i class="fas fa-graduation-cap text-blue-600 mr-2"></i>Scholarship Details</h4>
+                        <div class="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg">
+                            <div><span class="font-medium">Title:</span> ${app.scholarship_title || 'N/A'}</div>
+                            <div><span class="font-medium">Provider:</span> ${app.provider_name || 'N/A'}</div>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-900 mb-4"><i class="fas fa-info-circle text-blue-600 mr-2"></i>Application Status</h4>
+                        <div class="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg">
+                            <div>
+                                <span class="font-medium">Status:</span>
+                                <span class="ml-2 inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(app.status)}">
+                                    ${formatStatus(app.status)}
+                                </span>
+                            </div>
+                            <div><span class="font-medium">Submitted:</span> ${formatDate(app.submitted_at)}</div>
+                            ${app.reviewed_at ? `<div><span class="font-medium">Reviewed:</span> ${formatDate(app.reviewed_at)}</div>` : ''}
+                        </div>
+                    </div>
+                    ${app.cover_letter ? `
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-900 mb-4"><i class="fas fa-file-alt text-blue-600 mr-2"></i>Cover Letter</h4>
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <p class="text-sm text-gray-700">${app.cover_letter}</p>
+                        </div>
+                    </div>
+                    ` : ''}
+                    ${app.reviewer_notes ? `
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-900 mb-4"><i class="fas fa-comment text-blue-600 mr-2"></i>Reviewer Notes</h4>
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <p class="text-sm text-gray-700">${app.reviewer_notes}</p>
+                        </div>
+                    </div>
+                    ` : ''}
+                    <div class="flex space-x-3 pt-4 border-t">
+                        <button onclick="closeModal()" class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg font-medium">Close</button>
+                    </div>
+                </div>
+            `;
+            document.getElementById('applicationModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('applicationModal').classList.add('hidden');
+        }
+
+        function updatePagination() {
+            const totalPages = Math.ceil(filteredApplications.length / itemsPerPage);
+            if (totalPages <= 1) {
+                document.getElementById('pagination').innerHTML = `<div class="text-sm text-gray-700">Showing ${filteredApplications.length} application(s)</div>`;
+                return;
+            }
+            document.getElementById('pagination').innerHTML = `
+                <div class="text-sm text-gray-700">Showing ${(currentPage - 1) * itemsPerPage + 1} to ${Math.min(currentPage * itemsPerPage, filteredApplications.length)} of ${filteredApplications.length} applications</div>
+                <div class="flex space-x-2">
+                    <button onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''} class="px-3 py-1 rounded ${currentPage === 1 ? 'bg-gray-200 text-gray-400' : 'bg-indigo-600 text-white hover:bg-indigo-700'}">Previous</button>
+                    <span class="px-3 py-1">Page ${currentPage} of ${totalPages}</span>
+                    <button onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''} class="px-3 py-1 rounded ${currentPage === totalPages ? 'bg-gray-200 text-gray-400' : 'bg-indigo-600 text-white hover:bg-indigo-700'}">Next</button>
+                </div>
+            `;
+        }
+
+        function changePage(page) {
+            const totalPages = Math.ceil(filteredApplications.length / itemsPerPage);
+            if (page >= 1 && page <= totalPages) {
+                currentPage = page;
+                displayApplications();
+            }
+        }
+
+        function resetFilters() {
+            document.getElementById('search-input').value = '';
+            document.getElementById('status-filter').value = '';
+            document.getElementById('sort-filter').value = 'newest';
+            applyFilters();
+        }
+
+        function exportApplications() {
+            const csv = [['Student', 'Email', 'Scholarship', 'Provider', 'Status', 'Submitted'], ...filteredApplications.map(a => [a.student_name || '', a.student_email || '', a.scholarship_title || '', a.provider_name || '', formatStatus(a.status), formatDate(a.submitted_at)])].map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'applications_export.csv';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function getStatusColor(status) {
+            const colors = {
+                'PENDING': 'bg-yellow-100 text-yellow-800',
+                'UNDER_REVIEW': 'bg-orange-100 text-orange-800',
+                'APPROVED': 'bg-green-100 text-green-800',
+                'REJECTED': 'bg-red-100 text-red-800'
+            };
+            return colors[status] || 'bg-gray-100 text-gray-800';
+        }
+
+        function formatStatus(status) {
+            return (status || '').replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return 'N/A';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+        }
+
+        function showLoading() {
+            document.getElementById('applications-table-body').innerHTML = '<tr><td colspan="5" class="px-6 py-12 text-center"><i class="fas fa-spinner fa-spin text-4xl text-indigo-600 mb-3 block"></i><p class="text-gray-600">Loading...</p></td></tr>';
+        }
+
+        function showError(message) {
+            document.getElementById('applications-table-body').innerHTML = `<tr><td colspan="5" class="px-6 py-12 text-center"><i class="fas fa-exclamation-circle text-4xl text-red-600 mb-3 block"></i><p class="text-gray-600">${message}</p></td></tr>`;
+        }
+
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+    </script>
+
+    <!-- Mobile Menu Handler -->
+    <script src="/Assets/js/mobile-menu.js"></script>
+</body>
+</html>

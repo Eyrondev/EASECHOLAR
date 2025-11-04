@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - EASECHOLAR</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Custom Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        secondary: {
+                            50: '#f8fafc',
+                            100: '#f1f5f9',
+                            200: '#e2e8f0',
+                            300: '#cbd5e1',
+                            400: '#94a3b8',
+                            500: '#64748b',
+                            600: '#475569',
+                            700: '#334155',
+                            800: '#1e293b',
+                            900: '#0f172a',
+                        }
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'ui-sans-serif', 'system-ui'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Mobile Responsive Styles -->
+    <link rel="stylesheet" href="/Assets/css/mobile-responsive.css">
+
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Sidebar component (fixed) -->
+    <div id="sidebar-container"></div>
+    
+    <!-- Navigation component (fixed) -->
+    <div id="nav-container"></div>
+
+    <!-- Main content with proper spacing for fixed sidebar and nav -->
+    <div class="ml-64 pt-16">
+        <div class="p-8">
+            <!-- Page Header -->
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">Settings</h1>
+                <p class="text-gray-600">Manage your account preferences and security settings.</p>
+            </div>
+
+            <div class="max-w-4xl mx-auto">
+                <!-- Settings Content -->
+                <div>
+                    <!-- Account Settings -->
+                    <div id="account-section" class="settings-section bg-white rounded-lg shadow-md border border-gray-200">
+                        <div class="p-6 border-b border-gray-200">
+                            <h2 class="text-xl font-semibold text-gray-900">Account Settings</h2>
+                            <p class="text-gray-600 mt-1">Manage your account information and login credentials.</p>
+                        </div>
+                        <div class="p-6 space-y-6">
+                            <!-- Email Settings -->
+                            <div>
+                                <h3 class="text-lg font-medium text-gray-900 mb-4">Email Address</h3>
+                                <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                                    <div>
+                                        <p id="displayEmail" class="font-medium text-gray-900">Loading...</p>
+                                        <p class="text-sm text-gray-500">Primary email address</p>
+                                    </div>
+                                    <button onclick="openChangeEmailModal()" class="text-primary-600 hover:text-primary-700 text-sm font-medium">
+                                        Change
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Password Settings -->
+                            <div>
+                                <h3 class="text-lg font-medium text-gray-900 mb-4">Password</h3>
+                                <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                                    <div>
+                                        <p class="font-medium text-gray-900">••••••••</p>
+                                        <p class="text-sm text-gray-500">Last changed 30 days ago</p>
+                                    </div>
+                                    <button onclick="openChangePasswordModal()" class="text-primary-600 hover:text-primary-700 text-sm font-medium">
+                                        Change Password
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Account Deletion -->
+                            <div class="pt-6 border-t border-gray-200">
+                                <h3 class="text-lg font-medium text-red-900 mb-4">Delete Account</h3>
+                                <div class="p-4 border border-red-200 rounded-lg bg-red-50">
+                                    <p class="text-sm text-red-700 mb-3">Once you delete your account, there is no going back. Please be certain.</p>
+                                    <button onclick="deleteAccount()" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition-colors text-sm font-medium">
+                                        Delete Account
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Save Button -->
+                    <div class="mt-8">
+                        <button onclick="saveSettings()" class="bg-primary-600 text-white px-6 py-2 rounded-md hover:bg-primary-700 transition-colors font-medium">
+                            Save Changes
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Change Email Modal -->
+    <div id="changeEmailModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-xl font-semibold text-gray-900">Change Email Address</h3>
+                    <button onclick="closeChangeEmailModal()" class="text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <form id="changeEmailForm" class="p-6 space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Current Email</label>
+                    <input type="email" id="currentEmail" readonly class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50" value="john.doe@email.com">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">New Email Address</label>
+                    <input type="email" id="newEmail" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500" placeholder="Enter new email address">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Confirm Password</label>
+                    <input type="password" id="emailChangePassword" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500" placeholder="Enter your current password">
+                </div>
+                <div class="flex gap-3 pt-4">
+                    <button type="button" onclick="closeChangeEmailModal()" class="flex-1 px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors">
+                        Cancel
+                    </button>
+                    <button type="submit" class="flex-1 px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors">
+                        Change Email
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Change Password Modal -->
+    <div id="changePasswordModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-xl font-semibold text-gray-900">Change Password</h3>
+                    <button onclick="closeChangePasswordModal()" class="text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <form id="changePasswordForm" class="p-6 space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Current Password</label>
+                    <input type="password" id="currentPassword" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500" placeholder="Enter current password">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">New Password</label>
+                    <input type="password" id="newPassword" required minlength="8" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500" placeholder="Enter new password (min. 8 characters)">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Confirm New Password</label>
+                    <input type="password" id="confirmNewPassword" required minlength="8" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500" placeholder="Confirm new password">
+                </div>
+                <div id="passwordError" class="hidden text-red-600 text-sm"></div>
+                <div class="flex gap-3 pt-4">
+                    <button type="button" onclick="closeChangePasswordModal()" class="flex-1 px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors">
+                        Cancel
+                    </button>
+                    <button type="submit" class="flex-1 px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors">
+                        Change Password
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Account Modal -->
+    <div id="deleteAccountModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
+            <div class="p-6 border-b border-red-200">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <i class="fas fa-exclamation-triangle text-red-600 text-2xl mr-3"></i>
+                        <h3 class="text-xl font-semibold text-red-900">Delete Account</h3>
+                    </div>
+                    <button onclick="closeDeleteAccountModal()" class="text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <form id="deleteAccountForm" class="p-6 space-y-4">
+                <div class="bg-red-50 border border-red-200 rounded-md p-4">
+                    <p class="text-sm text-red-800 font-medium mb-2">⚠️ Warning: This action is permanent!</p>
+                    <ul class="text-sm text-red-700 space-y-1 list-disc list-inside">
+                        <li>All your personal information will be deleted</li>
+                        <li>All your scholarship applications will be removed</li>
+                        <li>Your saved scholarships will be lost</li>
+                        <li>This action cannot be undone</li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Type "DELETE" to confirm (in uppercase)
+                    </label>
+                    <input type="text" id="deleteConfirmText" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-red-500 focus:border-red-500" placeholder="Type DELETE to confirm">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Enter Your Password</label>
+                    <input type="password" id="deleteAccountPassword" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-red-500 focus:border-red-500" placeholder="Enter your password to confirm">
+                </div>
+                
+                <div id="deleteAccountError" class="hidden text-red-600 text-sm"></div>
+                
+                <div class="flex gap-3 pt-4">
+                    <button type="button" onclick="closeDeleteAccountModal()" class="flex-1 px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors">
+                        Cancel
+                    </button>
+                    <button type="submit" class="flex-1 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors">
+                        Delete My Account
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Component Loader Script -->
+    <script src="components.js"></script>
+
+    <!-- Page Scripts -->
+    <script>
+        // Load current user email on page load
+        async function loadUserData() {
+            try {
+                const response = await fetch('/api/student/profile');
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Update email display in both places
+                    document.getElementById('displayEmail').textContent = data.profile.email;
+                    document.getElementById('currentEmail').value = data.profile.email;
+                } else {
+                    document.getElementById('displayEmail').textContent = 'Email not available';
+                }
+            } catch (error) {
+                console.error('Error loading user data:', error);
+                document.getElementById('displayEmail').textContent = 'Error loading email';
+            }
+        }
+
+        // Change Email Modal Functions
+        function openChangeEmailModal() {
+            document.getElementById('changeEmailModal').classList.remove('hidden');
+        }
+
+        function closeChangeEmailModal() {
+            document.getElementById('changeEmailModal').classList.add('hidden');
+            document.getElementById('changeEmailForm').reset();
+        }
+
+        // Handle Change Email Form Submission
+        document.getElementById('changeEmailForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const newEmail = document.getElementById('newEmail').value;
+            const password = document.getElementById('emailChangePassword').value;
+            
+            try {
+                const response = await fetch('/api/student/change-email', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        new_email: newEmail,
+                        password: password
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert('Email address changed successfully!');
+                    closeChangeEmailModal();
+                    loadUserData(); // Reload user data to show new email
+                } else {
+                    alert(data.message || 'Failed to change email address');
+                }
+            } catch (error) {
+                console.error('Error changing email:', error);
+                alert('An error occurred while changing email address');
+            }
+        });
+
+        // Change Password Modal Functions
+        function openChangePasswordModal() {
+            document.getElementById('changePasswordModal').classList.remove('hidden');
+            document.getElementById('passwordError').classList.add('hidden');
+        }
+
+        function closeChangePasswordModal() {
+            document.getElementById('changePasswordModal').classList.add('hidden');
+            document.getElementById('changePasswordForm').reset();
+            document.getElementById('passwordError').classList.add('hidden');
+        }
+
+        // Handle Change Password Form Submission
+        document.getElementById('changePasswordForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmNewPassword').value;
+            const errorDiv = document.getElementById('passwordError');
+            
+            // Validate passwords match
+            if (newPassword !== confirmPassword) {
+                errorDiv.textContent = 'New passwords do not match';
+                errorDiv.classList.remove('hidden');
+                return;
+            }
+            
+            // Validate password strength
+            if (newPassword.length < 8) {
+                errorDiv.textContent = 'Password must be at least 8 characters long';
+                errorDiv.classList.remove('hidden');
+                return;
+            }
+            
+            errorDiv.classList.add('hidden');
+            
+            try {
+                const response = await fetch('/api/student/change-password', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        current_password: currentPassword,
+                        new_password: newPassword
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert('Password changed successfully!');
+                    closeChangePasswordModal();
+                } else {
+                    errorDiv.textContent = data.message || 'Failed to change password';
+                    errorDiv.classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Error changing password:', error);
+                errorDiv.textContent = 'An error occurred while changing password';
+                errorDiv.classList.remove('hidden');
+            }
+        });
+
+        // Delete Account Modal Functions
+        function deleteAccount() {
+            document.getElementById('deleteAccountModal').classList.remove('hidden');
+            document.getElementById('deleteAccountError').classList.add('hidden');
+        }
+
+        function closeDeleteAccountModal() {
+            document.getElementById('deleteAccountModal').classList.add('hidden');
+            document.getElementById('deleteAccountForm').reset();
+            document.getElementById('deleteAccountError').classList.add('hidden');
+        }
+
+        // Handle Delete Account Form Submission
+        document.getElementById('deleteAccountForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const confirmText = document.getElementById('deleteConfirmText').value;
+            const password = document.getElementById('deleteAccountPassword').value;
+            const errorDiv = document.getElementById('deleteAccountError');
+            
+            // Validate confirmation text
+            if (confirmText !== 'DELETE') {
+                errorDiv.textContent = 'Please type "DELETE" in uppercase to confirm';
+                errorDiv.classList.remove('hidden');
+                return;
+            }
+            
+            errorDiv.classList.add('hidden');
+            
+            // Final confirmation
+            if (!confirm('This is your last chance. Are you absolutely sure you want to delete your account? This cannot be undone!')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/student/delete-account', {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        password: password,
+                        confirm_text: confirmText
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert('Your account has been successfully deleted. You will be redirected to the login page.');
+                    // Redirect to login page
+                    window.location.href = '/login.html';
+                } else {
+                    errorDiv.textContent = data.message || 'Failed to delete account';
+                    errorDiv.classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Error deleting account:', error);
+                errorDiv.textContent = 'An error occurred while deleting your account';
+                errorDiv.classList.remove('hidden');
+            }
+        });
+        
+        function saveSettings() {
+            alert('Settings saved successfully!');
+            // In a real application, this would save all the settings
+        }
+
+        // Load user data when page loads
+        loadUserData();
+    </script>
+
+    <!-- Mobile Menu Handler -->
+    <script src="/Assets/js/mobile-menu.js"></script>
+</body>
+</html>

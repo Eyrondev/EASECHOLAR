@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - EASECHOLAR</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Custom Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        secondary: {
+                            50: '#f8fafc',
+                            100: '#f1f5f9',
+                            200: '#e2e8f0',
+                            300: '#cbd5e1',
+                            400: '#94a3b8',
+                            500: '#64748b',
+                            600: '#475569',
+                            700: '#334155',
+                            800: '#1e293b',
+                            900: '#0f172a',
+                        }
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'ui-sans-serif', 'system-ui'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Mobile Responsive Styles -->
+    <link rel="stylesheet" href="/Assets/css/mobile-responsive.css">
+    
+    <!-- Custom Mobile Styles for Student Portal -->
+    <style>
+        /* iPhone 12 Pro Specific Optimizations */
+        @media (max-width: 768px) {
+            .ml-64 {
+                margin-left: 0 !important;
+            }
+            
+            .ml-64 .p-8 {
+                padding: 1rem !important;
+            }
+            
+            .pt-16 {
+                padding-top: 4.5rem !important;
+            }
+            
+            /* Responsive grid for stats cards */
+            .grid-cols-1.md\\:grid-cols-2.lg\\:grid-cols-4 {
+                grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+            }
+            
+            .gap-6 {
+                gap: 1rem !important;
+            }
+        }
+        
+        @media (max-width: 390px) {
+            .ml-64 .p-8 {
+                padding: 0.75rem !important;
+            }
+            
+            /* Compact stat cards */
+            .bg-white.p-6 {
+                padding: 1rem !important;
+            }
+            
+            .text-3xl {
+                font-size: 1.75rem !important;
+            }
+            
+            .text-2xl {
+                font-size: 1.5rem !important;
+            }
+        }
+    </style>
+
+    
+    <!-- Component loader script -->
+    <script src="components.js"></script>
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Sidebar component (fixed) -->
+    <div id="sidebar-container"></div>
+    
+    <!-- Navigation component (fixed) -->
+    <div id="nav-container"></div>
+
+    <!-- Main content with proper spacing for fixed sidebar and nav -->
+    <div class="ml-64 pt-16">
+        <div class="p-8">
+            <!-- Header component -->
+            <div id="header-container"></div>
+
+            <!-- Stats cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <!-- Applications -->
+                <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+                    <div class="flex items-center">
+                        <div class="p-3 rounded-full bg-blue-100">
+                            <i class="fas fa-file-alt text-blue-600 text-xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-600">Applications</p>
+                            <p id="stat-applications" class="text-2xl font-bold text-gray-900">0</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pending -->
+                <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+                    <div class="flex items-center">
+                        <div class="p-3 rounded-full bg-yellow-100">
+                            <i class="fas fa-clock text-yellow-600 text-xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-600">Pending</p>
+                            <p id="stat-pending" class="text-2xl font-bold text-gray-900">0</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Approved -->
+                <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+                    <div class="flex items-center">
+                        <div class="p-3 rounded-full bg-green-100">
+                            <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-600">Approved</p>
+                            <p id="stat-approved" class="text-2xl font-bold text-gray-900">0</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Total Awarded -->
+                <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+                    <div class="flex items-center">
+                        <div class="p-3 rounded-full bg-primary-100">
+                            <i class="fas fa-money-bill-wave text-primary-600 text-xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-600">Total Awarded</p>
+                            <p id="stat-awarded" class="text-2xl font-bold text-gray-900">₱0</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Recent Applications -->
+                <div class="bg-white rounded-lg shadow-md border border-gray-200">
+                    <div class="p-6 border-b border-gray-200">
+                        <div class="flex items-center justify-between">
+                            <h2 class="text-lg font-semibold text-gray-900">Recent Applications</h2>
+                            <a href="#" class="text-primary-600 hover:text-primary-700 text-sm font-medium">View All</a>
+                        </div>
+                    </div>
+                    <div id="recent-applications-container" class="p-6 space-y-4">
+                        <!-- Loading state -->
+                        <div class="text-center py-8">
+                            <i class="fas fa-spinner fa-spin text-2xl text-gray-400 mb-2"></i>
+                            <p class="text-gray-500">Loading applications...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Newly Uploaded Scholarships -->
+                <div class="bg-white rounded-lg shadow-md border border-gray-200">
+                    <div class="p-6 border-b border-gray-200">
+                        <div class="flex items-center justify-between">
+                            <h2 class="text-lg font-semibold text-gray-900">Newly Uploaded Scholarships</h2>
+                            <a href="browse-scholarships.html" class="text-primary-600 hover:text-primary-700 text-sm font-medium">Browse All</a>
+                        </div>
+                    </div>
+                    <div id="new-scholarships-container" class="p-6 space-y-4">
+                        <!-- Loading state -->
+                        <div class="text-center py-8">
+                            <i class="fas fa-spinner fa-spin text-2xl text-gray-400 mb-2"></i>
+                            <p class="text-gray-500">Loading scholarships...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Load dashboard stats
+        async function loadDashboardStats() {
+            console.log('Loading student dashboard stats...');
+            try {
+                const response = await fetch('/api/student/dashboard-stats');
+                
+                if (!response.ok) {
+                    console.error('API error:', response.status);
+                    return;
+                }
+                
+                const result = await response.json();
+                
+                if (result.success && result.data) {
+                    console.log('Stats loaded:', result.data);
+                    updateStatsDisplay(result.data);
+                } else {
+                    console.error('Failed to load stats:', result.message);
+                }
+            } catch (error) {
+                console.error('Error loading dashboard stats:', error);
+            }
+        }
+
+        // Update stats display
+        function updateStatsDisplay(stats) {
+            // Update Applications
+            const applicationsEl = document.getElementById('stat-applications');
+            if (applicationsEl) {
+                applicationsEl.textContent = stats.total_applications || 0;
+            }
+            
+            // Update Pending
+            const pendingEl = document.getElementById('stat-pending');
+            if (pendingEl) {
+                pendingEl.textContent = stats.pending_applications || 0;
+            }
+            
+            // Update Approved
+            const approvedEl = document.getElementById('stat-approved');
+            if (approvedEl) {
+                approvedEl.textContent = stats.approved_applications || 0;
+            }
+            
+            // Update Total Awarded
+            const awardedEl = document.getElementById('stat-awarded');
+            if (awardedEl) {
+                const amount = stats.total_awarded || 0;
+                if (amount >= 1000) {
+                    awardedEl.textContent = '₱' + (amount / 1000).toFixed(0) + 'K';
+                } else {
+                    awardedEl.textContent = '₱' + amount.toLocaleString('en-PH');
+                }
+            }
+        }
+
+        // Load stats on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDashboardStats();
+            loadRecentApplications();
+            loadNewScholarships();
+        });
+
+        // Load recent applications
+        async function loadRecentApplications() {
+            console.log('Loading recent applications...');
+            try {
+                const response = await fetch('/api/student/recent-applications');
+                
+                console.log('Response status:', response.status);
+                console.log('Response ok:', response.ok);
+                
+                if (!response.ok) {
+                    console.error('API error:', response.status);
+                    const errorText = await response.text();
+                    console.error('Error response:', errorText);
+                    showEmptyApplications();
+                    return;
+                }
+                
+                const result = await response.json();
+                console.log('Full API response:', result);
+                
+                if (result.success && result.applications) {
+                    console.log('Applications count:', result.applications.length);
+                    console.log('Applications data:', result.applications);
+                    
+                    if (result.applications.length === 0) {
+                        console.log('No applications found, showing empty state');
+                        showEmptyApplications();
+                    } else {
+                        displayRecentApplications(result.applications);
+                    }
+                } else {
+                    console.error('Failed to load applications:', result.message);
+                    showEmptyApplications();
+                }
+            } catch (error) {
+                console.error('Error loading recent applications:', error);
+                showEmptyApplications();
+            }
+        }
+
+        // Display recent applications
+        function displayRecentApplications(applications) {
+            const container = document.getElementById('recent-applications-container');
+            
+            if (!applications || applications.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-8">
+                        <i class="fas fa-inbox text-4xl text-gray-300 mb-2"></i>
+                        <p class="text-gray-500">No applications yet</p>
+                        <button onclick="location.href='browse-scholarships.html'" class="mt-3 text-primary-600 hover:text-primary-700 text-sm font-medium">
+                            Browse Scholarships
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = applications.map(app => {
+                const statusConfig = {
+                    'PENDING': { class: 'bg-yellow-100 text-yellow-800', label: 'Pending' },
+                    'APPROVED': { class: 'bg-green-100 text-green-800', label: 'Approved' },
+                    'REJECTED': { class: 'bg-red-100 text-red-800', label: 'Rejected' },
+                    'UNDER_REVIEW': { class: 'bg-blue-100 text-blue-800', label: 'Under Review' }
+                };
+                
+                const status = statusConfig[app.status] || statusConfig['PENDING'];
+                const appliedDate = new Date(app.applied_date).toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'short', 
+                    day: 'numeric' 
+                });
+                const amount = new Intl.NumberFormat('en-PH', { 
+                    style: 'currency', 
+                    currency: 'PHP' 
+                }).format(app.amount);
+                
+                return `
+                    <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                        <div class="flex-1">
+                            <h4 class="font-medium text-gray-900">${app.scholarship_title}</h4>
+                            <p class="text-sm text-gray-600">${app.provider_name}</p>
+                            <p class="text-xs text-gray-500 mt-1">Applied: ${appliedDate}</p>
+                        </div>
+                        <div class="text-right">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${status.class}">
+                                ${status.label}
+                            </span>
+                            <p class="text-sm font-medium text-gray-900 mt-1">${amount}</p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Show empty applications state
+        function showEmptyApplications() {
+            const container = document.getElementById('recent-applications-container');
+            container.innerHTML = `
+                <div class="text-center py-8">
+                    <i class="fas fa-inbox text-4xl text-gray-300 mb-2"></i>
+                    <p class="text-gray-500">No applications yet</p>
+                    <button onclick="location.href='browse-scholarships.html'" class="mt-3 text-primary-600 hover:text-primary-700 text-sm font-medium">
+                        Browse Scholarships
+                    </button>
+                </div>
+            `;
+        }
+
+        // Load newly uploaded scholarships
+        async function loadNewScholarships() {
+            console.log('Loading new scholarships...');
+            try {
+                const response = await fetch('/api/student/new-scholarships');
+                
+                if (!response.ok) {
+                    console.error('API error:', response.status);
+                    showEmptyScholarships();
+                    return;
+                }
+                
+                const result = await response.json();
+                
+                if (result.success && result.scholarships) {
+                    console.log('Scholarships loaded:', result.scholarships);
+                    displayNewScholarships(result.scholarships);
+                } else {
+                    console.error('Failed to load scholarships:', result.message);
+                    showEmptyScholarships();
+                }
+            } catch (error) {
+                console.error('Error loading new scholarships:', error);
+                showEmptyScholarships();
+            }
+        }
+
+        // Display newly uploaded scholarships
+        function displayNewScholarships(scholarships) {
+            const container = document.getElementById('new-scholarships-container');
+            
+            if (!scholarships || scholarships.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-8">
+                        <i class="fas fa-search text-4xl text-gray-300 mb-2"></i>
+                        <p class="text-gray-500">No new scholarships available</p>
+                        <button onclick="location.href='browse-scholarships.html'" class="mt-3 text-primary-600 hover:text-primary-700 text-sm font-medium">
+                            Browse All Scholarships
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = scholarships.map(scholarship => {
+                const amount = new Intl.NumberFormat('en-PH', { 
+                    style: 'currency', 
+                    currency: 'PHP' 
+                }).format(scholarship.amount);
+                const deadline = new Date(scholarship.deadline).toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'short', 
+                    day: 'numeric' 
+                });
+                
+                // Category badge styling
+                const categoryColors = {
+                    'FULL_SCHOLARSHIP': 'bg-green-100 text-green-800',
+                    'PARTIAL_SCHOLARSHIP': 'bg-blue-100 text-blue-800',
+                    'MERIT_BASED': 'bg-purple-100 text-purple-800',
+                    'NEED_BASED': 'bg-yellow-100 text-yellow-800'
+                };
+                const categoryClass = categoryColors[scholarship.category] || 'bg-gray-100 text-gray-800';
+                const categoryLabel = (scholarship.category || 'General').replace('_', ' ');
+                
+                return `
+                    <div class="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
+                        <div class="flex items-start justify-between mb-2">
+                            <h4 class="font-medium text-gray-900">${scholarship.title}</h4>
+                            <div class="text-right">
+                                <p class="text-lg font-bold text-primary-600">${amount}</p>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-600 mb-3">${scholarship.provider_name}</p>
+                        <div class="flex items-center justify-between">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${categoryClass}">
+                                ${categoryLabel}
+                            </span>
+                            <span class="text-xs text-gray-500">Due: ${deadline}</span>
+                        </div>
+                        <button onclick="location.href='browse-scholarships.html?id=${scholarship.id}'" class="w-full mt-3 bg-primary-600 text-white hover:bg-primary-700 px-4 py-2 rounded-md text-sm font-medium transition-colors">
+                            View Details
+                        </button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Show empty scholarships state
+        function showEmptyScholarships() {
+            const container = document.getElementById('new-scholarships-container');
+            container.innerHTML = `
+                <div class="text-center py-8">
+                    <i class="fas fa-search text-4xl text-gray-300 mb-2"></i>
+                    <p class="text-gray-500">No new scholarships available</p>
+                    <button onclick="location.href='browse-scholarships.html'" class="mt-3 text-primary-600 hover:text-primary-700 text-sm font-medium">
+                        Browse All Scholarships
+                    </button>
+                </div>
+            `;
+        }
+
+        function toggleUserMenu() {
+            const menu = document.getElementById('user-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        function saveScholarship(id) {
+            // Toggle bookmark icon and show feedback
+            const button = event.target.closest('button');
+            const icon = button.querySelector('i');
+            
+            if (icon.classList.contains('fas')) {
+                icon.classList.remove('fas');
+                icon.classList.add('far');
+                showNotification('Scholarship removed from saved list', 'info');
+            } else {
+                icon.classList.remove('far');
+                icon.classList.add('fas');
+                showNotification('Scholarship saved successfully!', 'success');
+            }
+        }
+
+        function showNotification(message, type) {
+            // Create notification
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 z-50 px-4 py-3 rounded-md shadow-lg transition-all duration-300 ${
+                type === 'success' ? 'bg-green-500 text-white' : 'bg-blue-500 text-white'
+            }`;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+
+        // Close user menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const userMenu = document.getElementById('user-menu');
+            const userButton = event.target.closest('button');
+            
+            if (!userButton || !userButton.onclick) {
+                userMenu.classList.add('hidden');
+            }
+        });
+    </script>
+
+    <!-- Mobile Menu Handler -->
+    <script src="/Assets/js/mobile-menu.js"></script>
+</body>
+</html>

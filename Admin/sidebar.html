@@ -1,0 +1,349 @@
+<!-- Admin Sidebar -->
+<style>
+    /* Active link hover effect - dark yellow */
+    #sidebar .nav-link.active-page:hover {
+        background-color: #d97706 !important; /* Dark yellow/amber-600 */
+    }
+    
+    /* Mobile Sidebar Styles - iPhone 12 Pro Optimized */
+    @media (max-width: 768px) {
+        #sidebar {
+            transform: translateX(-100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 280px !important;
+            max-width: 85vw;
+        }
+        
+        #sidebar.mobile-open {
+            transform: translateX(0);
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Compact logo on mobile */
+        #sidebar .h-16 {
+            padding: 0.75rem 1rem;
+        }
+        
+        /* Compact admin badge */
+        #sidebar .px-4.py-3 {
+            padding: 0.75rem 1rem;
+        }
+        
+        /* Compact navigation links */
+        #sidebar .nav-link {
+            padding: 0.625rem 1rem !important;
+            font-size: 0.9rem;
+        }
+        
+        #sidebar .nav-link i {
+            font-size: 0.875rem;
+        }
+        
+        /* Smaller logo text */
+        #sidebar .text-xl {
+            font-size: 1.125rem;
+        }
+        
+        #sidebar .text-2xl {
+            font-size: 1.25rem;
+        }
+    }
+    
+    /* Hamburger Menu Button - Small & Left */
+    .mobile-menu-btn {
+        display: none;
+        position: fixed;
+        top: 0.75rem;
+        left: 0.75rem;
+        z-index: 60;
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 0.375rem;
+        padding: 0.5rem;
+        width: 36px;
+        height: 36px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    
+    .mobile-menu-btn:active {
+        transform: scale(0.92);
+    }
+    
+    .mobile-menu-btn i {
+        font-size: 1rem;
+        color: #4f46e5;
+    }
+    
+    @media (max-width: 768px) {
+        .mobile-menu-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    }
+    
+    /* Mobile Overlay */
+    .mobile-sidebar-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 45;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    
+    .mobile-sidebar-overlay.active {
+        display: block;
+        opacity: 1;
+    }
+</style>
+
+<!-- Hamburger Menu Button -->
+<button class="mobile-menu-btn" id="mobile-menu-toggle" aria-label="Toggle menu">
+    <i class="fas fa-bars"></i>
+</button>
+
+<!-- Mobile Overlay -->
+<div class="mobile-sidebar-overlay" id="mobile-overlay"></div>
+
+<aside id="sidebar" class="fixed left-0 top-0 h-screen w-64 bg-gradient-to-b from-indigo-900 to-indigo-700 text-white shadow-2xl z-30">
+    <div class="flex flex-col h-full">
+        <!-- Logo/Brand -->
+        <div class="flex items-center justify-center h-16 border-b border-indigo-600 bg-indigo-950">
+            <i class="fas fa-shield-alt text-2xl mr-2"></i>
+            <span class="text-xl font-bold">EASECHOLAR</span>
+        </div>
+        
+        <!-- Admin Badge -->
+        <div class="px-4 py-3 bg-indigo-800 border-b border-indigo-600">
+            <div class="flex items-center">
+                <div class="w-10 h-10 rounded-full bg-yellow-500 flex items-center justify-center text-indigo-900 font-bold">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <div class="ml-3">
+                    <p class="text-sm font-medium">Admin Panel</p>
+                    <p class="text-xs text-indigo-300">System Administrator</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Menu -->
+        <nav class="flex-1 overflow-y-auto px-4 py-4">
+            <ul class="space-y-2">
+                <!-- Dashboard -->
+                <li>
+                    <a href="/Admin/dashboard.html" class="nav-link flex items-center px-4 py-3 rounded-lg hover:bg-indigo-800 transition-colors duration-200 group" data-page="/Admin/dashboard.html">
+                        <i class="fas fa-chart-line w-5 text-center mr-3 group-hover:scale-110 transition-transform"></i>
+                        <span class="font-medium">Dashboard</span>
+                    </a>
+                </li>
+
+                <!-- Pending Approvals (with badge) -->
+                <li>
+                    <a href="/Admin/approvals.html" class="nav-link flex items-center px-4 py-3 rounded-lg hover:bg-indigo-800 transition-colors duration-200 group" data-page="/Admin/approvals.html">
+                        <i class="fas fa-clipboard-check w-5 text-center mr-3 group-hover:scale-110 transition-transform"></i>
+                        <span class="font-medium">Approvals</span>
+                        <span id="approval-badge" class="ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full hidden">0</span>
+                    </a>
+                </li>
+
+                <!-- User Management -->
+                <li>
+                    <a href="/Admin/users.html" class="nav-link flex items-center px-4 py-3 rounded-lg hover:bg-indigo-800 transition-colors duration-200 group" data-page="/Admin/users.html">
+                        <i class="fas fa-users w-5 text-center mr-3 group-hover:scale-110 transition-transform"></i>
+                        <span class="font-medium">Users</span>
+                    </a>
+                </li>
+
+                <!-- Students -->
+                <li>
+                    <a href="/Admin/students.html" class="nav-link flex items-center px-4 py-3 rounded-lg hover:bg-indigo-800 transition-colors duration-200 group" data-page="/Admin/students.html">
+                        <i class="fas fa-user-graduate w-5 text-center mr-3 group-hover:scale-110 transition-transform"></i>
+                        <span class="font-medium">Students</span>
+                    </a>
+                </li>
+
+                <!-- Providers -->
+                <li>
+                    <a href="/Admin/providers.html" class="nav-link flex items-center px-4 py-3 rounded-lg hover:bg-indigo-800 transition-colors duration-200 group" data-page="/Admin/providers.html">
+                        <i class="fas fa-building w-5 text-center mr-3 group-hover:scale-110 transition-transform"></i>
+                        <span class="font-medium">Providers</span>
+                    </a>
+                </li>
+
+                <!-- Scholarships -->
+                <li>
+                    <a href="/Admin/scholarships.html" class="nav-link flex items-center px-4 py-3 rounded-lg hover:bg-indigo-800 transition-colors duration-200 group" data-page="/Admin/scholarships.html">
+                        <i class="fas fa-graduation-cap w-5 text-center mr-3 group-hover:scale-110 transition-transform"></i>
+                        <span class="font-medium">Scholarships</span>
+                    </a>
+                </li>
+
+                <!-- Applications -->
+                <li>
+                    <a href="/Admin/applications.html" class="nav-link flex items-center px-4 py-3 rounded-lg hover:bg-indigo-800 transition-colors duration-200 group" data-page="/Admin/applications.html">
+                        <i class="fas fa-file-alt w-5 text-center mr-3 group-hover:scale-110 transition-transform"></i>
+                        <span class="font-medium">Applications</span>
+                    </a>
+                </li>
+
+                <li class="border-t border-indigo-600 my-2"></li>
+
+                <!-- Reports -->
+                <li>
+                    <a href="/Admin/reports.html" class="nav-link flex items-center px-4 py-3 rounded-lg hover:bg-indigo-800 transition-colors duration-200 group" data-page="/Admin/reports.html">
+                        <i class="fas fa-chart-bar w-5 text-center mr-3 group-hover:scale-110 transition-transform"></i>
+                        <span class="font-medium">Reports</span>
+                    </a>
+                </li>
+
+                <!-- Settings -->
+                <li>
+                    <a href="/Admin/settings.html" class="nav-link flex items-center px-4 py-3 rounded-lg hover:bg-indigo-800 transition-colors duration-200 group" data-page="/Admin/settings.html">
+                        <i class="fas fa-cog w-5 text-center mr-3 group-hover:scale-110 transition-transform"></i>
+                        <span class="font-medium">Settings</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Footer -->
+        <div class="p-4 border-t border-indigo-600">
+            <button onclick="logout()" class="w-full flex items-center justify-center px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg transition-colors duration-200">
+                <i class="fas fa-sign-out-alt mr-2"></i>
+                <span class="font-medium">Logout</span>
+            </button>
+        </div>
+    </div>
+</aside>
+
+<script>
+    // Set active menu item based on current page - using window.setAdminActivePage for global scope
+    window.setAdminActivePage = function() {
+        const currentPath = window.location.pathname;
+        console.log('Admin Sidebar - Current path:', currentPath);
+        
+        const navLinks = document.querySelectorAll('#sidebar .nav-link');
+        console.log('Admin Sidebar - Found nav links:', navLinks.length);
+        
+        if (navLinks.length === 0) {
+            console.error('Admin Sidebar - No nav links found!');
+            return;
+        }
+        
+        navLinks.forEach(link => {
+            const linkPage = link.getAttribute('data-page');
+            console.log('Admin Sidebar - Checking link:', linkPage, 'against', currentPath);
+            
+            // Remove active classes
+            link.classList.remove('bg-indigo-800', 'bg-yellow-500', 'text-indigo-900', 'shadow-lg', 'border-l-4', 'border-yellow-400', 'active-page');
+            
+            // Check if this is the active page
+            if (currentPath === linkPage || currentPath.endsWith(linkPage.replace('/Admin/', ''))) {
+                // Add active state with distinct styling
+                link.classList.add('bg-yellow-500', 'text-indigo-900', 'shadow-lg', 'border-l-4', 'border-yellow-400', 'active-page');
+                console.log('Admin Sidebar - ✓ Active page set:', linkPage);
+            }
+        });
+    };
+
+    window.loadApprovalCount = function() {
+        fetch('/api/admin/approvals/count')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.count > 0) {
+                    const badge = document.getElementById('approval-badge');
+                    if (badge) {
+                        badge.textContent = data.count;
+                        badge.classList.remove('hidden');
+                    }
+                }
+            })
+            .catch(error => console.error('Error loading approval count:', error));
+    };
+
+    window.logout = function() {
+        if (confirm('Are you sure you want to logout?')) {
+            window.location.href = '/logout';
+        }
+    };
+    
+    // Auto-initialize
+    console.log('Admin Sidebar script loaded');
+    setTimeout(function() {
+        window.setAdminActivePage();
+        window.loadApprovalCount();
+    }, 50);
+    
+    // Mobile Menu Toggle
+    (function() {
+        const menuBtn = document.getElementById('mobile-menu-toggle');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('mobile-overlay');
+        
+        if (!menuBtn || !sidebar || !overlay) return;
+        
+        function openMenu() {
+            sidebar.classList.add('mobile-open');
+            overlay.classList.add('active');
+            menuBtn.querySelector('i').classList.remove('fa-bars');
+            menuBtn.querySelector('i').classList.add('fa-times');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeMenu() {
+            sidebar.classList.remove('mobile-open');
+            overlay.classList.remove('active');
+            menuBtn.querySelector('i').classList.remove('fa-times');
+            menuBtn.querySelector('i').classList.add('fa-bars');
+            document.body.style.overflow = '';
+        }
+        
+        function toggleMenu() {
+            if (sidebar.classList.contains('mobile-open')) {
+                closeMenu();
+            } else {
+                openMenu();
+            }
+        }
+        
+        // Toggle on button click
+        menuBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            toggleMenu();
+        });
+        
+        // Close on overlay click
+        overlay.addEventListener('click', closeMenu);
+        
+        // Close on escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && sidebar.classList.contains('mobile-open')) {
+                closeMenu();
+            }
+        });
+        
+        // Close menu when clicking sidebar links
+        const sidebarLinks = sidebar.querySelectorAll('a');
+        sidebarLinks.forEach(function(link) {
+            link.addEventListener('click', function() {
+                if (window.innerWidth <= 768) {
+                    closeMenu();
+                }
+            });
+        });
+        
+        // Close menu on window resize to desktop
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 768 && sidebar.classList.contains('mobile-open')) {
+                closeMenu();
+            }
+        });
+    })();
+</script>
