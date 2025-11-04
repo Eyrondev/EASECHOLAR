@@ -2015,21 +2015,27 @@ def get_all_applications():
     try:
         cursor = connection.cursor(dictionary=True)
         
+        # Fixed query: Use LEFT JOIN to get all applications even if related data is missing
+        # student_id in applications table refers to students.id, not users.id
         query = """
             SELECT a.id, a.status, a.cover_letter, a.additional_info,
                    a.submitted_at, a.reviewed_at, a.reviewer_notes,
-                   CONCAT(u.first_name, ' ', u.last_name) as student_name,
-                   u.email as student_email,
-                   s.title as scholarship_title,
-                   CONCAT(p_user.first_name, ' ', p_user.last_name) as provider_name
+                   CONCAT(COALESCE(u.first_name, 'Unknown'), ' ', COALESCE(u.last_name, 'Student')) as student_name,
+                   COALESCE(u.email, 'N/A') as student_email,
+                   COALESCE(s.title, 'N/A') as scholarship_title,
+                   CONCAT(COALESCE(p_user.first_name, 'Unknown'), ' ', COALESCE(p_user.last_name, 'Provider')) as provider_name
             FROM applications a
-            INNER JOIN users u ON a.student_id = u.id
-            INNER JOIN scholarships s ON a.scholarship_id = s.id
-            INNER JOIN users p_user ON s.provider_id = p_user.id
+            LEFT JOIN students st ON a.student_id = st.id
+            LEFT JOIN users u ON st.user_id = u.id
+            LEFT JOIN scholarships s ON a.scholarship_id = s.id
+            LEFT JOIN providers p ON s.provider_id = p.id
+            LEFT JOIN users p_user ON p.user_id = p_user.id
             ORDER BY a.submitted_at DESC
         """
         cursor.execute(query)
         applications = cursor.fetchall()
+        
+        print(f"📋 Fetched {len(applications)} applications from database")
         
         applications_list = []
         for app in applications:
@@ -2047,13 +2053,29 @@ def get_all_applications():
                 'reviewer_notes': app['reviewer_notes']
             })
         
-        return jsonify({
+        print(f"✅ Returning {len(applications_list)} applications to client")
+        print(f"   Status breakdown: " + 
+              f"APPROVED={sum(1 for a in applications_list if a['status'] == 'APPROVED')}, " +
+              f"REJECTED={sum(1 for a in applications_list if a['status'] == 'REJECTED')}, " +
+              f"PENDING={sum(1 for a in applications_list if a['status'] == 'PENDING')}, " +
+              f"UNDER_REVIEW={sum(1 for a in applications_list if a['status'] == 'UNDER_REVIEW')}")
+        
+        response = jsonify({
             'success': True,
             'applications': applications_list
         })
         
+        # Add cache control headers to prevent caching
+        response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+        response.headers['Pragma'] = 'no-cache'
+        response.headers['Expires'] = '0'
+        
+        return response
+        
     except Exception as e:
-        print(f"Error fetching applications: {e}")
+        print(f"❌ Error fetching applications: {e}")
+        import traceback
+        traceback.print_exc()
         return jsonify({'success': False, 'message': 'Failed to fetch applications'}), 500
     finally:
         if cursor:

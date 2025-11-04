@@ -193,12 +193,31 @@
 
         function loadApplications() {
             showLoading();
-            fetch('/api/admin/applications')
+            // Add timestamp to prevent caching
+            const timestamp = new Date().getTime();
+            fetch(`/api/admin/applications?_t=${timestamp}`, {
+                cache: 'no-cache',
+                headers: {
+                    'Cache-Control': 'no-cache',
+                    'Pragma': 'no-cache'
+                }
+            })
                 .then(response => response.json())
                 .then(data => {
+                    console.log('=== API Response ===');
+                    console.log('Success:', data.success);
+                    console.log('Total applications received:', data.applications ? data.applications.length : 0);
+                    console.log('Full data:', data);
+                    
                     if (data.success) {
                         applicationsData = data.applications || [];
                         filteredApplications = [...applicationsData];
+                        
+                        console.log('=== Applications Data ===');
+                        applicationsData.forEach((app, index) => {
+                            console.log(`App ${index + 1}: ID=${app.id}, Status=${app.status}, Student=${app.student_name}`);
+                        });
+                        
                         updateStats();
                         displayApplications();
                     } else {
@@ -217,6 +236,13 @@
             const review = applicationsData.filter(a => a.status === 'UNDER_REVIEW').length;
             const approved = applicationsData.filter(a => a.status === 'APPROVED').length;
             const rejected = applicationsData.filter(a => a.status === 'REJECTED').length;
+
+            console.log('=== Stats Calculated ===');
+            console.log('Total:', total);
+            console.log('Pending:', pending);
+            console.log('Under Review:', review);
+            console.log('Approved:', approved);
+            console.log('Rejected:', rejected);
 
             document.getElementById('stat-total').textContent = total;
             document.getElementById('stat-pending').textContent = pending;
