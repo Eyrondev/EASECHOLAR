@@ -3,8 +3,10 @@
 
 class EasecholarAPI {
     constructor() {
-        this.baseURL = 'http://127.0.0.1:5000';
-        this.apiURL = 'http://127.0.0.1:5000/api';
+        // Use relative URLs for production deployment (AWS, etc.)
+        // This automatically uses the current domain and protocol
+        this.baseURL = window.location.origin;
+        this.apiURL = `${window.location.origin}/api`;
     }
 
     // Generic API request method with enhanced error handling

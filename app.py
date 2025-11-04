@@ -5014,12 +5014,33 @@ if __name__ == '__main__':
     except Exception as e:
         print(f"⚠ Admin user initialization error: {e}")
     
-    print("🚀 Starting EASECHOLAR server...")
-    print("📧 Test accounts:")
-    print("   Student: student@test.com / 12345")
-    print("   Provider: provider@test.com / 12345")
-    print("   Admin: admin@gmail.com / 12345")
-    print("🌐 Server running at: http://127.0.0.1:5000")
+    # Determine if running in production or development
+    import sys
+    is_production = '--production' in sys.argv or os.environ.get('FLASK_ENV') == 'production'
     
-    # Run the application
-    app.run(host='127.0.0.1', port=5000, debug=True)
+    if is_production:
+        # Production mode - Use waitress server
+        from waitress import serve
+        
+        print("🚀 Starting EASECHOLAR in PRODUCTION mode...")
+        print("📧 Test accounts:")
+        print("   Student: student@test.com / 12345")
+        print("   Provider: provider@test.com / 12345")
+        print("   Admin: admin@gmail.com / 12345")
+        print("🌐 Server running on port 5000")
+        print("⚠️  Debug mode: OFF (Production)")
+        
+        # Run with waitress (production-ready server)
+        serve(app, host='0.0.0.0', port=5000, threads=4)
+    else:
+        # Development mode - Use Flask development server
+        print("🚀 Starting EASECHOLAR in DEVELOPMENT mode...")
+        print("📧 Test accounts:")
+        print("   Student: student@test.com / 12345")
+        print("   Provider: provider@test.com / 12345")
+        print("   Admin: admin@gmail.com / 12345")
+        print("🌐 Server running at: http://127.0.0.1:5000")
+        print("⚠️  To run in production mode, use: python app.py --production")
+        
+        # Run the application (development only)
+        app.run(host='0.0.0.0', port=5000, debug=True)
