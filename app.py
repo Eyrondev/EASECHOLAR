@@ -77,9 +77,9 @@ except AttributeError:
 
 # Database configuration
 DB_CONFIG = {
-    'host': 'localhost',
-    'user': 'root',
-    'password': '',  # Update with your MySQL password
+    'host': 'database-1.cx4waogceerc.ap-southeast-2.rds.amazonaws.com',
+    'user': 'admin',
+    'password': '12345678',  # Update with your MySQL password
     'database': 'easecholar_db',
     'charset': 'utf8mb4',
     'collation': 'utf8mb4_unicode_ci'
