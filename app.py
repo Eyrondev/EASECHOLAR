@@ -235,7 +235,7 @@ def get_user_dashboard_data(user_id, user_type):
                      JOIN students s ON a.student_id = s.id 
                      WHERE s.user_id = %s AND a.status = 'APPROVED') as approved_applications,
                     (SELECT COUNT(*) FROM scholarships 
-                     WHERE status = 'ACTIVE' AND application_deadline >= NOW()) as available_scholarships
+                     WHERE is_active = 1 AND application_deadline >= NOW()) as available_scholarships
             """
             cursor.execute(query, (user_id, user_id, user_id))
             
@@ -248,7 +248,7 @@ def get_user_dashboard_data(user_id, user_type):
                      WHERE p.user_id = %s) as total_scholarships,
                     (SELECT COUNT(*) FROM scholarships sch 
                      JOIN providers p ON sch.provider_id = p.id 
-                     WHERE p.user_id = %s AND sch.status = 'ACTIVE') as active_scholarships,
+                     WHERE p.user_id = %s AND sch.is_active = 1) as active_scholarships,
                     (SELECT COUNT(*) FROM applications a 
                      JOIN scholarships sch ON a.scholarship_id = sch.id 
                      JOIN providers p ON sch.provider_id = p.id 
@@ -3795,6 +3795,211 @@ def delete_profile_document(document_id):
         import traceback
         traceback.print_exc()
         return jsonify({'success': False, 'message': 'Failed to delete document'}), 500
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+
+@app.route('/api/student/change-email', methods=['POST'])
+@login_required(['STUDENT'])
+def student_change_email():
+    """Change student email address"""
+    connection = get_db_connection()
+    if not connection:
+        return jsonify({'success': False, 'message': 'Database connection failed'}), 500
+    
+    try:
+        data = request.get_json()
+        new_email = data.get('new_email', '').strip().lower()
+        password = data.get('password', '')
+        
+        print(f"📧 Change email request: new_email={new_email}, has_password={bool(password)}")
+        
+        if not new_email or not password:
+            return jsonify({'success': False, 'message': 'Email and password are required'}), 400
+        
+        # Validate email format
+        import re
+        email_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+        if not re.match(email_pattern, new_email):
+            return jsonify({'success': False, 'message': 'Invalid email format'}), 400
+        
+        user_id = session.get('user_id')
+        cursor = connection.cursor(dictionary=True)
+        
+        # Verify current password
+        cursor.execute("SELECT password_hash FROM users WHERE id = %s", (user_id,))
+        user = cursor.fetchone()
+        
+        print(f"🔍 User found: {bool(user)}")
+        
+        if not user:
+            return jsonify({'success': False, 'message': 'User not found'}), 404
+        
+        password_valid = check_password_hash(user['password_hash'], password)
+        print(f"🔐 Password valid: {password_valid}")
+        
+        if not password_valid:
+            return jsonify({'success': False, 'message': 'Incorrect password'}), 401
+        
+        # Check if new email already exists
+        cursor.execute("SELECT id FROM users WHERE email = %s AND id != %s", (new_email, user_id))
+        if cursor.fetchone():
+            return jsonify({'success': False, 'message': 'Email already in use'}), 400
+        
+        # Update email
+        cursor.execute("UPDATE users SET email = %s, updated_at = %s WHERE id = %s", 
+                      (new_email, datetime.now(), user_id))
+        connection.commit()
+        
+        # Update session
+        session['email'] = new_email
+        
+        print(f"✅ Email changed for user {user_id} to {new_email}")
+        
+        return jsonify({'success': True, 'message': 'Email changed successfully', 'new_email': new_email})
+        
+    except Exception as e:
+        if connection:
+            connection.rollback()
+        print(f"❌ Error changing email: {e}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({'success': False, 'message': f'Failed to change email: {str(e)}'}), 500
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+
+@app.route('/api/student/change-password', methods=['POST'])
+@login_required(['STUDENT'])
+def student_change_password():
+    """Change student password"""
+    connection = get_db_connection()
+    if not connection:
+        return jsonify({'success': False, 'message': 'Database connection failed'}), 500
+    
+    try:
+        data = request.get_json()
+        current_password = data.get('current_password', '')
+        new_password = data.get('new_password', '')
+        
+        if not current_password or not new_password:
+            return jsonify({'success': False, 'message': 'Current and new password are required'}), 400
+        
+        if len(new_password) < 8:
+            return jsonify({'success': False, 'message': 'New password must be at least 8 characters'}), 400
+        
+        user_id = session.get('user_id')
+        cursor = connection.cursor(dictionary=True)
+        
+        # Verify current password
+        cursor.execute("SELECT password_hash FROM users WHERE id = %s", (user_id,))
+        user = cursor.fetchone()
+        
+        if not user or not check_password_hash(user['password_hash'], current_password):
+            return jsonify({'success': False, 'message': 'Current password is incorrect'}), 401
+        
+        # Hash new password
+        new_password_hash = generate_password_hash(new_password)
+        
+        # Update password
+        cursor.execute("UPDATE users SET password_hash = %s, updated_at = %s WHERE id = %s", 
+                      (new_password_hash, datetime.now(), user_id))
+        connection.commit()
+        
+        print(f"✅ Password changed for user {user_id}")
+        
+        return jsonify({'success': True, 'message': 'Password changed successfully'})
+        
+    except Exception as e:
+        if connection:
+            connection.rollback()
+        print(f"Error changing password: {e}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({'success': False, 'message': 'Failed to change password'}), 500
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+
+@app.route('/api/student/delete-account', methods=['DELETE'])
+@login_required(['STUDENT'])
+def student_delete_account():
+    """Delete student account permanently"""
+    connection = get_db_connection()
+    if not connection:
+        return jsonify({'success': False, 'message': 'Database connection failed'}), 500
+    
+    try:
+        data = request.get_json()
+        password = data.get('password', '')
+        confirm_text = data.get('confirm_text', '')
+        
+        if not password or confirm_text != 'DELETE':
+            return jsonify({'success': False, 'message': 'Password and confirmation required'}), 400
+        
+        user_id = session.get('user_id')
+        cursor = connection.cursor(dictionary=True)
+        
+        # Verify password
+        cursor.execute("SELECT password_hash FROM users WHERE id = %s", (user_id,))
+        user = cursor.fetchone()
+        
+        if not user or not check_password_hash(user['password_hash'], password):
+            return jsonify({'success': False, 'message': 'Incorrect password'}), 401
+        
+        # Get student ID
+        cursor.execute("SELECT id FROM students WHERE user_id = %s", (user_id,))
+        student = cursor.fetchone()
+        
+        if student:
+            student_id = student['id']
+            
+            # Delete related records (in order due to foreign keys)
+            # 1. Delete saved scholarships
+            cursor.execute("DELETE FROM saved_scholarships WHERE student_id = %s", (student_id,))
+            
+            # 2. Delete application documents
+            cursor.execute("""
+                DELETE FROM application_documents 
+                WHERE application_id IN (
+                    SELECT id FROM applications WHERE student_id = %s
+                )
+            """, (student_id,))
+            
+            # 3. Delete applications
+            cursor.execute("DELETE FROM applications WHERE student_id = %s", (student_id,))
+            
+            # 4. Delete student documents
+            cursor.execute("DELETE FROM student_documents WHERE student_id = %s", (student_id,))
+            
+            # 5. Delete student profile
+            cursor.execute("DELETE FROM students WHERE id = %s", (student_id,))
+        
+        # Delete user account
+        cursor.execute("DELETE FROM users WHERE id = %s", (user_id,))
+        
+        connection.commit()
+        
+        # Clear session
+        session.clear()
+        
+        print(f"✅ Account deleted for user {user_id}")
+        
+        return jsonify({'success': True, 'message': 'Account deleted successfully'})
+        
+    except Exception as e:
+        if connection:
+            connection.rollback()
+        print(f"Error deleting account: {e}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({'success': False, 'message': 'Failed to delete account'}), 500
     finally:
         if cursor:
             cursor.close()

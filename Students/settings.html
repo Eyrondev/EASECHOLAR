@@ -109,17 +109,6 @@
                                     </button>
                                 </div>
                             </div>
-
-                            <!-- Account Deletion -->
-                            <div class="pt-6 border-t border-gray-200">
-                                <h3 class="text-lg font-medium text-red-900 mb-4">Delete Account</h3>
-                                <div class="p-4 border border-red-200 rounded-lg bg-red-50">
-                                    <p class="text-sm text-red-700 mb-3">Once you delete your account, there is no going back. Please be certain.</p>
-                                    <button onclick="deleteAccount()" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition-colors text-sm font-medium">
-                                        Delete Account
-                                    </button>
-                                </div>
-                            </div>
                         </div>
                     </div>
 
@@ -201,57 +190,6 @@
                     </button>
                     <button type="submit" class="flex-1 px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors">
                         Change Password
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Delete Account Modal -->
-    <div id="deleteAccountModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
-            <div class="p-6 border-b border-red-200">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center">
-                        <i class="fas fa-exclamation-triangle text-red-600 text-2xl mr-3"></i>
-                        <h3 class="text-xl font-semibold text-red-900">Delete Account</h3>
-                    </div>
-                    <button onclick="closeDeleteAccountModal()" class="text-gray-400 hover:text-gray-600">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-            </div>
-            <form id="deleteAccountForm" class="p-6 space-y-4">
-                <div class="bg-red-50 border border-red-200 rounded-md p-4">
-                    <p class="text-sm text-red-800 font-medium mb-2">⚠️ Warning: This action is permanent!</p>
-                    <ul class="text-sm text-red-700 space-y-1 list-disc list-inside">
-                        <li>All your personal information will be deleted</li>
-                        <li>All your scholarship applications will be removed</li>
-                        <li>Your saved scholarships will be lost</li>
-                        <li>This action cannot be undone</li>
-                    </ul>
-                </div>
-                
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                        Type "DELETE" to confirm (in uppercase)
-                    </label>
-                    <input type="text" id="deleteConfirmText" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-red-500 focus:border-red-500" placeholder="Type DELETE to confirm">
-                </div>
-                
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Enter Your Password</label>
-                    <input type="password" id="deleteAccountPassword" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-red-500 focus:border-red-500" placeholder="Enter your password to confirm">
-                </div>
-                
-                <div id="deleteAccountError" class="hidden text-red-600 text-sm"></div>
-                
-                <div class="flex gap-3 pt-4">
-                    <button type="button" onclick="closeDeleteAccountModal()" class="flex-1 px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors">
-                        Cancel
-                    </button>
-                    <button type="submit" class="flex-1 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors">
-                        Delete My Account
                     </button>
                 </div>
             </form>
@@ -391,69 +329,6 @@
             }
         });
 
-        // Delete Account Modal Functions
-        function deleteAccount() {
-            document.getElementById('deleteAccountModal').classList.remove('hidden');
-            document.getElementById('deleteAccountError').classList.add('hidden');
-        }
-
-        function closeDeleteAccountModal() {
-            document.getElementById('deleteAccountModal').classList.add('hidden');
-            document.getElementById('deleteAccountForm').reset();
-            document.getElementById('deleteAccountError').classList.add('hidden');
-        }
-
-        // Handle Delete Account Form Submission
-        document.getElementById('deleteAccountForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const confirmText = document.getElementById('deleteConfirmText').value;
-            const password = document.getElementById('deleteAccountPassword').value;
-            const errorDiv = document.getElementById('deleteAccountError');
-            
-            // Validate confirmation text
-            if (confirmText !== 'DELETE') {
-                errorDiv.textContent = 'Please type "DELETE" in uppercase to confirm';
-                errorDiv.classList.remove('hidden');
-                return;
-            }
-            
-            errorDiv.classList.add('hidden');
-            
-            // Final confirmation
-            if (!confirm('This is your last chance. Are you absolutely sure you want to delete your account? This cannot be undone!')) {
-                return;
-            }
-            
-            try {
-                const response = await fetch('/api/student/delete-account', {
-                    method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        password: password,
-                        confirm_text: confirmText
-                    })
-                });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    alert('Your account has been successfully deleted. You will be redirected to the login page.');
-                    // Redirect to login page
-                    window.location.href = '/login.html';
-                } else {
-                    errorDiv.textContent = data.message || 'Failed to delete account';
-                    errorDiv.classList.remove('hidden');
-                }
-            } catch (error) {
-                console.error('Error deleting account:', error);
-                errorDiv.textContent = 'An error occurred while deleting your account';
-                errorDiv.classList.remove('hidden');
-            }
-        });
-        
         function saveSettings() {
             alert('Settings saved successfully!');
             // In a real application, this would save all the settings
