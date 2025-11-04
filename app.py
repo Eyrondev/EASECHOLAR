@@ -16,6 +16,10 @@ import os
 from datetime import datetime, timedelta
 from decimal import Decimal
 import json
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Custom JSON encoder to handle Decimal types
 class DecimalEncoder(json.JSONEncoder):
@@ -48,12 +52,22 @@ app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024  # 5MB max file size
 app.config['UPLOAD_FOLDER'] = 'uploads'
 
 # Email configuration for password reset
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-app.config['MAIL_PORT'] = 587
-app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME', 'easecholar.mail@gmail.com')  # Set in environment or replace
-app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD', 'zact zdxp fmcn hqlj')  # Use Gmail App Password
-app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_USERNAME', 'easecholar.mail@gmail.com')
+# All credentials are loaded from .env file for security
+app.config['MAIL_SERVER'] = os.environ.get('MAIL_SERVER', 'smtp.gmail.com')
+app.config['MAIL_PORT'] = int(os.environ.get('MAIL_PORT', 587))
+app.config['MAIL_USE_TLS'] = os.environ.get('MAIL_USE_TLS', 'True').lower() == 'true'
+app.config['MAIL_USE_SSL'] = os.environ.get('MAIL_USE_SSL', 'False').lower() == 'true'
+app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
+app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_DEFAULT_SENDER') or os.environ.get('MAIL_USERNAME')
+
+# Validate email configuration
+if not app.config['MAIL_USERNAME'] or not app.config['MAIL_PASSWORD']:
+    print("⚠️  WARNING: Email credentials not found in environment variables!")
+    print("   Email functionality (password reset) will NOT work.")
+    print("   Please set MAIL_USERNAME and MAIL_PASSWORD in your .env file")
+else:
+    print(f"✓ Email configured: {app.config['MAIL_USERNAME']}")
 
 # Initialize Flask-Mail
 mail = Mail(app)
@@ -76,14 +90,18 @@ except AttributeError:
     app.json = DecimalJSONProvider(app)
 
 # Database configuration
+# Load from environment variables for security
 DB_CONFIG = {
-    'host': 'database-1.cx4waogceerc.ap-southeast-2.rds.amazonaws.com',
-    'user': 'admin',
-    'password': '12345678',  # Update with your MySQL password
-    'database': 'easecholar_db',
+    'host': os.environ.get('DB_HOST', 'database-1.cx4waogceerc.ap-southeast-2.rds.amazonaws.com'),
+    'user': os.environ.get('DB_USER', 'admin'),
+    'password': os.environ.get('DB_PASSWORD', '12345678'),
+    'database': os.environ.get('DB_NAME', 'easecholar_db'),
     'charset': 'utf8mb4',
     'collation': 'utf8mb4_unicode_ci'
 }
+
+# Validate database configuration
+print(f"✓ Database configured: {DB_CONFIG['user']}@{DB_CONFIG['host']}/{DB_CONFIG['database']}")
 
 def get_db_connection():
     """Create and return a database connection with enhanced error handling"""
