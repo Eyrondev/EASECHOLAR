@@ -83,80 +83,39 @@
             </div>
 
             <!-- System Overview -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                <!-- Overview Stats -->
-                <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                        <i class="fas fa-chart-line text-indigo-600 mr-2"></i>
-                        System Overview
-                    </h3>
-                    <div class="space-y-4">
-                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                            <div class="flex items-center">
-                                <i class="fas fa-users text-blue-600 mr-3"></i>
-                                <span class="text-sm font-medium text-gray-700">Total Users</span>
-                            </div>
-                            <span id="overview-users" class="text-lg font-bold text-gray-900">0</span>
+            <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200 mb-8">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                    <i class="fas fa-chart-line text-indigo-600 mr-2"></i>
+                    System Overview
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                        <div class="flex items-center">
+                            <i class="fas fa-users text-blue-600 mr-3"></i>
+                            <span class="text-sm font-medium text-gray-700">Total Users</span>
                         </div>
-                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                            <div class="flex items-center">
-                                <i class="fas fa-graduation-cap text-green-600 mr-3"></i>
-                                <span class="text-sm font-medium text-gray-700">Scholarships</span>
-                            </div>
-                            <span id="overview-scholarships" class="text-lg font-bold text-gray-900">0</span>
-                        </div>
-                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                            <div class="flex items-center">
-                                <i class="fas fa-file-alt text-purple-600 mr-3"></i>
-                                <span class="text-sm font-medium text-gray-700">Applications</span>
-                            </div>
-                            <span id="overview-applications" class="text-lg font-bold text-gray-900">0</span>
-                        </div>
-                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                            <div class="flex items-center">
-                                <i class="fas fa-clock text-yellow-600 mr-3"></i>
-                                <span class="text-sm font-medium text-gray-700">Pending Approvals</span>
-                            </div>
-                            <span id="overview-pending" class="text-lg font-bold text-gray-900">0</span>
-                        </div>
+                        <span id="overview-users" class="text-lg font-bold text-gray-900">0</span>
                     </div>
-                </div>
-
-                <!-- Quick Actions -->
-                <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                        <i class="fas fa-bolt text-indigo-600 mr-2"></i>
-                        Quick Export
-                    </h3>
-                    <div class="space-y-3">
-                        <button onclick="exportAllUsers()" class="w-full flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors">
-                            <div class="flex items-center">
-                                <i class="fas fa-users text-blue-600 mr-3"></i>
-                                <span class="text-sm font-medium text-gray-700">Export All Users</span>
-                            </div>
-                            <i class="fas fa-download text-gray-400"></i>
-                        </button>
-                        <button onclick="exportAllScholarships()" class="w-full flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors">
-                            <div class="flex items-center">
-                                <i class="fas fa-graduation-cap text-green-600 mr-3"></i>
-                                <span class="text-sm font-medium text-gray-700">Export All Scholarships</span>
-                            </div>
-                            <i class="fas fa-download text-gray-400"></i>
-                        </button>
-                        <button onclick="exportAllApplications()" class="w-full flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors">
-                            <div class="flex items-center">
-                                <i class="fas fa-file-alt text-purple-600 mr-3"></i>
-                                <span class="text-sm font-medium text-gray-700">Export All Applications</span>
-                            </div>
-                            <i class="fas fa-download text-gray-400"></i>
-                        </button>
-                        <button onclick="exportSystemReport()" class="w-full flex items-center justify-between p-4 bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 text-white rounded-lg transition-colors">
-                            <div class="flex items-center">
-                                <i class="fas fa-file-pdf mr-3"></i>
-                                <span class="text-sm font-medium">Full System Report</span>
-                            </div>
-                            <i class="fas fa-download"></i>
-                        </button>
+                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                        <div class="flex items-center">
+                            <i class="fas fa-graduation-cap text-green-600 mr-3"></i>
+                            <span class="text-sm font-medium text-gray-700">Scholarships</span>
+                        </div>
+                        <span id="overview-scholarships" class="text-lg font-bold text-gray-900">0</span>
+                    </div>
+                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                        <div class="flex items-center">
+                            <i class="fas fa-file-alt text-purple-600 mr-3"></i>
+                            <span class="text-sm font-medium text-gray-700">Applications</span>
+                        </div>
+                        <span id="overview-applications" class="text-lg font-bold text-gray-900">0</span>
+                    </div>
+                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                        <div class="flex items-center">
+                            <i class="fas fa-clock text-yellow-600 mr-3"></i>
+                            <span class="text-sm font-medium text-gray-700">Pending Approvals</span>
+                        </div>
+                        <span id="overview-pending" class="text-lg font-bold text-gray-900">0</span>
                     </div>
                 </div>
             </div>
@@ -649,22 +608,6 @@
                     alert('Failed to generate application report. Please try again.');
                     reportWindow.close();
                 });
-        }
-
-        function exportAllUsers() {
-            window.location.href = '/api/admin/export/users';
-        }
-
-        function exportAllScholarships() {
-            window.location.href = '/api/admin/export/scholarships';
-        }
-
-        function exportAllApplications() {
-            window.location.href = '/api/admin/export/applications';
-        }
-
-        function exportSystemReport() {
-            alert('Full System Report: This will generate a comprehensive PDF report with all system statistics and analytics.');
         }
     </script>
 
